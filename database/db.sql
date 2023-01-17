@@ -46,6 +46,7 @@ create table shows(
     organiser_id integer not null,
     foreign key (organiser_id) references organiser_list(id),
     show_name text not null,
+    details jsonb not null,
     show_language text not null,
     show_duration integer not null,
     sales_start_date timestamp not null,
@@ -54,16 +55,6 @@ create table shows(
     published boolean not null,
     launch_date timestamp not null,
     end_date timestamp not null,
-    created_at timestamp not null default now(),
-    updated_at timestamp not null default now()
-);
-create table show_details (
-    id serial primary key,
-    show_id integer not null,
-    foreign key(show_id) references shows(id),
-    conetent text not null,
-    content_type text not null,
-    content_order integer,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
@@ -157,7 +148,7 @@ create table favourites(
 -- Delete Table
 -- DROP TABLE favourites;
 -- DROP TABLE users_purchases;
--- DROP TABLE image;
+-- DROP TABLE images;
 -- DROP TABLE chatroom_messages;
 -- DROP TABLE chatroom_participants;
 -- DROP TABLE shows_locations;
