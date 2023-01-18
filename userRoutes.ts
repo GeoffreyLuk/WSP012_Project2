@@ -1,24 +1,18 @@
+import crypto, { randomBytes } from 'crypto'
 import express from 'express'
-import { client } from '../database/init_data';
-import { formParsePromise } from './formidable';
-import { checkPassword, hashPassword } from './hash';
+import fetch from 'cross-fetch'
+import { client } from './database/init_data';
+import { formParsePromise } from './util/formidable';
+import { checkPassword, hashPassword } from './util/hash';
 export const userRoutes = express.Router()
 
 userRoutes.post('/signup', signup)
 userRoutes.post('/login', login)
-userRoutes.post('/login/google', loginGoogle)
+userRoutes.get('/login/google', loginGoogle)
 
+// Need try catch
 async function signup(req: express.Request, res: express.Response) {
     let { fields, files } = await formParsePromise(req)
-    // let content = fields.content
-    // console.log("fields: ", fields);
-    // console.log("fields.email: ", fields.email);
-    // console.log("fields.password: ", fields.password);
-    // console.log("fields.first_name: ", fields.first_name);
-    // console.log("fields.last_name: ", fields.last_name);
-
-
-    // console.log("content: ", content);
 
     // Haven't test
     let fileName = files.image ? files.image['newFilename'] : ''
@@ -95,5 +89,41 @@ async function login(req: express.Request, res: express.Response) {
 }
 
 async function loginGoogle(req: express.Request, res: express.Response) {
+    try {
+        const accessToken = req.session?.['grant'].response.access_token
 
+        const fetchRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+            method: "get",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        const googleUserProfile = await fetchRes.json();
+        let foundUser = (await client.query(`SELECT * FROM users WHERE users.email = $1`, [googleUserProfile.email])).rows[0];
+
+        if (!foundUser) {
+            let hashedPassword = await hashPassword(crypto.randomUUID())
+            foundUser = (
+                await client.query(
+                    `INSERT INTO users (first_name, last_name, email, phone_number, password, last_online) values ($1,$2,$3,$4,$5,now()) RETURNING *`,
+                    [googleUserProfile.given_name, googleUserProfile.family_name, googleUserProfile.email, 97056799, hashedPassword]
+                )
+            ).rows[0]
+        }
+
+        delete foundUser.password
+        if (req.session) {
+            req.session['user'] = {
+                id: foundUser.id
+            }
+        }
+        // Need to amend in future
+        return res.redirect('/login.html')
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[USR002] - Server error'
+        })
+    }
 }

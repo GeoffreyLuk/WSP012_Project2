@@ -1,30 +1,26 @@
-import fs from 'fs'
 import express from "express"
-import pg from "pg"
+import fs from 'fs'
 import HTTP from 'http'
-import { env } from './util/env'
-import { userRoutes } from "./util/userRoutes"
+import { userRoutes } from "./userRoutes"
 import { uploadDir } from "./util/formidable"
-
-
-const client = new pg.Client({
-    database: env.DB_NAME,
-    user: env.DB_USERNAME,
-    password: env.DB_PASSWORD
-})
-
-client.connect()
+import { expressSessionConfig, grantExpress } from "./util/middleware"
 
 let app = express()
 let server = new HTTP.Server(app)
 
-app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 fs.mkdirSync(uploadDir, { recursive: true })
 
+app.use(expressSessionConfig);
+app.use(grantExpress as express.RequestHandler);
+
+// Application Route
 app.use(userRoutes)
+
+// Static files
 app.use(express.static('public'))
 
+// 404 HTML
 // app.use((req, res) => {
 //     res.redirect("404.html")
 // })
