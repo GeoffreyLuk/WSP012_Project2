@@ -1,7 +1,11 @@
+import fs from 'fs'
 import express from "express"
 import pg from "pg"
 import HTTP from 'http'
 import { env } from './util/env'
+import { userRoutes } from "./util/userRoutes"
+import { uploadDir } from "./util/formidable"
+
 
 const client = new pg.Client({
     database: env.DB_NAME,
@@ -16,12 +20,14 @@ let server = new HTTP.Server(app)
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+fs.mkdirSync(uploadDir, { recursive: true })
 
+app.use(userRoutes)
 app.use(express.static('public'))
 
-app.use((req, res) => {
-    res.redirect("404.html")
-})
+// app.use((req, res) => {
+//     res.redirect("404.html")
+// })
 
 server.listen(8080, () => {
     console.log(`server listening on http://localhost:8080`);

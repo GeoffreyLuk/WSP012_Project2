@@ -1,4 +1,3 @@
--- No other table linked;
 create table users(
     id serial primary key,
     first_name text not null,
@@ -7,7 +6,7 @@ create table users(
     phone_number integer not null,
     icon text,
     password text not null,
-    access_level text not null,
+    access_level integer not null default 2,
     last_online timestamp not null,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
@@ -20,8 +19,12 @@ create table locations(
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
-
---linked with one foreign key;
+create table categories(
+    id serial primary key,
+    category text not null,
+    created_at timestamp not null default now(),
+    updated_at timestamp not null default now()
+);
 create table activity_tracking (
     id serial primary key,
     user_id integer not null,
@@ -45,9 +48,10 @@ create table shows(
     id serial primary key,
     organiser_id integer not null,
     foreign key (organiser_id) references organiser_list(id),
+    category_id integer not null,
+    foreign key (category_id) references categories(id),
     show_name text not null,
-    details jsonb not null,
-    show_language text not null,
+    details JSONB not null,
     show_duration integer not null,
     sales_start_date timestamp not null,
     sales_end_date timestamp not null,
@@ -71,8 +75,6 @@ create table tickets (
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
-
--- linked with 2 foreign keys
 create table chatrooms (
     id serial primary key,
     chatroom_name text not null,
@@ -144,7 +146,6 @@ create table favourites(
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
-
 -- Delete Table
 -- DROP TABLE favourites;
 -- DROP TABLE users_purchases;
@@ -154,7 +155,6 @@ create table favourites(
 -- DROP TABLE shows_locations;
 -- DROP TABLE chatrooms;
 -- DROP TABLE tickets;
--- DROP TABLE show_details;
 -- DROP TABLE shows;
 -- DROP TABLE organiser_list;
 -- DROP TABLE activity_tracking;

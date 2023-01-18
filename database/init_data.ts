@@ -22,8 +22,6 @@ async function main() {
     // console.table(userData)
 
     // await client.query('')
-    await client.end()
-    console.log('db is disconnected');
 }
 
 main()
