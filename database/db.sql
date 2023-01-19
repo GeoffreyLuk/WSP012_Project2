@@ -3,7 +3,7 @@ create table users(
     first_name text not null,
     last_name text not null,
     email text not null,
-    phone_number integer not null,
+    phone_number integer,
     icon text,
     password text not null,
     access_level integer not null default 2,
@@ -22,6 +22,17 @@ create table locations(
 create table categories(
     id serial primary key,
     category text not null,
+    created_at timestamp not null default now(),
+    updated_at timestamp not null default now()
+);
+create table direct_messages(
+    id serial primary key,
+    from_user integer,
+    foreign key (from_user) references users(id),
+    to_user integer,
+    foreign key (to_user) references users(id),
+    content_type integer not null,
+    content text not null,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
@@ -69,9 +80,8 @@ create table tickets (
     type text not null,
     pricing integer not null,
     max_quantity integer not null,
-    early_discount integer,
+    tickey_discount jsonb,
     show_date timestamp not null,
-    early_end_date timestamp,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
@@ -98,8 +108,6 @@ create table chatroom_participants (
     id serial primary key,
     chatroom_id integer not null,
     foreign key (chatroom_id) references chatrooms(id),
-    user_id integer not null,
-    foreign key(user_id) references users(id),
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
@@ -109,8 +117,8 @@ create table chatroom_messages (
     foreign key (chatroom_id) references chatrooms(id),
     user_id integer not null,
     foreign key(user_id) references users(id),
-    message text,
-    image text,
+    content_type integer not null,
+    content text not null,
     message_time timestamp,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
@@ -134,6 +142,7 @@ create table users_purchases(
     foreign key(ticket_id) references tickets(id),
     quantity integer not null,
     ticket_paid boolean not null,
+    user_discount jsonb,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );

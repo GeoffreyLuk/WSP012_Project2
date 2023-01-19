@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Editing</title>
+</head>
+
+<body>
+    <div class="container">
+        <div>
+            <div class="session-container">
+                <a href="">
+                    <div class="session-title">Purchase Records</div>
+                </a>
+                <a href="">
+                    <div class="session-title">Interested Events</div>
+                </a>
+                <a href="">
+                    <div class="session-title">Edit Profile</div>
+                </a>
+                <a href="">
+                    <div class="session-title">Reset password</div>
+                </a>
+            </div>
+        </div>
+        <form class="edit_profile_form">
+            <div class="profile_item">
+                <div class="login_item">
+                    Registered Email
+                    <div class="original_email"></div>
+                    <input name="email" placeholder="New email" value>
+                    <input name="confirm_email" placeholder="Confirm new email" value>
+                </div>
+                <div class="login_item">
+                    Name
+                    <input name="first_name" placeholder="First Name" value>
+                    <input name="last_name" placeholder="Last Name" value>
+                </div>
+                <div class="login_item">
+                    Phone Number
+                    <input name="phone_number" placeholder="Phone Number" value>
+                </div>
+            </div>
+            <div class="profile_item">
+                <input name="agree" type="checkbox">
+                <div>I confirm the above information are correct, and agree to edit the above info. </div>
+            </div>
+            <div class="profile_item">
+                <input type="submit" value="Confirm">
+            </div>
+        </form>
+    </div>
+
+    <script src="edit_profile.js"></script>
+</body>
+
+</html>

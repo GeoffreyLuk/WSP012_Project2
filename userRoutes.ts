@@ -1,52 +1,71 @@
-import crypto, { randomBytes } from 'crypto'
+import crypto from 'crypto'
 import express from 'express'
 import fetch from 'cross-fetch'
 import { client } from './database/init_data';
-import { formParsePromise } from './util/formidable';
+import { formParsePromiseforSignUp } from './util/formidable';
 import { checkPassword, hashPassword } from './util/hash';
+import { isLoggedInAPI } from './util/guard';
 export const userRoutes = express.Router()
+
+
+declare module "express-session" {
+    interface SessionData {
+        id?: number;
+        user?: string;
+    }
+}
 
 userRoutes.post('/signup', signup)
 userRoutes.post('/login', login)
 userRoutes.get('/login/google', loginGoogle)
+userRoutes.get('/edit_profile.html', isLoggedInAPI, getUserInfo)
 
-// Need try catch
 async function signup(req: express.Request, res: express.Response) {
-    let { fields, files } = await formParsePromise(req)
+    try {
+        console.log("ABD");
 
-    // Haven't test
-    let fileName = files.image ? files.image['newFilename'] : ''
-    // Check if the account has already register or not
-    // Hashpassword
-    let hashedpassword = await hashPassword(fields.password)
-    console.log(hashedpassword);
+        let { fields, files } = await formParsePromiseforSignUp(req)
+        // Haven't test
 
-    await client.query(
-        `insert into users(first_name, last_name, email, phone_number, icon, password, last_online,created_at, updated_at)
-        values ($1,$2,$3,$4,$5,$6,now(),now(),now())`,
-        [fields.first_name, fields.last_name, fields.email, fields.phone_number, fileName, hashedpassword]
-    )
+        let fileName = files.originalFilename ? files.newFilename : ''
+        // console.log('files.image: ', files.image); 
+        // console.log('fileName:', fileName);
 
-    res.json({
-        message: 'Register Successfully'
-    })
+        // Hashpassword
+        let hashedpassword = await hashPassword(fields.password)
 
-    // if (!email || !password) {
-    //     res.status(402).json({
-    //         message: 'Invalid input'
-    //     })
-    //     return;
-    // }
+        let selectUserResult = await client.query(
+            `select * from users where email = $1`,
+            [fields.email]
+        )
 
-    // let selectUserResult = await client.query(
-    //     `select * from users where email = $1`,
-    //     [email]
-    // )
+        let foundUser = selectUserResult.rows[0]
 
-    // let foundUser = selectUserResult.rows[0]
+        if (foundUser) {
+            res.status(402).json({
+                message: 'Email already register, please use another email.'
+            })
+            return
+        }
+        await client.query(
+            `insert into users(first_name, last_name, email, phone_number, icon, password, last_online)
+            values ($1,$2,$3,$4,$5,$6,now())`,
+            [fields.first_name, fields.last_name, fields.email, fields.phone_number, fileName, hashedpassword]
+        )
 
-    // if (!foundUser) {
-    // }
+        res.json({
+            message: 'Register Successfully'
+        })
+        console.log('Register Successfully!');
+
+        // redirect(?)
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[USR001] - Server error'
+        })
+    }
+
 }
 
 async function login(req: express.Request, res: express.Response) {
@@ -78,10 +97,19 @@ async function login(req: express.Request, res: express.Response) {
             })
             return
         }
+
+        req.session.user = foundUser
+        // console.log(foundUser);
+        res.json({
+            data: foundUser,
+            message: "Login Successfully"
+        })
+        // res.redirect('/edit_profile.html')
         console.log("Login Successfully");
     } catch (err) {
+        console.log(err);
         res.status(500).json({
-            message: '[USR001] - Server Error'
+            message: '[USR002] - Server Error'
         })
     }
 
@@ -106,24 +134,29 @@ async function loginGoogle(req: express.Request, res: express.Response) {
             let hashedPassword = await hashPassword(crypto.randomUUID())
             foundUser = (
                 await client.query(
-                    `INSERT INTO users (first_name, last_name, email, phone_number, password, last_online) values ($1,$2,$3,$4,$5,now()) RETURNING *`,
-                    [googleUserProfile.given_name, googleUserProfile.family_name, googleUserProfile.email, 97056799, hashedPassword]
+                    `INSERT INTO users (first_name, last_name, email, password, last_online) values ($1,$2,$3,$4,now()) RETURNING *`,
+                    [googleUserProfile.given_name, googleUserProfile.family_name, googleUserProfile.email, hashedPassword]
                 )
             ).rows[0]
         }
 
         delete foundUser.password
-        if (req.session) {
-            req.session['user'] = {
-                id: foundUser.id
-            }
-        }
+        req.session['user'] = foundUser
         // Need to amend in future
-        return res.redirect('/login.html')
+        return res.redirect('/edit_profile.html')
     } catch (err) {
         console.log(err);
         res.status(500).json({
-            message: '[USR002] - Server error'
+            message: '[USR003] - Server error'
         })
     }
+}
+
+// 
+async function getUserInfo(req: express.Request, res: express.Response) {
+    console.log(res)
+    // console.log(req.session.user)
+    // let result = await client.query(
+    //     `select * from users where email = $1`,
+    // )
 }

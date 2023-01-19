@@ -27,14 +27,14 @@ function checkIfEmpty() {
 signupformElm.addEventListener('submit', async (e) => {
     e.preventDefault()
     if (checkIfEmpty()) {
-        console.log("start");
         let uploadData = new FormData(signupformElm)
-        console.log("uploadData: ", uploadData);
+
+        // console.log("uploadData: ", uploadData);
         let res = await fetch('/signup', {
             method: 'POST',
             body: uploadData
         })
-        console.log("res: ", res)
+        // console.log("res: ", res)
 
         if (res.ok) {
             signupformElm.reset()
