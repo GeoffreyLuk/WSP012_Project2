@@ -7,6 +7,7 @@ async function getUserInfo() {
     if (res.ok) {
         let user = await res.json()
         loadUserInfo(user)
+        console.log(user);
     }
 }
 
@@ -24,13 +25,11 @@ async function loadUserInfo(user) {
 }
 
 async function init() {
+    console.log("Called Init()");
     getUserInfo()
 }
 
-init()
-
 function ValidateEmail(item) {
-    console.log("Item", item);
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(item.value)) {
         return true
     }
@@ -101,9 +100,10 @@ editFormElm.addEventListener('submit', async (e) => {
             return
         }
 
-        let data = res.json()
+        let data = await res.json()
         console.log(data);
         window.location = '/'
     }
 
 })
+init()

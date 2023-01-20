@@ -7,7 +7,6 @@ import { checkPassword, hashPassword } from './util/hash';
 import { isLoggedInAPI } from './util/guard';
 export const userRoutes = express.Router()
 
-
 declare module "express-session" {
     interface SessionData {
         id?: number;
@@ -28,8 +27,6 @@ async function signup(req: express.Request, res: express.Response) {
         // Haven't test
 
         let fileName = files.originalFilename ? files.newFilename : ''
-        // console.log('files.image: ', files.image); 
-        // console.log('fileName:', fileName);
 
         // Hashpassword
         let hashedPassword = await hashPassword(fields.password)
@@ -99,13 +96,14 @@ async function login(req: express.Request, res: express.Response) {
         }
         delete foundUser.password
         req.session.user = foundUser
-        // console.log(foundUser);
+
         res.json({
             data: foundUser,
             message: "Login Successfully"
         })
-        // res.redirect('/edit_profile.html')
+
         console.log("Login Successfully");
+        console.log(req.session?.user)
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -163,13 +161,19 @@ async function updateUserInfo(req: express.Request, res: express.Response) {
             `select * from users where email = $1`, [req.session.user?.email]
         )
 
-        let foundUser = selectedUserResult.rows[0]
-
         await client.query(
             `UPDATE users SET first_name = $1, last_name =$2, phone_number=$3, email=$4 where id  = $5 `,
-            [firstName, lastName, phoneNumber, email, foundUser.id]
+            [firstName, lastName, phoneNumber, email, req.session.user?.id]
         )
+
+        selectedUserResult = await client.query(
+            `select * from users where email = $1`, [email]
+        )
+
+        let foundUser = selectedUserResult.rows[0]
+        delete foundUser.password
         req.session.user = foundUser
+
         res.json({
             data: foundUser,
             message: 'Update Info Success'

@@ -5,6 +5,7 @@ export const isLoggedIn = (
     res: express.Response,
     next: express.NextFunction
 ) => {
+    console.log(req.session?.user)
     if (req.session?.user) {
         //called Next here
         next()
