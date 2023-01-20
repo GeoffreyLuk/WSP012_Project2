@@ -20,11 +20,10 @@ userRoutes.post('/login', login)
 userRoutes.get('/login/google', loginGoogle)
 userRoutes.get('/get_user_info', getUserInfo)
 userRoutes.put('/update_user_info', isLoggedInAPI, updateUserInfo)
+userRoutes.put('/reset_PW', isLoggedInAPI, resetUserPW)
 
 async function signup(req: express.Request, res: express.Response) {
     try {
-        console.log("ABD");
-
         let { fields, files } = await formParsePromiseforSignUp(req)
         // Haven't test
 
@@ -33,7 +32,7 @@ async function signup(req: express.Request, res: express.Response) {
         // console.log('fileName:', fileName);
 
         // Hashpassword
-        let hashedpassword = await hashPassword(fields.password)
+        let hashedPassword = await hashPassword(fields.password)
 
         let selectUserResult = await client.query(
             `select * from users where email = $1`,
@@ -51,7 +50,7 @@ async function signup(req: express.Request, res: express.Response) {
         await client.query(
             `insert into users(first_name, last_name, email, phone_number, icon, password, last_online)
             values ($1,$2,$3,$4,$5,$6,now())`,
-            [fields.first_name, fields.last_name, fields.email, fields.phone_number, fileName, hashedpassword]
+            [fields.first_name, fields.last_name, fields.email, fields.phone_number, fileName, hashedPassword]
         )
 
         res.json({
@@ -98,7 +97,7 @@ async function login(req: express.Request, res: express.Response) {
             })
             return
         }
-
+        delete foundUser.password
         req.session.user = foundUser
         // console.log(foundUser);
         res.json({
@@ -161,11 +160,10 @@ async function updateUserInfo(req: express.Request, res: express.Response) {
     try {
         let { email, firstName, lastName, phoneNumber } = req.body
         let selectedUserResult = await client.query(
-            `select * from users where email =$1`, [req.session.user?.email]
+            `select * from users where email = $1`, [req.session.user?.email]
         )
 
         let foundUser = selectedUserResult.rows[0]
-        console.log(foundUser);
 
         await client.query(
             `UPDATE users SET first_name = $1, last_name =$2, phone_number=$3, email=$4 where id  = $5 `,
@@ -182,6 +180,47 @@ async function updateUserInfo(req: express.Request, res: express.Response) {
         console.log(err);
         res.status(500).json({
             message: '[USR004] - Server error'
+        })
+    }
+}
+
+async function resetUserPW(req: express.Request, res: express.Response) {
+    try {
+        let { oldPassword, newPassword } = req.body
+        let selectedUserResult = await client.query(
+            `select * from users where email = $1`, [req.session.user?.email]
+        )
+
+        let foundUser = selectedUserResult.rows[0]
+
+        let validatePassword = await checkPassword(oldPassword, foundUser.password)
+        if (!validatePassword) {
+            res.status(402).json({
+                message: "Wrong password, please try again."
+            })
+            return
+        }
+
+        let hashedPassword = await hashPassword(newPassword)
+
+        await client.query(
+            `UPDATE users SET password = $1 where id = $2`,
+            [hashedPassword, foundUser.id]
+        )
+
+        delete foundUser.password
+
+        req.session.user = foundUser
+        console.log("Reset successfully");
+
+        res.json({
+            data: foundUser,
+            message: 'Reset Password Success'
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[USR005] - Server error'
         })
     }
 }

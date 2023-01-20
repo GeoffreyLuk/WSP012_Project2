@@ -11,7 +11,6 @@ async function getUserInfo() {
 }
 
 async function loadUserInfo(user) {
-    console.log(user);
     let originalEmail = document.querySelector('.original_email')
     let firstName = document.querySelector('.first_name')
     let lastName = document.querySelector('.last_name')
