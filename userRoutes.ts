@@ -11,14 +11,15 @@ export const userRoutes = express.Router()
 declare module "express-session" {
     interface SessionData {
         id?: number;
-        user?: string;
+        user?: any;
     }
 }
 
 userRoutes.post('/signup', signup)
 userRoutes.post('/login', login)
 userRoutes.get('/login/google', loginGoogle)
-userRoutes.get('/edit_profile.html', isLoggedInAPI, getUserInfo)
+userRoutes.get('/get_user_info', getUserInfo)
+userRoutes.put('/update_user_info', isLoggedInAPI, updateUserInfo)
 
 async function signup(req: express.Request, res: express.Response) {
     try {
@@ -152,11 +153,35 @@ async function loginGoogle(req: express.Request, res: express.Response) {
     }
 }
 
-// 
 async function getUserInfo(req: express.Request, res: express.Response) {
-    console.log(res)
-    // console.log(req.session.user)
-    // let result = await client.query(
-    //     `select * from users where email = $1`,
-    // )
+    res.json(req.session.user || {})
+}
+
+async function updateUserInfo(req: express.Request, res: express.Response) {
+    try {
+        let { email, firstName, lastName, phoneNumber } = req.body
+        let selectedUserResult = await client.query(
+            `select * from users where email =$1`, [req.session.user?.email]
+        )
+
+        let foundUser = selectedUserResult.rows[0]
+        console.log(foundUser);
+
+        await client.query(
+            `UPDATE users SET first_name = $1, last_name =$2, phone_number=$3, email=$4 where id  = $5 `,
+            [firstName, lastName, phoneNumber, email, foundUser.id]
+        )
+        req.session.user = foundUser
+        res.json({
+            data: foundUser,
+            message: 'Update Info Success'
+        })
+        // Get new user data
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[USR004] - Server error'
+        })
+    }
 }

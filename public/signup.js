@@ -11,12 +11,12 @@ function ValidateEmail() {
 }
 
 function checkIfEmpty() {
-    for (let i of signupformItems) {
-        if (i.type == "email") {
+    for (let item of signupformItems) {
+        if (item.type == "email") {
             if (!ValidateEmail()) {
                 return false
             }
-        } else if (!i.value && i.type != "file") {
+        } else if (!item.value && item.type != "file") {
             alert(`${i.placeholder} is empty!`)
             return false
         }
