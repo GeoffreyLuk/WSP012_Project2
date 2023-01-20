@@ -66,7 +66,6 @@ create table shows(
     show_duration integer not null,
     sales_start_date timestamp not null,
     sales_end_date timestamp not null,
-    categories text not null,
     published boolean not null,
     launch_date timestamp not null,
     end_date timestamp not null,
@@ -80,7 +79,7 @@ create table tickets (
     type text not null,
     pricing integer not null,
     max_quantity integer not null,
-    tickey_discount jsonb,
+    ticket_discount jsonb,
     show_date timestamp not null,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
@@ -88,8 +87,6 @@ create table tickets (
 create table chatrooms (
     id serial primary key,
     chatroom_name text not null,
-    user_id integer not null,
-    foreign key (user_id) references users(id),
     show_id integer not null,
     foreign key (show_id) references shows(id),
     created_at timestamp not null default now(),
@@ -108,6 +105,8 @@ create table chatroom_participants (
     id serial primary key,
     chatroom_id integer not null,
     foreign key (chatroom_id) references chatrooms(id),
+    user_id integer not null,
+    foreign key (user_id) references users(id),
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );

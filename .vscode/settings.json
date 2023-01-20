@@ -7,8 +7,8 @@
             "driver": "PostgreSQL",
             "name": "wsp_project",
             "database": "wsp_project",
-            "username": "postgres",
-            "password": "postgres"
+            "username": "admin",
+            "password": "admin"
         }
     ]
 }
