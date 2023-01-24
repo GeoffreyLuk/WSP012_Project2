@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    show upload testing
+    &nbsp;
+    <form id="uploading_show">
+        <fieldset>
+            <legend>Mandatory Data</legend>
+                <label for="organiser_id">organiser_id</label><input id="organiser_id" name="organiser" type="number"><br><br>
+                <label for="category_id">category_id</label><input id="category_id" name="category" type="number"><br><br>
+                <label for="show_name">show_name</label><input id="show_name" name="name" type="text"><br><br>
+                <label for="show_duration">show_duration</label><input id="show_duration" name="duration" type="number"><br><br>
+                <label for="sales_start_date">sales_start_date</label><input id="sales_start_date" name="sales_start" type="datetime"><br><br>
+                <label for="sales_end_date">sales_end_date</label><input id="sales_end_date" name="sales_end" type="datetime"><br><br>
+                <label for="show_banner">show_banner</label><input id="show_banner" name="banner" type="file"><br><br>
+                <label for="show_details">show_details</label><input id="show_details" name="details" type="text"><br><br>
+                <label for="published">published</label><input id="published" type="button" name="published" value="placeholder"><br><br>
+        </fieldset>
+        <fieldset>
+            <legend>show details</legend>
+            <label for="files_for_show">files for shows</label><input type="file" multiple="multiple" name="files" id="files_for_show">
+            <textarea id="show_description" name="description">
+
+        </fieldset>
+        <br><br>
+        <input type="submit" value="submit">
+    </form>
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#show_description' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
+
+</body>
+</html>

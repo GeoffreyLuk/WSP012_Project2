@@ -10,7 +10,7 @@ const client = new pg.Client({
   password: process.env.DB_PASSWORD,
 });
 
-var wb = XLSX.readFile('./database/Project_Data.xlsx')
+var wb = XLSX.readFile('database/Project_Data.xlsx')
 
 interface users {
   id: number;
@@ -218,6 +218,7 @@ async function main() {
       users.created_at,
       users.updated_at
     ])
+    await client.query("SELECT setval('users_id_seq',(select max(id) from users))")
   }
   console.log('user data upload complete\n')
 
@@ -233,6 +234,7 @@ for(let organisers of organiserSheetData){
     organisers.created_at,
     organisers.updated_at
   ])
+  await client.query("SELECT setval('organiser_list_id_seq',(select max(id) from organiser_list))")
 }
 console.log('organiser_list data upload complete \n')
 
@@ -244,6 +246,7 @@ for(let category of categoriesSheetData){
     category.created_at,
     category.updated_at
   ])
+  await client.query("SELECT setval('categories_id_seq',(select max(id) from categories))")
 }
 console.log('categories data upload complete\n')
 
@@ -264,6 +267,7 @@ console.log('shows data upload start')
       shows.created_at,
       shows.updated_at
     ])
+    await client.query("SELECT setval('shows_id_seq',(select max(id) from shows))")
   }
   console.log('shows data upload complete\n')
 
@@ -277,6 +281,7 @@ for(let location of locationsSheetData){
     location.created_at,
     location.updated_at
   ])
+  await client.query("SELECT setval('locations_id_seq',(select max(id) from locations))")
 }
 console.log('locations data upload complete\n')
 
@@ -289,6 +294,7 @@ for(let show_location of showLocationsSheetData){
     show_location.created_at,
     show_location.updated_at
   ])
+  await client.query("SELECT setval('shows_locations_id_seq',(select max(id) from shows_locations))")
 }
 console.log('shows_locations upload complete\n')
 
@@ -302,6 +308,7 @@ for (let image of  imagesSheetData){
     image.created_at,
     image.updated_at
   ])
+  await client.query("SELECT setval('images_id_seq',(select max(id) from images))")
 }
 console.log('images data upload complete\n')
 
@@ -318,6 +325,7 @@ for (let ticket of ticketsSheetData){
     ticket.created_at,
     ticket.updated_at
   ])
+  await client.query("SELECT setval('tickets_id_seq',(select max(id) from tickets))")
 }
 console.log('tickets data upload complete\n')
 
@@ -333,6 +341,7 @@ for (let purchase of usersPurchasesSheetData){
     purchase.created_at,
     purchase.updated_at
   ])
+  await client.query("SELECT setval('users_purchases_id_seq',(select max(id) from users_purchases))")
 }
 console.log('users_purchases data upload complete\n')
 
@@ -345,6 +354,7 @@ for (let favourite of favouritesSheetData){
     favourite.created_at,
     favourite.updated_at
     ])
+    await client.query("SELECT setval('favourites_id_seq',(select max(id) from favourites))")
   }
 console.log('favourites data upload complete\n')
 
@@ -357,6 +367,7 @@ for (let chatroom of chatroomsSheetData){
     chatroom.created_at,
     chatroom.updated_at
   ])
+  await client.query("SELECT setval('chatrooms_id_seq',(select max(id) from chatrooms))")
 }
 console.log('chatrooms data upload complete\n')
 
@@ -369,6 +380,7 @@ for (let participants of chatroomParticipantSheetData){
     participants.created_at,
     participants.updated_at
   ])
+  await client.query("SELECT setval('chatroom_participants_id_seq',(select max(id) from chatroom_participants))")
 }
 console.log('chatroom_participants upload complete\n')
 
@@ -384,6 +396,7 @@ for (let messages of chatroomMessagesSheetData){
     messages.created_at,
     messages.updated_at
   ])
+  await client.query("SELECT setval('chatroom_messages_id_seq',(select max(id) from chatroom_messages))")
 }
 console.log('chatroom_messages data upload complete\n')
 
@@ -398,6 +411,7 @@ for (let direct of directMessagesSheetData){
     direct.created_at,
     direct.updated_at
   ])
+  await client.query("SELECT setval('direct_messages_id_seq',(select max(id) from direct_messages))")
 }
 console.log('direct_messages data upload complete\n')
 
