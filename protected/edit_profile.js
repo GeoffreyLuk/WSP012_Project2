@@ -7,7 +7,6 @@ async function getUserInfo() {
     if (res.ok) {
         let user = await res.json()
         loadUserInfo(user)
-        console.log(user);
     }
 }
 
@@ -25,7 +24,6 @@ async function loadUserInfo(user) {
 }
 
 async function init() {
-    console.log("Called Init()");
     getUserInfo()
 }
 
@@ -81,6 +79,7 @@ editFormElm.addEventListener('submit', async (e) => {
 
         // prep
         let uploadData = {
+            newEmail: editFormElm.newEmail.value,
             email: emailData,
             firstName: editFormElm.first_name.value,
             lastName: editFormElm.last_name.value,
@@ -104,6 +103,5 @@ editFormElm.addEventListener('submit', async (e) => {
         console.log(data);
         window.location = '/'
     }
-
 })
 init()

@@ -20,6 +20,7 @@ userRoutes.get('/login/google', loginGoogle)
 userRoutes.get('/get_user_info', getUserInfo)
 userRoutes.put('/update_user_info', isLoggedInAPI, updateUserInfo)
 userRoutes.put('/reset_PW', isLoggedInAPI, resetUserPW)
+userRoutes.get('/chatroom/user/:userId', isLoggedInAPI, getUserChatHistory)
 
 async function signup(req: express.Request, res: express.Response) {
     try {
@@ -156,11 +157,23 @@ async function getUserInfo(req: express.Request, res: express.Response) {
 
 async function updateUserInfo(req: express.Request, res: express.Response) {
     try {
-        let { email, firstName, lastName, phoneNumber } = req.body
+        let { newEmail, email, firstName, lastName, phoneNumber } = req.body
+
         let selectedUserResult = await client.query(
             `select * from users where email = $1`, [req.session.user?.email]
         )
+        let selectedNewEmailResult = await client.query(
+            `select * from users where email = $1`, [newEmail]
+        )
 
+        let NewEmailUserExist = selectedNewEmailResult.rows[0]
+
+        if (NewEmailUserExist) {
+            res.status(402).json({
+                message: 'Email already register, please use another email.'
+            })
+            return
+        }
         await client.query(
             `UPDATE users SET first_name = $1, last_name =$2, phone_number=$3, email=$4 where id  = $5 `,
             [firstName, lastName, phoneNumber, email, req.session.user?.id]
@@ -227,4 +240,17 @@ async function resetUserPW(req: express.Request, res: express.Response) {
             message: '[USR005] - Server error'
         })
     }
+}
+
+async function getUserChatHistory(req: express.Request, res: express.Response) {
+    let userId = req.params.userId
+
+    if (!Number(userId)) {
+        res.status(400).json({
+            message: 'Invalid user id'
+        })
+        return
+    }
+    console.log("userId: ", userId);
+
 }

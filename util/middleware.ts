@@ -16,8 +16,9 @@ export const grantExpress = grant.express({
     },
 });
 
-export const expressSessionConfig = expressSession({
+export const sessionMiddleware = expressSession({
     secret: "WSP Project",
     resave: true,
     saveUninitialized: true,
+    cookie: { secure: false }
 })
