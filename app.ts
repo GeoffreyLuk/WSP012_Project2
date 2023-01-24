@@ -3,6 +3,7 @@ import fs from 'fs'
 import http from 'http'
 import { Server as SocketIO } from "socket.io"
 import { userRoutes } from "./userRoutes"
+import { organiserRoutes } from "./organiserRoutes"
 import { uploadDir } from "./util/formidable"
 import { isLoggedIn } from "./util/guard"
 import { sessionMiddleware, grantExpress } from "./util/middleware"
@@ -27,10 +28,7 @@ io.use((socket, next) => {
 app.use(userRoutes)
 
 //Geoffrey
-app.get('/show_upload',(req,res)=>{
-    console.log(req.session.user.id)
-    res.sendFile(path.join(__dirname,'public','show_upload.html'))
-})
+app.use(organiserRoutes)
 
 // Static files
 app.use(express.static('public'))
