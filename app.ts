@@ -5,6 +5,7 @@ import { userRoutes } from "./userRoutes"
 import { uploadDir } from "./util/formidable"
 import { isLoggedIn } from "./util/guard"
 import { expressSessionConfig, grantExpress } from "./util/middleware"
+import path from 'path'
 
 let app = express()
 let server = new HTTP.Server(app)
@@ -17,6 +18,12 @@ app.use(grantExpress as express.RequestHandler);
 
 // Application Route
 app.use(userRoutes)
+
+//Geoffrey
+app.get('/show_upload',(req,res)=>{
+    console.log(req.session.user.id)
+    res.sendFile(path.join(__dirname,'public','show_upload.html'))
+})
 
 // Static files
 app.use(express.static('public'))

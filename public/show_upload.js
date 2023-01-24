@@ -1,3 +1,5 @@
+console.log(req.session.id)
+
 let showSubmit = document.querySelector('#uploading_show')
 
 showSubmit.addEventListener('submit', async (e)=>{

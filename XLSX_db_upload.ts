@@ -2,6 +2,7 @@ import pg, { DatabaseError } from 'pg';
 import dotenv from "dotenv";
 import XLSX from 'xlsx';
 import path from 'path';
+import { hashPassword } from './util/hash';
 
 dotenv.config();
 const client = new pg.Client({
@@ -205,6 +206,7 @@ async function main() {
 
   console.log('user data upload start')
   for (let users of usersSheetData) {
+    let finalPassword = await hashPassword(users.password)
     await client.query("INSERT INTO users (id,first_name,last_name,email,phone_number,icon,password,access_level,last_online,created_at,updated_at) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)", [
       users.id,
       users.first_name,
@@ -212,7 +214,7 @@ async function main() {
       users.email,
       users.phone_number,
       users.icon,
-      users.password,
+      finalPassword,
       users.access_level,
       users.last_online,
       users.created_at,
