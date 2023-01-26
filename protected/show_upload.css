@@ -1,0 +1,39 @@
+.ticket_container{
+    border: 2px solid black;
+}
+
+.ticket_button{
+    padding: 1px;
+    color: white;
+    background-color: brown;
+    max-width: fit-content;
+}
+.ticket_button:hover{
+    background-color: blueviolet;
+}
+
+.date_container{
+    border: 2px solid black;
+}
+.date_button{
+    padding: 1px;
+    color: white;
+    background-color: blueviolet;
+    max-width: fit-content;
+}
+.date_button:hover{
+    background-color: brown;
+}
+
+.discount_container{
+    border: 2px solid black;
+}
+.discount_button{
+    padding: 1px;
+    color: white;
+    background-color: black;
+    max-width: fit-content;
+}
+.discount_button:hover{
+    background-color: gray;
+}

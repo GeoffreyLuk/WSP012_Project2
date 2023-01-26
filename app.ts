@@ -3,6 +3,7 @@ import fs from 'fs'
 import http from 'http'
 import { Server as SocketIO } from "socket.io"
 import { userRoutes } from "./userRoutes"
+import { organiserRoutes } from "./organiserRoutes"
 import { uploadDir } from "./util/formidable"
 import { isLoggedIn } from "./util/guard"
 import { sessionMiddleware, grantExpress } from "./util/middleware"
@@ -17,14 +18,17 @@ app.use(express.json())
 fs.mkdirSync(uploadDir, { recursive: true })
 
 // io setup
-io.use((socket, next) => {
-    let req = socket.request as express.Request;
-    let res = req.res as express.Response;
-    sessionMiddleware(req, res, next as express.NextFunction);
-});
+// io.use((socket, next) => {
+//     let req = socket.request as express.Request;
+//     let res = req.res as express.Response;
+//     sessionMiddleware(req, res, next as express.NextFunction);
+// });
 
 // Application Route
 app.use(userRoutes)
+
+//Geoffrey
+app.use(organiserRoutes)
 
 // Static files
 app.use(express.static('public'))
