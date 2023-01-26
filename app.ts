@@ -9,7 +9,7 @@ import { sessionMiddleware, grantExpress } from "./util/middleware"
 
 let app = express()
 let server = new http.Server(app)
-const io = new SocketIO(server)
+export const io = new SocketIO(server)
 
 app.use(sessionMiddleware);
 app.use(grantExpress as express.RequestHandler);
@@ -34,22 +34,45 @@ io.on("connection", function (socket) {
     const req = socket.request as express.Request;
     console.log('socket connected: ', socket.id);
 
-    // Problem: still work while not signing in
     if (req.session.user) {
-        let roomName = ("user-" + req.session.user.id)
-        socket.join(roomName)
-        req.session["user"] = {
-            roomName: roomName,
-            name: req.session.user.first_name
-        }
-        // console.log('user info: ', req.session.user);
-        console.log(`已安排 ${socket.id} 進入 Room :${roomName}.`);
-        io.to(roomName).emit('greeting', `${req.session["user"].name} welcome to Room: ${roomName}!`)
+        // If Organizer -> get show list -> create room for organizer
+
+        // Join all show room
+        // let roomName = ("user-" + req.session.user.id)
+        // Hardcode
+        socket.join("UserID")
+        // console.log(`已安排 ${req.session.user.first_name} 進入 Room :Test.`);
+        io.to("Test").emit('greeting', `${req.session["user"].name} welcome to Room!`)
+        socket.request["session"].save()
     }
-    socket.request["session"].save()
-    console.log(req.session["user"])
+    // console.log("req.session.user: ", req.session["user"])
+
+    socket.on('join_chatroom', (userName, roomName) => {
+        console.log("userName: ", userName);
+        console.log("roomName", roomName);
+        let chatroom = "chatroom_" + roomName
+        socket.join(chatroom)
+        console.log(`${userName} joined Room ${chatroom}`);
+
+    })
+
+    // Listen - join showroom when created show
+    socket.on("join_new_room", ([userName, roomName]) => {
+        console.log("userName: ", userName);
+        console.log("roomName: ", roomName);
+
+        // const user = getCurrentUser(socket.id);
+        let chatroom = "chatroom_" + roomName
+        socket.join(chatroom)
+        console.log(`${userName} joined Room: ${chatroom}`);
+
+        // io.to(user.room).emit("message", formatMessage(user.username, msg));
+    });
+
 });
 
+
+// socket.io('join_new_show')
 // app.get('/', (req, res) => {
 
 //     res.end('ok')
