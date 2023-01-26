@@ -1,33 +1,24 @@
-window.onload = ()=>{
-loadingData()
-}
+let show = document.URL.split('/').pop()
 
-let showSubmit = document.querySelector('#uploading_show')
+window.onload = ()=>{
+  let data = loadingData()
+  if (show == 'show_new'){
+  //use post
+}else{
+  //use put
+}
+}
 
 async function loadingData(){
-    const formData = {};
-    formData.organiser = 'Hong Kong Philharmonic Orchestra'
-
-    const res = await fetch(`/organisation/${formData.organiser}`, {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const res = await fetch(`/get/${show}`);
   
       const result = await res.json();
-      console.log(result.text)
+      console.log(result)
+      return result
 }
 
-
-showSubmit.addEventListener('submit', async (e)=>{
-    e.preventDefault()
-    const form = e.target;
-    const formData = new FormData(form);
-    console.log(formData)
-
-    const res = await fetch('/show_upload',{
-        method:'post',
-        body: formData
-    })
-})
+    // <div>
+    //   <input type="radio" id="huey" name="category" value="huey"
+    //          checked>
+    //   <label for="huey">Huey</label>
+    // </div>

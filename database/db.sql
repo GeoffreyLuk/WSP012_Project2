@@ -63,6 +63,7 @@ create table shows(
     foreign key (category_id) references categories(id),
     show_name text not null,
     details JSONB not null,
+    ticket_discount jsonb,
     show_duration integer not null,
     sales_start_date timestamp not null,
     sales_end_date timestamp not null,
@@ -79,7 +80,6 @@ create table tickets (
     type text not null,
     pricing integer not null,
     max_quantity integer not null,
-    ticket_discount jsonb,
     show_date timestamp not null,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()

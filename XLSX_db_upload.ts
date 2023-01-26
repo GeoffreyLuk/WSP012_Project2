@@ -43,6 +43,7 @@ interface shows {
   organiser_id: number;
   category_id: number;
   show_name: string;
+  ticket_discount: ticket_discount;
   show_duration: number;
   sales_start_date: Date;
   sales_end_date: Date;
@@ -109,7 +110,6 @@ interface tickets{
   pricing: number;
   show_date: Date;
   max_quantity: number;
-  ticket_discount: ticket_discount;
 }
 
 interface users_purchase{
@@ -254,12 +254,13 @@ console.log('categories data upload complete\n')
 
 console.log('shows data upload start')
   for (let shows of showsSheetData) {
-    await client.query('INSERT INTO shows (id,organiser_id,category_id,show_name,details,show_duration,sales_start_date,sales_end_date,published,launch_date,end_date,created_at,updated_at) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)',[
+    await client.query('INSERT INTO shows (id,organiser_id,category_id,show_name,details,ticket_discount,show_duration,sales_start_date,sales_end_date,published,launch_date,end_date,created_at,updated_at) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)',[
       shows.id,
       shows.organiser_id,
       shows.category_id,
       shows.show_name,
       shows.details,
+      shows.ticket_discount,
       shows.show_duration,
       shows.sales_start_date,
       shows.sales_end_date,
@@ -316,14 +317,13 @@ console.log('images data upload complete\n')
 
 console.log('tickets data upload start')
 for (let ticket of ticketsSheetData){
-  await client.query('INSERT INTO tickets (id,show_id,type,pricing,show_date,max_quantity,ticket_discount,created_at,updated_at) values ($1,$2,$3,$4,$5,$6,$7,$8,$9)',[
+  await client.query('INSERT INTO tickets (id,show_id,type,pricing,show_date,max_quantity,created_at,updated_at) values ($1,$2,$3,$4,$5,$6,$7,$8)',[
     ticket.id,
     ticket.show_id,
     ticket.type,
     ticket.pricing,
     ticket.show_date,
     ticket.max_quantity,
-    ticket.ticket_discount,
     ticket.created_at,
     ticket.updated_at
   ])

@@ -1,45 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="/show_upload.css" rel="stylesheet">
 </head>
+
 <body>
-    show upload testing
+    show upload <br>
+    <a href="/showlisting">back</a>
     &nbsp;
     <form id="uploading_show">
         <fieldset>
-            <legend>Mandatory Data</legend>
-                <label for="organiser_id">organiser_id</label><input id="organiser_id" name="organiser" type="number"><br><br>
-                <label for="category_id">category_id</label><input id="category_id" name="category" type="number"><br><br>
-                <label for="show_name">show_name</label><input id="show_name" name="name" type="text"><br><br>
-                <label for="show_duration">show_duration</label><input id="show_duration" name="duration" type="number"><br><br>
-                <label for="sales_start_date">sales_start_date</label><input id="sales_start_date" name="sales_start" type="datetime"><br><br>
-                <label for="sales_end_date">sales_end_date</label><input id="sales_end_date" name="sales_end" type="datetime"><br><br>
-                <label for="show_banner">show_banner</label><input id="show_banner" name="banner" type="file"><br><br>
-                <label for="show_details">show_details</label><input id="show_details" name="details" type="text"><br><br>
-                <label for="published">published</label><input id="published" type="button" name="published" value="placeholder"><br><br>
+            <legend>Published</legend>
+            <label for="published">published</label><input id="published" type="button" name="published"
+                value="false"><br><br>
         </fieldset>
-        <fieldset>
-            <legend>show details</legend>
-            <label for="files_for_show">files for shows</label><input type="file" multiple="multiple" name="files" id="files_for_show">
-            <input id="show_description" name="description">
 
+        <fieldset>
+            <legend>Mandatory Data</legend>
+            <label for="show_banner">show_banner</label><br>
+            <div id="image_preview"></div><br>         
+            <input id="show_banner" name="banner" type="file" accept="image/*"><br><br>
+            <label for="show_details">show_details</label><textarea id="show_details" name="details"></textarea><br><br>
+            <label for="show_name">show_name</label><input id="show_name" name="name" type="text"><br><br>
+            <label for="show_duration">show_duration</label><input id="show_duration" name="duration"
+                type="number"><br><br>
+            <label for="sales_start_date">sales_start_date</label><input id="sales_start_date" name="sales_start"
+                type="datetime-local"><br><br>
+            <label for="sales_end_date">sales_end_date</label><input id="sales_end_date" name="sales_end"
+                type="datetime-local"><br><br>
         </fieldset>
+
+        <fieldset id="category_container">
+            <legend>Categories</legend>
+        </fieldset>
+
+        <fieldset>
+            <legend>Show Content</legend>
+            <input id="show_description" class="text-content" name="description">
+        </fieldset>
+
+
+        <fieldset>
+            <legend>Ticket Types</legend>
+            <div id="ticket_add" class="ticket_button">Add Ticket</div>
+
+            <div id="ticket_sample" class="ticket_container">
+                <div id="ticket_sample_delete" class="ticket_button">delete ticket type</div><br>
+
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Show Dates </fieldset>
+                <div id="date_add" class="date_button">Add Show Date</div>
+                
+                <div id="date_sample" class="date_container">
+                    <div id="date_sample_delete" class="date_button">delete ticket type</div><br>
+    
+                </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Discounts</fieldset>
+                <div id="discount_earlyBird" class="discount_container">
+                    <p>Early Bird Discount</p>
+
+                    <br>
+                </div>
+                <div id="discount_add" class="discount_button">Add discount</div>
+                <br>
+                <div id="discount_sample" class="discount_container">
+                    <div id="discount_sample_delete" class="discount_button">Delete discount type</div><br>
+    
+                </div>
+        </fieldset>
+
         <br><br>
         <input type="submit" value="submit">
     </form>
-
     <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
     <script>
-        ClassicEditor
-            .create( document.querySelector( '#show_description' ) )
-            .catch( error => {
-                console.error( error );
-            } );
+        let ckeditors = document.querySelectorAll('.text-content')
+
+        ckeditors.forEach(element => {
+            ClassicEditor
+                .create(element)
+                .catch(error => {
+                    console.error(error);
+                });
+        });
     </script>
-    <script src="show_upload.js"></script>
+    <script src="/show_upload.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

@@ -1,5 +1,5 @@
-const socket = io.connect();
+// const socket = io.connect();
 
-socket.on('greeting', (data) => {
-    alert(data)
-})
+// socket.on('greeting', (data) => {
+//     alert(data)
+// })
