@@ -21,6 +21,8 @@ userRoutes.get('/login/google', loginGoogle)
 userRoutes.get('/get_user_info', getUserInfo)
 userRoutes.put('/update_user_info', isLoggedInAPI, updateUserInfo)
 userRoutes.put('/reset_PW', isLoggedInAPI, resetUserPW)
+userRoutes.get('/show_details/:show_id', getShowDetails)
+userRoutes.post('/show_details/:show_id', likedShow)
 
 async function signup(req: express.Request, res: express.Response) {
     try {
@@ -239,5 +241,36 @@ async function resetUserPW(req: express.Request, res: express.Response) {
         res.status(500).json({
             message: '[USR005] - Server error'
         })
+    }
+}
+
+//Geoffrey Show Details
+
+async function getShowDetails(req: express.Request, res: express.Response) {
+    const targetShow = req.params.show_id
+    let returningShow = await client.query(`select shows.* , organiser_list.user_id from
+    shows left outer join organiser_list
+    on organiser_list.id = shows.organiser_id
+    where show_id = ${1}`, [targetShow])
+    let returningShowResults = returningShow.rows[0]
+    if (returningShowResults['published'] != true) {
+        if (req.session.user != returningShowResults['user_id']) {
+            res.status(400).end('no access rights')
+        } else {
+            delete returningShowResults['user_id']
+            res.status(200).json(returningShowResults)
+        }
+    }
+}
+
+async function likedShow(req: express.Request, res: express.Response) {
+    const targetShow = req.params.show_id
+    const askingUser = req.body.user
+    let returningShow = await client.query(`select * from favourites where show_id = ${1} and user_id =${2}`, [targetShow, askingUser])
+    let returningShowResults = returningShow.rows[0]
+    if (!returningShowResults) {
+        // await client.query(/*post*/)
+    } else {
+        // await client.query(/*drop*/)
     }
 }
