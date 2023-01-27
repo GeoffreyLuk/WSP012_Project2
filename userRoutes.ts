@@ -144,7 +144,7 @@ async function loginGoogle(req: express.Request, res: express.Response) {
         delete foundUser.password
         req.session['user'] = foundUser
         // Need to amend in future
-        return res.redirect('/edit_profile.html')
+        return res.redirect('/')
     } catch (err) {
         console.log(err);
         res.status(500).json({
