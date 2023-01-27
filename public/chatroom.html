@@ -37,13 +37,17 @@
             </div>
             <div class="col-8">
                 <!-- Message Box -->
-                <div id="messages">
+                <div id="messages-box">
                     <div class="message">
                         <div class="sender"></div>
                         <div class="content"></div>
                         <div class="createdAt"></div>
                     </div>
                 </div>
+                <form id="uploadImage" action="/upload" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="image" />
+                    <button type="submit">Upload</button>
+                </form>
                 <form id='form' action="">
                     <input id="input" type="text">
                     <button type="submit">send</button>

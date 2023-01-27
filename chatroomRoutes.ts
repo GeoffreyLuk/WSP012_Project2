@@ -2,6 +2,9 @@ import express from "express"
 import { client } from './database/init_data';
 import { chatroomId } from './util/model'
 import { io } from './app';
+import { formParsePromiseforPhoto } from "./util/formidable";
+import path from "path";
+
 
 export const chatroomRoutes = express.Router()
 
@@ -9,6 +12,7 @@ chatroomRoutes.post('/create_show', createShow)
 chatroomRoutes.get('/get_chatroom', getChatRoomById)
 chatroomRoutes.get('/get-chat-history/:chatroom_id', getChatHistoryById)
 chatroomRoutes.post('/send_msg', sendMessage)
+chatroomRoutes.post('/send_img', uploadPhoto)
 
 // Get conversation from database
 async function getChatHistoryById(req: express.Request, res: express.Response) {
@@ -17,7 +21,7 @@ async function getChatHistoryById(req: express.Request, res: express.Response) {
         let roomId = req.params.chatroom_id
         // console.log("backend - roomId: ", roomId);
         let result = await client.query(
-            `select chatroom_id, content_type ,content, message_time, first_name from chatroom_messages 
+            `select chatroom_id, content_type ,content, message_time, first_name, user_id from chatroom_messages 
                 inner join users on users.id = user_id
                 where chatroom_id = $1
                 order by message_time asc`,
@@ -25,7 +29,16 @@ async function getChatHistoryById(req: express.Request, res: express.Response) {
         )
 
         let messages = result.rows
-        // console.log("get chat history - messages: ", messages);
+
+        for (let messageItem of messages) {
+            if (messageItem.user_id == req.session.user.id) {
+                messageItem["toMessage"] = true
+            } else {
+                messageItem["toMessage"] = false
+            }
+        }
+
+        console.log("get chat history - messages: ", messages);
         if (!messages) {
             console.log("No message.");
         }
@@ -56,7 +69,6 @@ async function getChatRoomById(req: express.Request, res: express.Response) {
             return data.chatroom_id
         })
 
-        // console.log("chatroomId: ", chatroomsId);
         let chatrooms: {
             chatroom_name: string,
             chatroom_id: number
@@ -69,13 +81,10 @@ async function getChatRoomById(req: express.Request, res: express.Response) {
             )
 
             let chatroomResult = chatroomIdResult.rows[0]
-            // console.log("chatroomResult: ", chatroomResult);
 
             chatrooms.push({ chatroom_name: chatroomResult.chatroom_name, chatroom_id: chatroomResult.id })
         }
 
-        // io.emit('join_all_chatroom')
-        // console.log("chatrooms: ", chatrooms);
         res.json({
             data: chatrooms,
             message: "Passed roomNames"
@@ -114,31 +123,24 @@ async function createShow(req: express.Request, res: express.Response) {
         [show_name, show_id.rows[0].id]
     )
     // console.log("Inserted to Chatroom ");
-
     // get chatroom id from query
     let chatroom_id = await client.query(
         `select id from chatrooms where show_id = $1`,
         [show_id.rows[0].id]
     )
     // console.log("chatroom_id: ", show_id.rows[0].id);
-
     // get user_id from query
     let user_id = await client.query(
         `select user_id from organiser_list where id = $1`,
         [organiser_id]
     )
     // console.log("user_id", user_id.rows[0].user_id);
-
     // insert data to "chatroom_participants"
     await client.query(
         `insert into chatroom_participants(chatroom_id, user_id)
             values($1, $2)`,
         [chatroom_id.rows[0].id, user_id.rows[0].user_id]
     )
-    // socket.join('join_new_show')
-    // io.emit('join_new_show')
-    // console.log("insert data to chatroom participants");
-
     res.json({
         roomId: "room_" + chatroom_id.rows[0].id,
     })
@@ -176,4 +178,36 @@ async function sendMessage(req: express.Request, res: express.Response) {
 }
 
 // Upload Photo function
+async function uploadPhoto(req: express.Request, res: express.Response) {
+    try {
+        let { fields, files } = await formParsePromiseforPhoto(req)
 
+        let fileName = files.image ? files.image['newFilename'] : ''
+        console.log("fields: ", fields);
+        let folderPath = './assets/message_picture'
+        let filePath = path.join(folderPath, fileName)
+        console.log("fields.room_id: ", fields.room_id);
+        console.log("fileName: ", fileName);
+        console.log("filePath: ", filePath);
+
+        await client.query(
+            `insert into chatroom_messages(chatroom_id, user_id, content_type, content, message_time) 
+            values ($1, $2, $3, $4, now())`,
+            [fields.room_id, req.session.user.id, 1, filePath]
+        )
+        let data = { chatroom_id: fields.room_id }
+
+        io.to("room_" + fields.room_id).emit('new_msg', data)
+
+        res.json({
+            message: "Uploaded image"
+        })
+        console.log("Done Uploading Image");
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[CHR004] - Server error'
+        })
+    }
+
+}

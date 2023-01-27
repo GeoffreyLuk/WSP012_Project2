@@ -1,11 +1,12 @@
-let room_id;
+let room_id
 const socket = io();
 
-let messagesElem = document.querySelector('#messages');
+let messagesElem = document.querySelector('#messages-box');
 let form = document.querySelector('#form');
 let input = document.querySelector('#input');
 let showForm = document.querySelector('#show-form')
 let roomListElem = document.querySelector('.room-list')
+let uploadPhoto = document.querySelector('#uploadImage')
 
 // Send Msg
 form.addEventListener('submit', async (e) => {
@@ -69,6 +70,28 @@ showForm.addEventListener('submit', async (e) => {
     socket.emit('join_new_room', [data.roomId])
 })
 
+// Upload Photo in chatroom
+uploadPhoto.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    console.log("Upload start");
+    let uploadData = new FormData(uploadPhoto)
+    uploadData.append("room_id", room_id)
+    let res = await fetch('/send_img', {
+        method: 'POST',
+        body: uploadData
+    })
+
+    if (res.ok) {
+        uploadPhoto.reset()
+        return
+    } else {
+        console.log("Upload photo failed.");
+    }
+
+    let data = res.json()
+    console.log("uploadPhoto - data: ", data.data);
+})
+
 async function loadAllChatroom() {
     let res = await fetch('/get_chatroom')
     if (res.ok) {
@@ -112,8 +135,6 @@ async function loadMessages(roomId) {
     let res = await fetch(`/get-chat-history/${roomId}`)
     if (res.ok) {
         let data = await res.json()
-        // console.log("loadMsg()'s data:", data);
-        // console.log("data.data: ", data.data);
         let messages = data.data
         if (data.messages == "No Message.") {
             return
@@ -127,15 +148,52 @@ async function loadMessages(roomId) {
 
 async function updateMessages(messages) {
     messagesElem.innerHTML = ''
+    console.log("messages: ", messages);
     // For Loop
     for (let messageItem of messages) {
-        messagesElem.innerHTML += `
-            <div class="message">
-                <div class="sender">${messageItem.first_name}</div>
-                <div class="content">${messageItem.content}</div>
-                <div class="createdAt">${messageItem.message_time}</div>
-            </div>
-            `
+        let timeFormat = new Date(messageItem.message_time)
+        let time = timeFormat.getHours() + ":" + timeFormat.getMinutes() + ", " + timeFormat.toDateString()
+        // If it's a text
+        if (messageItem.content_type == 0) {
+            const div = document.createElement('div');
+            if (messageItem.toMessage) {
+                div.classList.add('toMessage')
+            } else {
+                div.classList.add('fromMessage')
+            }
+            const div1 = document.createElement('div');
+            div1.classList.add('sender')
+            div1.innerText = messageItem.first_name;
+            div.appendChild(div1);
+            const div2 = document.createElement('div');
+            div2.classList.add('content');
+            div2.innerText = messageItem.content;
+            div.appendChild(div2);
+            const div3 = document.createElement('div');
+            div3.classList.add('createAt');
+            div3.innerText = time;
+            div.appendChild(div3);
+            messagesElem.appendChild(div)
+        } else {
+            const div = document.createElement('div');
+            if (messageItem.toMessage) {
+                div.classList.add('toImage')
+            } else {
+                div.classList.add('fromImage')
+            }
+            const div1 = document.createElement('div');
+            div1.classList.add('sender')
+            div1.innerText = messageItem.first_name;
+            div.appendChild(div1);
+            const img = document.createElement('img')
+            img.src = messageItem.content
+            div.appendChild(img);
+            const div3 = document.createElement('div');
+            div3.classList.add('createAt');
+            div3.innerText = time;
+            div.appendChild(div3);
+            messagesElem.appendChild(div)
+        }
     }
 }
 

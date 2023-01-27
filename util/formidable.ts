@@ -1,6 +1,15 @@
 import express from 'express'
 import formidable from 'formidable'
+// import { client } from './db';
 export let uploadDir = './uploads'
+
+declare module "express-session" {
+    interface SessionData {
+        id?: number;
+        user?: any;
+    }
+}
+
 
 // export let form = formidable({
 //     uploadDir,
@@ -58,3 +67,68 @@ export function formParsePromiseforSignUp(req: express.Request) {
         })
     })
 }
+
+export async function formParsePromiseforPhoto(req: express.Request) {
+    let form = new formidable.IncomingForm({
+        uploadDir: './public/assets/message_picture',
+        keepExtensions: true,
+        maxFiles: 1,
+        maxFileSize: 3 * 1024 * 1024,
+        filter: (part) => part.mimetype?.startsWith("image/") || false,
+        filename: (originalName, originalExt, part, form) => {
+            let fieldName = part.name
+            let userId = req.session.user.id
+            let timestamp = Date.now()
+            let ext = part.mimetype?.split('/').pop()
+            return `${fieldName}-${userId}-${timestamp}.${ext}`
+        }
+    });
+    return new Promise<any>((resolve, reject) => {
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                reject(err)
+                return
+            }
+            resolve({
+                fields,
+                files
+            })
+        })
+    })
+}
+
+// export async function formParsePromise(req: express.Request) {
+//     let organNameResult = await client.query(
+//         `select organiser_name from organiser_list where user_id = $1`,
+//         [req.session.user.id]
+//     )
+//     organName = organNameResult.rows[0].organiser_name
+//     console.log(organName.rows);
+
+//     let form = new formidable.IncomingForm({
+//         uploadDir: './public/assets/message_picture',
+//         keepExtensions: true,
+//         maxFiles: 1,
+//         maxFileSize: 3 * 1024 * 1024,
+//         filter: (part) => part.mimetype?.startsWith("image/") || false,
+//         filename: (originalName, originalExt, part, form) => {
+//             // let fieldName = part.name
+//             let userId = req.session.user.id
+//             let timestamp = Date.now()
+//             let ext = part.mimetype?.split('/').pop()
+//             return `${organName}-${userId}-${timestamp}.${ext}`
+//         }
+//     });
+//     return new Promise<any>((resolve, reject) => {
+//         form.parse(req, (err, fields, files) => {
+//             if (err) {
+//                 reject(err)
+//                 return
+//             }
+//             resolve({
+//                 fields,
+//                 files
+//             })
+//         })
+//     })
+// }
