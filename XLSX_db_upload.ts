@@ -90,8 +90,7 @@ interface images{
 }
 
 interface discounts{
-  discount_type:string;
-  discount:number;
+  discount_type:number;
 }
 
 interface ticket_discount{

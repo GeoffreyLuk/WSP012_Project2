@@ -169,6 +169,6 @@ create table favourites(
 -- DROP TABLE locations;
 -- DROP TABLE users;
 
-select shows.* , organiser_list.user_id from 
-shows left outer join organiser_list
-on organiser_list.id = shows.organiser_id
+-- select shows.* , organiser_list.user_id from 
+-- shows left outer join organiser_list
+-- on organiser_list.id = shows.organiser_id

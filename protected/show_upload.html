@@ -18,16 +18,17 @@
     <form id="uploading_show">
         <fieldset>
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="published" name="published">
+                <input class="form-check-input" type="checkbox" role="switch" id="published" name="published"
+                    value="true">
                 <label class="form-check-label" for="published">published</label>
-            </div><br><br>
+            </div>
 
-        </fieldset>
+        </fieldset> <br>
 
         <fieldset>
             <legend>Mandatory Data</legend>
             <label for="show_banner">show_banner</label><br>
-            <div id="image_preview"></div><br>
+            <img id="image_preview"><br>
             <input id="show_banner" name="banner" type="file" accept="image/*"><br><br>
             <label for="show_details">show_details</label><textarea id="show_details" name="details"></textarea><br><br>
             <label for="show_name">show_name</label><input id="show_name" name="name" type="text"><br><br>
@@ -36,67 +37,54 @@
             <label for="sales_start_date">sales_start_date</label><input id="sales_start_date" name="sales_start"
                 type="datetime-local"><br><br>
             <label for="sales_end_date">sales_end_date</label><input id="sales_end_date" name="sales_end"
-                type="datetime-local"><br><br>
-        </fieldset>
+                type="datetime-local">
+        </fieldset><br>
 
-        <fieldset id="category_container">
+        <fieldset>
             <legend>Categories</legend>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="category_selection" id="flexRadioDefault1"
-                    value="default" checked>
-                <label class="form-check-label" for="flexRadioDefault1">
-                    Default radio
-                </label>
-            </div>
-
-            <div class="input-group">
-                <div class="input-group-text">
-                    <input class="form-check-input mt-0" type="radio" value=""
-                        aria-label="Radio button for following text input" id="new_category" name="category_selection">
+            <div id="category_container">
+                <div id="form_check_add">
+                    
                 </div>
-                <input type="text" class="form-control" aria-label="Text input with radio button"
-                    placeholder="[optional] new category" id="new_category_text" name="category_selection">
+                <div class="input-group">
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="radio" value="new_category"
+                            aria-label="Radio button for following text input" id="new_category"
+                            name="category_selection">
+                    </div>
+                    <input type="text" class="form-control" aria-label="Text input with radio button"
+                        placeholder="[optional] new category" id="new_category_text" name="category_selection">
+                </div>
             </div>
-        </fieldset>
+        </fieldset><br>
 
         <fieldset>
             <legend>Location</legend>
             <input type="text" name="venue_name" id="venue_name"><label for="venue_name">Venue Name</label><br>
             <input type="text" name="location" id="location"><label for="location">Address</label>
-        </fieldset>
+        </fieldset><br>
 
-        <fieldset>
+        <fieldset id="show_description_container">
             <legend>Show Content</legend>
-            <input id="show_description" class="text-content" name="description">
-        </fieldset>
+            
+        </fieldset><br>
 
         <fieldset>
             <legend>Show Dates</legend>
             <div id="date_add" class="date_button">Add Show Date</div><br>
 
             <div id="show_dates">
-                <div id="date_sample" class="date_container">
-                    <div id="date_sample_delete" class="date_button date_delete">delete date</div><br>
-                    <input type="datetime-local" name="date_sample_date" id="date_sample_date"><label for="date_sample_date">Timeslot Sample</label><br>
-                </div>
+                
             </div>
-        </fieldset>
+        </fieldset><br>
 
         <fieldset>
             <legend>Ticket Types</legend>
             <div id="ticket_add" class="ticket_button">Add Ticket</div><br>
             <div id="ticket">
-                <div id="ticket_sample" class="ticket_container">
-                    <div id="ticket_sample_delete" class="ticket_button ticket_delete">delete ticket type</div><br>
-                    <input type="text" id="ticket_type_sample" name="ticket_type_sample"><label
-                        for="ticket_type_sample">Ticket Type Name</label><br>
-                    <input type="number" id="ticket_price_sample" name="ticket_price_sample"><label
-                        for="ticket_price_sample">Ticket price</label><br>
-                    <input type="number" id="ticket_quantity_sample" name="ticket_quantity_sample"><label
-                        for="ticket_quantity_sample">Max Quantity</label>
-                </div>
-            </div><br>
-        </fieldset>
+            
+            </div>
+        </fieldset><br>
 
         <fieldset>
             <legend>Discounts
@@ -105,7 +93,7 @@
             <p>Early Bird Discount</p>
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" role="switch" id="discount_earlyBird_toggle"
-                    name="discount_earlyBird">
+                    name="discount_earlyBird" value="true">
                 <label class="form-check-label" for="discount_earlyBird_toggle">Early Bird Discount?</label><br>
                 <input type="datetime-local" name="earlyBird_end_date" id="earlyBird_end_date"><label
                     for="earlyBird_end_date">Ending Date and Time for Early Bird Offer</label><br>
@@ -115,33 +103,20 @@
         </div>
         <div id="discount_add" class="discount_button">Add discount</div><br>
         <div id="discount"></div>
-        <div id="discount_sample" class="discount_container">
-            <div id="discount_sample_delete" class="discount_button discount_delete">Delete discount type</div><br>
-            <input type="text" id="discount_sample_name" name="discount_sample_name"><label for="discount_sample_name">New Discount Sample</label><br>
-            <input type="number" id="discount_sample_amount" name="discount_sample_amount"><label for="discount_sample_amount">Discount Amount</label><br>
-        </div>
 
-        </fieldset>
+        </fieldset><br>
 
         <br><br>
         <input type="submit" value="submit">
     </form>
-    <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
     <script>
-        let ckeditors = document.querySelectorAll('.text-content')
-
-        ckeditors.forEach(element => {
-            ClassicEditor
-                .create(element)
-                .catch(error => {
-                    console.error(error);
-                });
-        });
+        
     </script>
-    <script src="/show_upload.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+    <script src="/show_upload.js"></script>
 </body>
 
 </html>

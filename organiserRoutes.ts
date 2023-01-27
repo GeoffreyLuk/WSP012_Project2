@@ -67,12 +67,13 @@ async function getShowInfo(req: express.Request, res: express.Response) {
             returningData['data'] = showData.rows[0]
 
             //tickets data
-            let ticketsData = await client.query(`select * from tickets where show_id = ${show_id}`)
-            returningData['tickets'] = ticketsData.rows
+            let ticketsDates = await client.query(`select DISTINCT show_date from tickets where show_id = ${show_id}`)
+            let ticketsTypes = await client.query(`select DISTINCT type, pricing, max_quantity from tickets where show_id = ${show_id}`)
+            returningData['tickets'] = {'uniqueDates' : ticketsDates.rows, 'uniqueTypes' : ticketsTypes.rows}
 
             //shows_locations data
             let shows_locationsData = await client.query(`select * from shows_locations where show_id = ${show_id}`)
-            returningData['shows_locations'] = shows_locationsData.rows
+            returningData['shows_locations'] = shows_locationsData.rows[0]
 
             //break chain if not allow
             if (returningData['data']['organiser_id'] != organisationID){
