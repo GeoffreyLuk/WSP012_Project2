@@ -5,15 +5,16 @@ import { client } from './database/init_data';
 import { isLoggedInAPI } from './util/guard';
 import path from 'path'
 export const organiserRoutes = express.Router()
+import { formParsePromiseForOrg } from './util/formidable';
 
 organiserRoutes.get('/showlisting', isLoggedInAPI, (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'show_listing.html'))
 })
 organiserRoutes.get('/organisation', isLoggedInAPI, getAllShows)
-organiserRoutes.get('/organisation/:show_id', isLoggedInAPI, (req,res)=>{
-    res.sendFile(path.join(__dirname,'protected','show_upload.html'))
+organiserRoutes.get('/organisation/:show_id', isLoggedInAPI, (req, res) => {
+    res.sendFile(path.join(__dirname, 'protected', 'show_upload.html'))
 })
-organiserRoutes.get('/get/:show_id',isLoggedInAPI,getShowInfo)
+organiserRoutes.get('/get/:show_id', isLoggedInAPI, getShowInfo)
 organiserRoutes.post('/upload/:show_id', isLoggedInAPI, uploadShow)
 organiserRoutes.put('/upload/:show_id', isLoggedInAPI, updateShow)
 
@@ -38,11 +39,11 @@ async function getShowInfo(req: express.Request, res: express.Response) {
 
     //showID
     const show_id = req.params.show_id.split('_').pop()
-    
+
     //categories need regardless
     let categories = {};
     let pullData_categories = await client.query(`select id,category from categories`)
-    for (let data of pullData_categories.rows){
+    for (let data of pullData_categories.rows) {
         categories[data['id']] = data['category']
     }
     returningData['categories'] = categories
@@ -50,8 +51,8 @@ async function getShowInfo(req: express.Request, res: express.Response) {
     //locations need regardless
     let locations = {};
     let pullData_locations = await client.query(`select id,venue,address,capacity from locations`)
-    for (let data of pullData_locations.rows){
-        locations[data['id']] = {'venue' : data['venue'], 'address' : data['address'], 'capacity' : data['capacity']}
+    for (let data of pullData_locations.rows) {
+        locations[data['id']] = { 'venue': data['venue'], 'address': data['address'], 'capacity': data['capacity'] }
     }
     returningData['locations'] = locations
 
@@ -69,14 +70,14 @@ async function getShowInfo(req: express.Request, res: express.Response) {
             //tickets data
             let ticketsDates = await client.query(`select DISTINCT show_date from tickets where show_id = ${show_id}`)
             let ticketsTypes = await client.query(`select DISTINCT type, pricing, max_quantity from tickets where show_id = ${show_id}`)
-            returningData['tickets'] = {'uniqueDates' : ticketsDates.rows, 'uniqueTypes' : ticketsTypes.rows}
+            returningData['tickets'] = { 'uniqueDates': ticketsDates.rows, 'uniqueTypes': ticketsTypes.rows }
 
             //shows_locations data
             let shows_locationsData = await client.query(`select * from shows_locations where show_id = ${show_id}`)
             returningData['shows_locations'] = shows_locationsData.rows[0]
 
             //break chain if not allow
-            if (returningData['data']['organiser_id'] != organisationID){
+            if (returningData['data']['organiser_id'] != organisationID) {
                 res.status(403).json({
                     message: 'Unauthorized'
                 })
@@ -85,7 +86,7 @@ async function getShowInfo(req: express.Request, res: express.Response) {
         }
         res.status(200).json(returningData)
     }
-catch (err) {
+    catch (err) {
         console.log(err);
         res.status(500).json({
             message: '[USR004] - Server error'
@@ -94,11 +95,31 @@ catch (err) {
 }
 
 async function uploadShow(req: express.Request, res: express.Response) {
-    form
+    try {
+        let { fields, files } = await formParsePromiseForOrg(req)
+        let fileName = files.image ? files.image['newFilename'] : ''
+        console.log("fields: ", fields);
+        res.status(200).json({ message: 'sucessful update' })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[CHR004] - Server error'
+        })
+    }
 }
 
 async function updateShow(req: express.Request, res: express.Response) {
-
+    try {
+        let { fields, files } = await formParsePromiseForOrg(req)
+        let fileName = files.image ? files.image['newFilename'] : ''
+        console.log("fields: ", fields);
+        res.status(200).json({ message: 'sucessful update' })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[CHR004] - Server error'
+        })
+    }
 }
 
 async function checkSessionOrg(param: string) {

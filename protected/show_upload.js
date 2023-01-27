@@ -49,7 +49,18 @@ window.onload = async () => {
     renderCKEDITOR()
     //use post
     uploadForm.addEventListener('submit',async (e)=>{
+      e.preventDefault()
+      const form = e.target;
+      const formData = new FormData(form);
 
+      console.log(formData)
+      const res = await fetch(`/upload/${show}`,{
+        method: "PUT",
+        body: formData
+      })
+    
+      const finalResult = await res.json()
+      alert(finalResult['message'])
     })
   } else {
     await loadingData(true)
@@ -59,11 +70,12 @@ window.onload = async () => {
     uploadForm.addEventListener('submit',async (e)=>{
       e.preventDefault()
       const form = e.target;
-      const fromData = new FormData(form);
+      const formData = new FormData(form);
 
+      console.log(formData)
       const res = await fetch(`/upload/${show}`,{
         method: "POST",
-        body: fromData
+        body: formData
       })
     
       const finalResult = await res.json()
@@ -145,7 +157,7 @@ function addingDates() {
   date.innerHTML += `
    <div id="date_${dateCounter}new" class="date_container">
    <div id="date_${dateCounter}new_delete" class="date_button date_delete">delete date</div><br>
-   <input type="datetime-local" name="date_sample_date" id="${dateCounter}new_date"><label for="${dateCounter}new_date">Timeslot ${dateCounter}</label><br>
+   <input type="datetime-local" name="date_${dateCounter}new_date" id="${dateCounter}new_date"><label for="${dateCounter}new_date">Timeslot ${dateCounter}</label><br>
 </div>
 
     `
@@ -168,7 +180,7 @@ function loadingDates() {
     date.innerHTML += `
   <div id="date_${keys}" class="date_container">
    <div id="date_${keys}_delete" class="date_button date_delete">delete date</div><br>
-   <input type="datetime-local" name="date_sample_date" id="${keys}_date" value="${datetimeLocal(dates[keys])}"><label for="${keys}_date">Timeslot ${count}</label><br>
+   <input type="datetime-local" name="${keys}_date" id="${keys}_date" value="${datetimeLocal(dates[keys])}"><label for="${keys}_date">Timeslot ${count}</label><br>
 </div>
 
   `
