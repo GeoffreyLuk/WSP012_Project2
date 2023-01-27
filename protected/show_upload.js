@@ -21,6 +21,7 @@ const textArea = document.createElement('textarea')
 textArea.value = `<h2><strong>Write your show descriptors here!&nbsp;</strong></h2><p><br data-cke-filler="true"></p><p>Feel free to edit however you like~</p><p><br data-cke-filler="true"></p><p>Have a step-by-step Marketing Campaign?</p><ol><li>We got you covered</li><li>Let your fans follow along easily</li></ol><p>Have rules and regulations in the fine print?</p><ul><li>List them all out here.</li></ul><h4>Make use of different headings to separate content</h4><p>Good luck, and launch your show now!</p>`
 
 //for document
+const uploadForm = document.querySelector('#uploading_show')
 const docPublished = document.querySelector('#published');
 const docImagePreview = document.querySelector('#image_preview');
 const docShowBanner = document.querySelector('#show_banner');
@@ -47,11 +48,27 @@ window.onload = async () => {
     await loadingData(false)
     renderCKEDITOR()
     //use post
+    uploadForm.addEventListener('submit',async (e)=>{
+
+    })
   } else {
     await loadingData(true)
     existingShow()
     renderCKEDITOR()
     //use put
+    uploadForm.addEventListener('submit',async (e)=>{
+      e.preventDefault()
+      const form = e.target;
+      const fromData = new FormData(form);
+
+      const res = await fetch(`/upload/${show}`,{
+        method: "POST",
+        body: fromData
+      })
+    
+      const finalResult = await res.json()
+      alert(finalResult['message'])
+    })
   };
 };
 
@@ -218,7 +235,7 @@ function addingCategories(returningCategory) {
 }
 
 // control add and delete
-document.querySelector('#uploading_show').addEventListener('click', (e) => {
+uploadForm.addEventListener('click', (e) => {
   if (e.target.matches('#ticket_add')) {
     console.log('ticket add has been clicked')
     addingTickets()
@@ -231,7 +248,7 @@ document.querySelector('#uploading_show').addEventListener('click', (e) => {
   }
 })
 
-document.querySelector('#uploading_show').addEventListener('click', (e) => {
+uploadForm.addEventListener('click', (e) => {
   if (e.target.matches('.ticket_delete')) {
     deleting(e.target.id)
   } else if (e.target.matches('.date_delete')) {

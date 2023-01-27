@@ -1,6 +1,6 @@
 import express from 'express'
 // import fetch from 'cross-fetch'
-// import format from 'fecha'
+import format from 'fecha'
 import { client } from './database/init_data';
 import { isLoggedInAPI } from './util/guard';
 import path from 'path'
@@ -94,7 +94,7 @@ catch (err) {
 }
 
 async function uploadShow(req: express.Request, res: express.Response) {
-
+    form
 }
 
 async function updateShow(req: express.Request, res: express.Response) {

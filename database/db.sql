@@ -168,13 +168,4 @@ create table favourites(
 -- DROP TABLE activity_tracking;
 -- DROP TABLE locations;
 -- DROP TABLE users;
-<<<<<<< HEAD
 
--- select shows.* , organiser_list.user_id from 
--- shows left outer join organiser_list
--- on organiser_list.id = shows.organiser_id
-=======
--- select shows.* , organiser_list.user_id from 
--- shows left outer join organiser_list
--- on organiser_list.id = shows.organiser_id
->>>>>>> d3f1a209caa20eef964639dfc203daae65eac4fe
