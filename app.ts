@@ -7,6 +7,7 @@ import { organiserRoutes } from "./organiserRoutes"
 import { uploadDir } from "./util/formidable"
 import { isLoggedIn } from "./util/guard"
 import { sessionMiddleware, grantExpress } from "./util/middleware"
+import { chatroomRoutes } from "./chatroomRoutes"
 
 let app = express()
 let server = new http.Server(app)
@@ -18,14 +19,15 @@ app.use(express.json())
 fs.mkdirSync(uploadDir, { recursive: true })
 
 // io setup
-// io.use((socket, next) => {
-//     let req = socket.request as express.Request;
-//     let res = req.res as express.Response;
-//     sessionMiddleware(req, res, next as express.NextFunction);
-// });
+io.use((socket, next) => {
+    let req = socket.request as express.Request;
+    let res = req.res as express.Response;
+    sessionMiddleware(req, res, next as express.NextFunction);
+});
 
 // Application Route
 app.use(userRoutes)
+app.use(chatroomRoutes)
 
 //Geoffrey
 app.use(organiserRoutes)
@@ -35,10 +37,15 @@ app.use(express.static('public'))
 app.use(isLoggedIn, express.static('protected'))
 
 io.on("connection", function (socket) {
-    const req = socket.request as express.Request;
     console.log('socket connected: ', socket.id);
+    // console.log("Connection Start");
+
+    const req = socket.request as express.Request;
+    // console.log("req.session.user: ", req.session.user);
+
 
     if (req.session.user) {
+        // console.log(req.session.user);
         // If Organizer -> get show list -> create room for organizer
 
         // Join all show room
@@ -51,24 +58,19 @@ io.on("connection", function (socket) {
     }
     // console.log("req.session.user: ", req.session["user"])
 
-    socket.on('join_chatroom', (userName, roomName) => {
-        console.log("userName: ", userName);
-        console.log("roomName", roomName);
-        let chatroom = "chatroom_" + roomName
+    socket.on('join_chatroom', (roomId) => {
+        let chatroom = "room_" + roomId
         socket.join(chatroom)
-        console.log(`${userName} joined Room ${chatroom}`);
-
+        console.log(`joined Room ${chatroom}`);
     })
 
     // Listen - join showroom when created show
-    socket.on("join_new_room", ([userName, roomName]) => {
-        console.log("userName: ", userName);
-        console.log("roomName: ", roomName);
+    socket.on("join_new_room", ([roomId]) => {
+        console.log("roomID: ", roomId);
 
         // const user = getCurrentUser(socket.id);
-        let chatroom = "chatroom_" + roomName
-        socket.join(chatroom)
-        console.log(`${userName} joined Room: ${chatroom}`);
+        socket.join(roomId)
+        console.log(`joined Room: ${roomId}`);
 
         // io.to(user.room).emit("message", formatMessage(user.username, msg));
     });

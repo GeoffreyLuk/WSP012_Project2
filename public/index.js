@@ -1,4 +1,4 @@
-// const socket = io.connect();
+const socket = io.connect();
 
 // socket.on('greeting', (data) => {
 //     alert(data)
@@ -9,11 +9,12 @@ async function getUserInfo() {
     if (res.ok) {
         let user = await res.json()
         console.log("user:", user);
+        console.log("user_name", user.first_name)
     }
 }
 
 async function init() {
-    getUserInfo()
+    await getUserInfo()
 }
 
 init()

@@ -11,18 +11,20 @@
 //     // }
 
 // }
-
+let room_id;
 const socket = io();
 
 let messages = document.querySelector('#messages');
 let form = document.querySelector('#form');
 let input = document.querySelector('#input');
 let showForm = document.querySelector('#show-form')
+let roomListElem = document.querySelector('.room-list')
 
 // Send Msg
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     let msgData = {
+        chatroom_id: room_id,
         text: input.value
     }
 
@@ -43,6 +45,7 @@ form.addEventListener('submit', async (e) => {
     console.log("sent");
 });
 
+// Create show
 showForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     console.log("show form start");
@@ -70,49 +73,82 @@ showForm.addEventListener('submit', async (e) => {
     })
     console.log("Got res");
     let data = await res.json()
-    console.log("Front End Data - USER: ", data.userName);
-    console.log("Front End Data - roomName: ", data.roomName);
-    socket.emit('join_new_room', [data.userName, data.roomName])
+    socket.emit('join_new_room', [data.roomId])
 })
+
+// roomListElem.addEventListener('click', async (e) => {
+//     console.log("clicked");
+//     let roomId = ''
+//     if (e.target.matches('.room-id')) {
+//         roomId = e.target.innerText
+//     } else {
+//         return
+//     }
+//     console.log("roomId: ", roomId);
+//     let res = await fetch(`/get-chat-history/${roomId}`)
+
+// })
 
 async function loadAllChatroom() {
     let res = await fetch('/get_chatroom')
     if (res.ok) {
         let data = await res.json()
         let roomLists = data.data
-        let user = data.user
-        updateChatroomList(roomLists, user)
+        console.log("roomLists: ", roomLists);
+        updateChatroomList(roomLists)
         console.log("Go to updateChatroomList()");
     } else {
         console.log("loadAllChatroom() Failed");
     }
 }
 
-async function updateChatroomList(roomLists, user) {
+async function updateChatroomList(roomLists) {
     let roomListElem = document.querySelector('.room-list')
     // console.log("roomLists in Update: ", roomLists);
+    // Print chatroom ID: RoomName
     roomListElem.innerHTML = ''
     for (let roomListItem of roomLists) {
         console.log("roomListItem.chatroom_name: ", roomListItem.chatroom_name);
         const div = document.createElement('div');
         div.classList.add('room')
-        const para = document.createElement('p');
-        para.classList.add('room-name');
-        para.innerText = roomListItem.chatroom_name;
-        div.appendChild(para);
+        const div1 = document.createElement('div');
+        div1.classList.add('room-id');
+        div1.innerText = roomListItem.chatroom_id;
+        div1.onclick = function () {
+            loadMessages(roomListItem.chatroom_id)
+        }
+        div.appendChild(div1);
+        const div2 = document.createElement('div');
+        div2.classList.add('room-name');
+        div2.innerText = roomListItem.chatroom_name;
+        div.appendChild(div2);
         roomListElem.appendChild(div)
-        socket.emit('join_chatroom', [req.session.user.first_name, roomListItem.chatroom_name])
+        socket.emit('join_chatroom', [roomListItem.chatroom_id])
     }
     console.log("Done updateChatroomList");
 }
 
-async function updateMessages(msgs) {
+async function loadMessages(roomId) {
+    let res = await fetch(`/get-chat-history/${roomId}`)
+    if (res.ok) {
+        let data = await res.json()
+        console.log("loadMsg()'s data:", data);
+        console.log("data.data: ", data.data);
+        let msgs = data.data.content
+        let time = data.data.message_time
+        updateMessages(msgs, time)
+    }
+    room_id = roomId
+}
+
+
+async function updateMessages(msgs, time) {
     // messages.innerHTML = ''
     messages.innerHTML += `
         <div class="message">
             <div class="sender">From: Peter</div>
             <div class="content">${msgs}</div>
-            <div class="createdAt">Date</div>
+            <div class="createdAt">${time}</div>
         </div>
         `
 }
@@ -133,8 +169,17 @@ async function loadMsgs() {
     }
 }
 
+async function getUserInfo() {
+    let res = await fetch('/get_user_info')
+    if (res.ok) {
+        let user = await res.json()
+        // console.log("user:", user);
+    }
+}
+
 async function init() {
     await loadMsgs()
+    await getUserInfo()
     const socket = io.connect();
     socket.on('new_msg', () => {
         console.log("connected?");

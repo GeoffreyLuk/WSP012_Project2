@@ -1,14 +1,15 @@
 {
-    "sqltools.connections": [
-        {
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 5432,
-            "driver": "PostgreSQL",
-            "name": "wsp_project",
-            "database": "wsp_project",
-            "username": "postgres",
-            "password": "postgres"
-        }
-    ]
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "wsp_project",
+      "database": "wsp_project",
+      "username": "postgres",
+      "password": "postgres"
+    }
+  ],
+  "liveServer.settings.port": 5501
 }

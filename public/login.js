@@ -21,5 +21,6 @@ loginFormElm.addEventListener('submit', async (e) => {
 
     let data = await res.json()
     console.log("data: ", data);
+    console.log("first_name", data.first_name);
     window.location = '/'
 })
