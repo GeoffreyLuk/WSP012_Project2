@@ -2,6 +2,7 @@ import express from 'express'
 import formidable from 'formidable'
 import { client } from './db';
 export let uploadDir = './uploads'
+import { format } from 'fecha';
 
 declare module "express-session" {
     interface SessionData {
@@ -49,7 +50,7 @@ export function formParsePromiseforSignUp(req: express.Request) {
         filter: (part) => part.mimetype?.startsWith("image/") || false,
         filename: (originalName, originalExt, part, form) => {
             let fieldName = part.name
-            let timestamp = Date.now()
+            let timestamp = format(new Date(),'YYYY-MM-DD-hh-mm-ss')
             let ext = part.mimetype?.split('/').pop()
             return `${fieldName}-${timestamp}.${ext}`
         }
@@ -78,7 +79,7 @@ export async function formParsePromiseforPhoto(req: express.Request) {
         filename: (originalName, originalExt, part, form) => {
             let fieldName = part.name
             let userId = req.session.user.id
-            let timestamp = Date.now()
+            let timestamp = format(new Date(),'YYYY-MM-DD-hh-mm-ss')
             let ext = part.mimetype?.split('/').pop()
             return `${fieldName}-${userId}-${timestamp}.${ext}`
         }
@@ -105,18 +106,18 @@ export async function formParsePromiseForOrg(req: express.Request) {
     let orgName = organNameResult.rows[0].organiser_name
     console.log(orgName.rows);
 
-    let form = new formidable.IncomingForm({
+    let form = formidable({
         uploadDir: './public/assets/organisations',
         keepExtensions: true,
         maxFiles: 1,
-        maxFileSize: 3 * 1024 * 1024,
+        // maxFileSize: 300 * 1024 * 1024,
         filter: (part) => part.mimetype?.startsWith("image/") || false,
         filename: (originalName, originalExt, part, form) => {
             // let fieldName = part.name
             let userId = req.session.user.id
-            let timestamp = Date.now()
+            let timestamp = format(new Date(),'YYYY-MM-DD-hh-mm-ss')
             let ext = part.mimetype?.split('/').pop()
-            return `${orgName}-${userId}-${timestamp}.${ext}`
+            return `${orgName}-${timestamp}.${ext}`
         }
     });
     return new Promise<any>((resolve, reject) => {
