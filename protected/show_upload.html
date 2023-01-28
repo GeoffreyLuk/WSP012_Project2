@@ -16,20 +16,19 @@
     <a href="/showlisting">back</a>
     &nbsp;
     <form id="uploading_show">
-        <fieldset>
+        <fieldset id="con1">
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="published" name="published"
-                    value="true">
+                <input class="form-check-input" type="checkbox" role="switch" id="published" name="published">
                 <label class="form-check-label" for="published">published</label>
             </div>
 
         </fieldset> <br>
 
-        <fieldset>
+        <fieldset id="con2">
             <legend>Mandatory Data</legend>
             <label for="show_banner">show_banner</label><br>
             <img id="image_preview"><br>
-            <input id="show_banner" name="banner" type="file" accept="image/*"><br><br>
+            <input id="show_banner" name="banner" type="file" accept="image/*"> <div id="clear_files">clear files</div><br><br>
             <label for="show_details">show_details</label><textarea id="show_details" name="details"></textarea><br><br>
             <label for="show_name">show_name</label><input id="show_name" name="name" type="text"><br><br>
             <label for="show_duration">show_duration</label><input id="show_duration" name="duration"
@@ -40,7 +39,7 @@
                 type="datetime-local">
         </fieldset><br>
 
-        <fieldset>
+        <fieldset id="con3">
             <legend>Categories</legend>
             <div id="category_container">
                 <div id="form_check_add">
@@ -58,7 +57,7 @@
             </div>
         </fieldset><br>
 
-        <fieldset>
+        <fieldset id="con4">
             <legend>Location</legend>
             <input type="text" name="venue_name" id="venue_name"><label for="venue_name">Venue Name</label><br>
             <input type="text" name="location" id="location"><label for="location">Address</label>
@@ -69,16 +68,7 @@
             
         </fieldset><br>
 
-        <fieldset>
-            <legend>Show Dates</legend>
-            <div id="date_add" class="date_button">Add Show Date</div><br>
-
-            <div id="show_dates">
-                
-            </div>
-        </fieldset><br>
-
-        <fieldset>
+        <fieldset id="con6">
             <legend>Ticket Types</legend>
             <div id="ticket_add" class="ticket_button">Add Ticket</div><br>
             <div id="ticket">
@@ -86,14 +76,13 @@
             </div>
         </fieldset><br>
 
-        <fieldset>
-            <legend>Discounts
-        </fieldset>
+        <fieldset id="con7">
+            <legend>Discounts</legend>
         <div id="discount_earlyBird" class="discount_container">
             <p>Early Bird Discount</p>
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" role="switch" id="discount_earlyBird_toggle"
-                    name="discount_earlyBird" value="true">
+                    name="discount_earlyBird">
                 <label class="form-check-label" for="discount_earlyBird_toggle">Early Bird Discount?</label><br>
                 <input type="datetime-local" name="earlyBird_end_date" id="earlyBird_end_date"><label
                     for="earlyBird_end_date">Ending Date and Time for Early Bird Offer</label><br>

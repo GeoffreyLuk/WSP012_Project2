@@ -96,7 +96,7 @@ create table shows_locations (
     id serial primary key,
     show_id integer not null,
     foreign key(show_id) references shows(id),
-    location_id integer not null,
+    location_id integer not null default 36,
     foreign key(location_id) references locations(id),
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
