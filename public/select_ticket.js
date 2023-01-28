@@ -9,6 +9,11 @@ let eventDateElem = document.querySelector('.event-date-selector')
 let ticketTypeElem = document.querySelector('.ticket-type-selector')
 let ticketContainerElem = document.querySelector('.ticket-container')
 
+// const toTimestamp = (strDate) => {
+//     const dt = new Date(strDate).getTime();
+//     return dt / 1000;
+// }
+
 window.onload = () => {
     loadShowInfo()
     loadTicketsInfo()
@@ -46,14 +51,24 @@ async function loadTicketsInfo() {
 
 async function loadTicketsDetails(ticketsInfo) {
     let ticketTypes = [];
+    let eventDates = [];
+    eventDateElem.innerHTML = '';
+    ticketTypeElem.innerHTML = '';
+
+    const opt = document.createElement('option')
+    opt.text = "All Event-date"
+    eventDateElem.appendChild(opt)
+    const opt1 = document.createElement('option')
+    opt1.text = "All Ticket-type"
+    ticketTypeElem.appendChild(opt1)
+
     for (let i = 0; i < ticketsInfo.length; i++) {
-        if (!ticketTypes.includes(ticketsInfo[i].ticket_type)) {
-            ticketTypes.push(ticketsInfo[i].ticket_type)
+        if (!ticketTypes.includes(ticketsInfo[i].type)) {
+            ticketTypes.push(ticketsInfo[i].type)
         }
     };
     // console.log("ticketTypes: ", ticketTypes);
 
-    let eventDates = [];
     for (let i = 0; i < ticketsInfo.length; i++) {
         if (!eventDates.includes(ticketsInfo[i].show_date)) {
             eventDates.push(ticketsInfo[i].show_date)
@@ -62,8 +77,10 @@ async function loadTicketsDetails(ticketsInfo) {
     // console.log("eventDates: ", eventDates);
 
     for (let eventDate of eventDates) {
+        let timeFormat = new Date(eventDate)
+        let date = timeFormat.toDateString() + " " + timeFormat.getHours() + ":" + timeFormat.getMinutes()
         const opt = document.createElement('option')
-        opt.text = eventDate
+        opt.text = date
         eventDateElem.appendChild(opt)
     };
 
@@ -93,7 +110,7 @@ async function loadTickets(ticketsInfo) {
         div.appendChild(div2);
         let div3 = document.createElement('div')
         div3.classList.add('ticket-type')
-        div3.innerText = ticketInfoItem.ticket_type
+        div3.innerText = ticketInfoItem.type
         div.appendChild(div3);
         let div4 = document.createElement('div')
         div4.classList.add('ticket-price')
@@ -103,8 +120,77 @@ async function loadTickets(ticketsInfo) {
         select.classList.add('ticket-quantity')
         div.appendChild(select);
         let opt = document.createElement('option')
-        opt.innerText = 1
+        opt.innerText = 0
         select.appendChild(opt);
+        let opt1 = document.createElement('option')
+        opt1.innerText = 1
+        select.appendChild(opt1);
         ticketContainerElem.appendChild(div)
     }
+}
+
+eventDateElem.addEventListener('change', (e) => {
+    // console.log("changed");
+    let dateFormat = new Date(eventDateElem.value)
+    let eventDate = dateFormat + dateFormat.setHours((dateFormat.getHours() + 8))
+    let eventTimestamp = new Date(eventDate)
+    // console.log("timestamp: ", eventTimestamp);
+    if (dateFormat == '') {
+        loadTicketsInfo()
+    } else {
+        filterTicketByDate(eventTimestamp)
+    }
+})
+
+async function filterTicketByDate(eventDate) {
+    // console.log("eventDate: ", eventDate);
+    let filterData = {
+        eventDate,
+        show
+    }
+    console.log("filterData: ", filterData);
+    let res = await fetch('/filter_date', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filterData)
+    })
+
+    let data = await res.json()
+    let filteredTickets = data.data
+    ticketTypeElem.value = "All Ticket-type"
+    loadTickets(filteredTickets)
+}
+
+ticketTypeElem.addEventListener('change', (e) => {
+    console.log("changed");
+    let type = ticketTypeElem.value
+    console.log("type: ", type);
+    if (type == 'All Ticket-type') {
+        loadTicketsInfo()
+    } else {
+        filterTicketByType(type)
+    }
+})
+
+async function filterTicketByType(type) {
+    console.log("type: ", type);
+    let filterData = {
+        type,
+        show
+    }
+    console.log("filterData: ", filterData);
+    let res = await fetch('/filter_type', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filterData)
+    })
+
+    let data = await res.json()
+    let filteredTickets = data.data
+    eventDateElem.value = "All Event-date"
+    loadTickets(filteredTickets)
 }

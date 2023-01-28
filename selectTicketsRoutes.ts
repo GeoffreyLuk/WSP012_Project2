@@ -10,12 +10,14 @@ selectTicketRoutes.get('/show_tickets/show_55', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'select_tickets.html'))
 })
 selectTicketRoutes.get('/show_tickets')
+selectTicketRoutes.post('/filter_date', filterByDate)
+selectTicketRoutes.post('/filter_type', filterByType)
+
 
 
 async function getShowInfo(req: express.Request, res: express.Response) {
     try {
         let show_id = req.params.show_id
-        // console.log("show_id: ", show_id);
 
         let showInfoResult = await client.query(
             `select show_name, ticket_discount, sales_start_date, sales_end_date, launch_date, end_date , category, venue, address, organiser_name from shows 
@@ -31,17 +33,13 @@ async function getShowInfo(req: express.Request, res: express.Response) {
             [show_id]
         )
         let showInfo = showInfoResult.rows[0]
-        // console.log("showInfo: ", showInfo);
 
         if (showInfo.ticket_discount.early_date == null) {
-            // console.log("Null wor");
             delete showInfo.ticket_discount
-            // console.log("New ShowInfo: ", showInfo);
         }
 
         res.json({
             data: showInfo,
-            // message: "Yeah"
         })
     } catch (err) {
         console.log(err);
@@ -52,20 +50,78 @@ async function getShowInfo(req: express.Request, res: express.Response) {
 }
 
 async function getTicketsInfo(req: express.Request, res: express.Response) {
-    console.log("getTicketsInfo Start");
-    let show_id = req.params.show_id
+    try {
+        console.log("getTicketsInfo Start");
+        let show_id = req.params.show_id
 
-    let ticketsInfoResult = await client.query(
-        `select tickets.id, type as ticket_type, pricing, show_date from tickets 
+        let ticketsInfoResult = await client.query(
+            `select tickets.id, type, pricing, show_date from tickets 
 	    inner join shows
     		on shows.id = show_id
         where shows.id = $1`,
-        [show_id]
-    )
-    let ticketsInfo = ticketsInfoResult.rows
+            [show_id]
+        )
+        let ticketsInfo = ticketsInfoResult.rows
 
-    res.json({
-        data: ticketsInfo,
-        message: "ticketsInfo Sent"
-    })
+        res.json({
+            data: ticketsInfo,
+            message: "ticketsInfo Sent"
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[STR002] - Server error'
+        })
+    }
+}
+
+async function filterByDate(req: express.Request, res: express.Response) {
+    try {
+        let { eventDate, show } = req.body
+
+        let filterResult = await client.query(
+            `
+        select * from tickets 
+            where show_id = $1 and show_date = $2
+        `, [show, eventDate]
+        )
+
+        let filteredTickets = filterResult.rows
+
+        res.json({
+            data: filteredTickets,
+            message: "Success"
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[STR003] - Server error'
+        })
+    }
+}
+
+
+async function filterByType(req: express.Request, res: express.Response) {
+    try {
+        let { type, show } = req.body
+
+        let filterResult = await client.query(
+            `
+        select * from tickets 
+            where show_id = $1 and type = $2
+        `, [show, type]
+        )
+
+        let filteredTickets = filterResult.rows
+
+        res.json({
+            data: filteredTickets,
+            message: "Success"
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: '[STR004] - Server error'
+        })
+    }
 }
