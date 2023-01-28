@@ -5,6 +5,7 @@ import { client } from './database/init_data';
 import { formParsePromiseforSignUp } from './util/formidable';
 import { checkPassword, hashPassword } from './util/hash';
 import { isLoggedInAPI } from './util/guard';
+import path from 'path'
 
 export const userRoutes = express.Router()
 
@@ -21,7 +22,10 @@ userRoutes.get('/login/google', loginGoogle)
 userRoutes.get('/get_user_info', getUserInfo)
 userRoutes.put('/update_user_info', isLoggedInAPI, updateUserInfo)
 userRoutes.put('/reset_PW', isLoggedInAPI, resetUserPW)
-userRoutes.get('/show_details/:show_id', getShowDetails)
+userRoutes.get('/show_details/:show_id',(req,res)=>{
+    res.sendFile(path.join(__dirname,'public','show_details.html'))
+})
+userRoutes.get('/get_details/:show_id', getShowDetails)
 userRoutes.post('/show_details/:show_id', likedShow)
 
 async function signup(req: express.Request, res: express.Response) {
@@ -248,10 +252,11 @@ async function resetUserPW(req: express.Request, res: express.Response) {
 
 async function getShowDetails(req: express.Request, res: express.Response) {
     const targetShow = req.params.show_id
+    console.log ('target : ',targetShow)
     let returningShow = await client.query(`select shows.* , organiser_list.user_id from
     shows left outer join organiser_list
     on organiser_list.id = shows.organiser_id
-    where show_id = ${1}`, [targetShow])
+    where  shows.id = ($1)`, [targetShow])
     let returningShowResults = returningShow.rows[0]
     if (returningShowResults['published'] != true) {
         if (req.session.user != returningShowResults['user_id']) {
@@ -260,6 +265,9 @@ async function getShowDetails(req: express.Request, res: express.Response) {
             delete returningShowResults['user_id']
             res.status(200).json(returningShowResults)
         }
+    }else {
+        delete returningShowResults['user_id']
+        res.status(200).json(returningShowResults)
     }
 }
 
