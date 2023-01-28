@@ -14,6 +14,10 @@ chatroomRoutes.get('/get-chat-history/:chatroom_id', getChatHistoryById)
 chatroomRoutes.post('/send_msg', sendMessage)
 chatroomRoutes.post('/send_img', uploadPhoto)
 
+chatroomRoutes.get('/chatroom', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'chatroom.html'))
+})
+
 // Get conversation from database
 async function getChatHistoryById(req: express.Request, res: express.Response) {
     try {
@@ -38,7 +42,7 @@ async function getChatHistoryById(req: express.Request, res: express.Response) {
             }
         }
 
-        console.log("get chat history - messages: ", messages);
+        // console.log("get chat history - messages: ", messages);
         if (!messages) {
             console.log("No message.");
         }

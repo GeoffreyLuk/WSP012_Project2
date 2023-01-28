@@ -168,4 +168,3 @@ create table favourites(
 -- DROP TABLE activity_tracking;
 -- DROP TABLE locations;
 -- DROP TABLE users;
-

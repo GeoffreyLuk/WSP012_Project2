@@ -1,3 +1,5 @@
+// Hardcode
+let show = show_55
 // const socket = io.connect();
 // socket.on('greeting', (data) => {
 //     alert(data)

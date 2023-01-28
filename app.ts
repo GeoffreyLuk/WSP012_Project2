@@ -4,6 +4,7 @@ import http from 'http'
 import { Server as SocketIO } from "socket.io"
 import { userRoutes } from "./userRoutes"
 import { organiserRoutes } from "./organiserRoutes"
+import { selectTicketRoutes } from "./selectTicketsRoutes"
 import { uploadDir } from "./util/formidable"
 import { isLoggedIn } from "./util/guard"
 import { sessionMiddleware, grantExpress } from "./util/middleware"
@@ -30,6 +31,7 @@ io.use((socket, next) => {
 // Application Route
 app.use(userRoutes)
 app.use(chatroomRoutes)
+app.use(selectTicketRoutes)
 
 //Geoffrey
 app.use(organiserRoutes)
