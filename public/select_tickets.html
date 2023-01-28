@@ -48,18 +48,28 @@
                     </div>
                     <div class="month-list"></div>
                 </div>
-                <select class="location-btn" type="text" id="location" name="location" disabled="true">
-                    <option value="">Test</option>
-                </select>
-                <select class="event-date-btn" type="text" id="event-date" name="event-date">
-                    <option value="">Event-date</option>
-                </select>
-                <select class="ticket-type-btn" type="text" id="ticket-type" name="ticket-type">
-                    <option value="">Ticket-type</option>
-                </select>
+                <div class="filter-container">
+                    <select class="location-selector" type="text" id="location" name="location" disabled="true">
+                        <option value="">Test</option>
+                    </select>
+                    <select class="event-date-selector" type="text" id="event-date" name="event-date">
+                        <option value="">All Event-date</option>
+                    </select>
+                    <select class="ticket-type-selector" type="text" id="ticket-type" name="ticket-type">
+                        <option value="">All Ticket-type</option>
+                    </select>
+                </div>
             </div>
             <div class="col-6" id="tickets-info">
-                <div>Ticket Type</div>
+                <div class="ticket-container">
+                    <div class="show-date">Date</div>
+                    <div class="show-time">Time</div>
+                    <div class="ticket-type">Ticket Type</div>
+                    <div class="ticket-price">Price</div>
+                    <select class="ticket-quantity" type="number">
+                        <option value="1">1</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>

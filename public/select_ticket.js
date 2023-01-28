@@ -5,6 +5,8 @@ let categoryElem = document.querySelector('.category')
 let showNameElem = document.querySelector('.show_name')
 let organiserElem = document.querySelector('.organiser')
 let locationBtnElem = document.querySelector('#location > option')
+let eventDateElem = document.querySelector('.event-date-selector')
+let ticketTypeElem = document.querySelector('.ticket-type-selector')
 
 window.onload = () => {
     loadShowInfo()
@@ -36,11 +38,40 @@ async function loadTicketsInfo() {
     if (res.ok) {
         let data = await res.json()
         let ticketsInfo = data.data
-        console.log("ticketsInfo: ", ticketsInfo);
         loadTicketsDetails(ticketsInfo)
+        loadTickets(ticketsInfo)
     }
 }
 
-async function loadTicketsDetails() {
-    console.log("Just vibing");
+async function loadTicketsDetails(ticketsInfo) {
+    let ticketTypes = [];
+    for (let i = 0; i < ticketsInfo.length; i++) {
+        if (!ticketTypes.includes(ticketsInfo[i].ticket_type)) {
+            ticketTypes.push(ticketsInfo[i].ticket_type)
+        }
+    };
+    console.log("ticketTypes: ", ticketTypes);
+
+    let eventDates = [];
+    for (let i = 0; i < ticketsInfo.length; i++) {
+        if (!eventDates.includes(ticketsInfo[i].show_date)) {
+            eventDates.push(ticketsInfo[i].show_date)
+        }
+    }
+    console.log("eventDates: ", eventDates);
+
+    for (let eventDate of eventDates) {
+        const opt = document.createElement('option')
+        opt.text = eventDate
+        eventDateElem.appendChild(opt)
+    };
+    for (let ticketType of ticketTypes) {
+        const opt = document.createElement('option')
+        opt.text = ticketType
+        ticketTypeElem.appendChild(opt)
+    }
+}
+
+async function loadTickets(ticketsInfo) {
+    console.log("ticketsInfo: ", ticketsInfo);
 }
