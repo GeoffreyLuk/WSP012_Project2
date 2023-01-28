@@ -5,6 +5,7 @@ import { client } from "./database/init_data"
 export const selectTicketRoutes = express.Router()
 
 selectTicketRoutes.get('/get_show_info/:show_id', getShowInfo)
+selectTicketRoutes.get('/get_info/:show_id', getShowforCalendar)
 selectTicketRoutes.get('/get_tickets_info/:show_id', getTicketsInfo)
 selectTicketRoutes.get('/show_tickets/show_55', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'select_tickets.html'))
@@ -42,7 +43,7 @@ async function getShowInfo(req: express.Request, res: express.Response) {
             data: showInfo,
         })
     } catch (err) {
-        console.log(err);
+        console.log("err: ", err);
         res.status(500).json({
             message: '[STR001] - Server error'
         })
@@ -51,7 +52,7 @@ async function getShowInfo(req: express.Request, res: express.Response) {
 
 async function getTicketsInfo(req: express.Request, res: express.Response) {
     try {
-        console.log("getTicketsInfo Start");
+        // console.log("getTicketsInfo Start");
         let show_id = req.params.show_id
 
         let ticketsInfoResult = await client.query(
@@ -68,7 +69,7 @@ async function getTicketsInfo(req: express.Request, res: express.Response) {
             message: "ticketsInfo Sent"
         })
     } catch (err) {
-        console.log(err);
+        console.log("err: ", err);
         res.status(500).json({
             message: '[STR002] - Server error'
         })
@@ -93,13 +94,12 @@ async function filterByDate(req: express.Request, res: express.Response) {
             message: "Success"
         })
     } catch (err) {
-        console.log(err);
+        console.log("err: ", err);
         res.status(500).json({
             message: '[STR003] - Server error'
         })
     }
 }
-
 
 async function filterByType(req: express.Request, res: express.Response) {
     try {
@@ -119,9 +119,33 @@ async function filterByType(req: express.Request, res: express.Response) {
             message: "Success"
         })
     } catch (err) {
-        console.log(err);
+        console.log("err: ", err);
         res.status(500).json({
             message: '[STR004] - Server error'
+        })
+    }
+}
+
+async function getShowforCalendar(req: express.Request, res: express.Response) {
+    try {
+        let show_id = req.params.show_id
+
+        let showInfoResult = await client.query(
+            `select distinct show_date from tickets 
+    where show_id = $1
+    order by show_date asc`,
+            [show_id]
+        )
+        let showInfo = showInfoResult.rows
+        console.log("showInfo: ", showInfo);
+
+        res.json({
+            data: showInfo
+        })
+    } catch (err) {
+        console.log("err: ", err);
+        res.status(500).json({
+            message: '[STR005] - Server error'
         })
     }
 }

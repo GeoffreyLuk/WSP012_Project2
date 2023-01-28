@@ -1,36 +1,37 @@
 const month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
+let show_id = document.URL.split('/show_').pop();
 let calendar = document.querySelector('.calendar')
 let month_picker = calendar.querySelector('#month-picker')
 let month_list = calendar.querySelector('.month-list')
 
 // Amend to show launch_date in <shows>
-let currDate = new Date()
+let currDate
 // get the Month value
-let curr_month = { value: currDate.getMonth() }
+let curr_month
 // get the Year value
-let curr_year = { value: currDate.getFullYear() }
+let curr_year
+// console.log("curr_month: ", curr_month);
+// console.log("curr_year: ", curr_year);
+
 
 // Check if the year is LeapYear
-isLeapYear = (year) => {
+function isLeapYear(year) {
     return (year % 4 === 0 && year % 100 !== 0 && year % 400 !== 0) || (year % 100 === 0 && year % 400 === 0)
 }
 
 // Check how many days in Feb
-getFebDays = (year) => {
+function getFebDays(year) {
     return isLeapYear(year) ? 29 : 28
 }
 
-generateCalendar = (month, year) => {
-
+function generateCalendar(month, year, showDates) {
+    // console.log("showDates: ", showDates);
     let calendar_days = calendar.querySelector('.calendar-days')
     let calendar_header_year = calendar.querySelector('#year')
 
     let days_of_month = [31, getFebDays(year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
     calendar_days.innerHTML = ''
-    // Amend to show launch_date in <shows>
-    let currDate = new Date()
 
     if (month > 11 || month < 0) month = currDate.getMonth()
     if (!year) year = currDate.getFullYear()
@@ -41,8 +42,6 @@ generateCalendar = (month, year) => {
     month_picker.innerHTML = curr_month
     calendar_header_year.innerHTML = year
 
-    // get first day of month
-    // Amend to the show's first_day
     let first_day = new Date(year, month, 1)
 
     for (let i = 0; i <= days_of_month[month] + first_day.getDay() - 1; i++) {
@@ -57,6 +56,13 @@ generateCalendar = (month, year) => {
             if (i - first_day.getDay() + 1 === currDate.getDate() && year === currDate.getFullYear() && month === currDate.getMonth()) {
                 day.classList.add('curr-date')
             }
+            for (let showDate of showDates) {
+                let showDateFormat = new Date(showDate.show_date)
+                let showDay = showDateFormat.getDate()
+                if (i - first_day.getDay() + 1 === showDay && i - first_day.getDay() + 1 !== currDate.getDate()) {
+                    day.classList.add('curr-date')
+                }
+            }
         }
         calendar_days.appendChild(day)
     }
@@ -67,8 +73,8 @@ month_names.forEach((e, index) => {
     month.innerHTML = `<div data-month="${index}">${e}</div>`
     month.querySelector('div').onclick = () => {
         month_list.classList.remove('show')
-        curr_month.value = index
-        generateCalendar(index, curr_year.value)
+        curr_month = index
+        generateCalendar(index, curr_year)
     }
     month_list.appendChild(month)
 })
@@ -78,18 +84,40 @@ month_picker.onclick = () => {
     month_list.classList.add('show')
 }
 
-// Run generateCalendar by curr_month, curr_year
-// Connect to <shows> and replace the curr_month to <show> launch_date
-generateCalendar(curr_month.value, curr_year.value)
-
 // Change to previous year by clicking "<"
 document.querySelector('#prev-year').onclick = () => {
-    --curr_year.value
-    generateCalendar(curr_month.value, curr_year.value)
+    --curr_year
+    generateCalendar(curr_month, curr_year)
 }
 
 // Change to next year by clicking ">"
 document.querySelector('#next-year').onclick = () => {
-    ++curr_year.value
-    generateCalendar(curr_month.value, curr_year.value)
+    ++curr_year
+    generateCalendar(curr_month, curr_year)
 }
+
+async function getTicketInfo() {
+    let res = await fetch(`/get_info/${show_id}`)
+    if (res.ok) {
+        let data = await res.json()
+        let showDates = data.data
+        // console.log("info: ", info);
+        getFirstShowDate(showDates)
+    }
+}
+
+function getFirstShowDate(showDates) {
+    // console.log("showDates: ", showDates);
+    let firstShowDate = new Date(showDates[0].show_date)
+    // console.log("firstShowDate: ", firstShowDate);
+    currDate = firstShowDate
+    curr_month = firstShowDate.getMonth()
+    curr_year = firstShowDate.getFullYear()
+    generateCalendar(curr_month, curr_year, showDates)
+}
+
+async function init() {
+    getTicketInfo()
+}
+
+init()

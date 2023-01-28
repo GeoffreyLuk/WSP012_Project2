@@ -9,11 +9,6 @@ let eventDateElem = document.querySelector('.event-date-selector')
 let ticketTypeElem = document.querySelector('.ticket-type-selector')
 let ticketContainerElem = document.querySelector('.ticket-container')
 
-// const toTimestamp = (strDate) => {
-//     const dt = new Date(strDate).getTime();
-//     return dt / 1000;
-// }
-
 window.onload = () => {
     loadShowInfo()
     loadTicketsInfo()
@@ -92,7 +87,7 @@ async function loadTicketsDetails(ticketsInfo) {
 }
 
 async function loadTickets(ticketsInfo) {
-    console.log("ticketsInfo: ", ticketsInfo);
+    // console.log("ticketsInfo: ", ticketsInfo);
     ticketContainerElem.innerHTML = ''
     for (let ticketInfoItem of ticketsInfo) {
         let timeFormat = new Date(ticketInfoItem.show_date)
