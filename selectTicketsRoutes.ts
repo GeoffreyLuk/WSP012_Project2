@@ -153,12 +153,12 @@ async function getShowforCalendar(req: express.Request, res: express.Response) {
 
 async function addTicketsToCart(req: express.Request, res: express.Response) {
     let show_id = req.params.show_id
-    console.log("req.body: ", req.body);
-    console.log("req.session.user: ", req.session.user)
+    // console.log("req.body: ", req.body);
+    // console.log("req.session.user: ", req.session.user)
 
     for (let ticketInfo of req.body) {
-        console.log("ticketInfo.type: ", ticketInfo.type);
-        console.log("ticketInfo.eventDate: ", ticketInfo.eventDate);
+        // console.log("ticketInfo.type: ", ticketInfo.type);
+        // console.log("ticketInfo.eventDate: ", ticketInfo.eventDate);
 
         let ticketIdResult = await client.query(
             `select id from tickets
@@ -167,7 +167,7 @@ async function addTicketsToCart(req: express.Request, res: express.Response) {
         )
 
         let ticketId = ticketIdResult.rows[0].id
-        console.log("ticketIdResult.rows: ", ticketIdResult.rows[0].id);
+        // console.log("ticketIdResult.rows: ", ticketIdResult.rows[0].id);
 
         await client.query(
             `insert into users_purchases(user_id, ticket_id, quantity, ticket_paid)

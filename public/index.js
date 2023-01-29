@@ -30,6 +30,7 @@ async function getUserInfo() {
     let res = await fetch('/get_user_info')
     if (res.ok) {
         let user = await res.json()
+        console.log("user: ", user);
     }
 }
 
@@ -43,7 +44,7 @@ async function getAllShows() {
 
 function loadingShows(shows) {
 
-    function loader(parser,sd,ed) {
+    function loader(parser, sd, ed) {
         showContainer.innerHTML += `
         <div id="show_${parser['show_id']}" class="col-md-3 shows" data-category="${dataResult['allCategories'][parser['category']]}">
                 <div class="card">
@@ -113,22 +114,22 @@ function loadingShows(shows) {
     }
 }
 
-function loadingButtons (){
-    for (let keys in dataResult['allCategories']){
-        buttonContainer.innerHTML +=`
+function loadingButtons() {
+    for (let keys in dataResult['allCategories']) {
+        buttonContainer.innerHTML += `
         <button id="filter_${dataResult['allCategories'][keys]}" type="button" data-filter="${dataResult['allCategories'][keys]}" class="btn btn-dark mx-2 btn-sm">${dataResult['allCategories'][keys]}</button>
     `
     }
-    
+
 }
 
-showContainer.addEventListener('click', async (e)=>{
-    let showTargetID ;
-    if (e.target.parentElement.parentElement.matches('.shows')){
+showContainer.addEventListener('click', async (e) => {
+    let showTargetID;
+    if (e.target.parentElement.parentElement.matches('.shows')) {
         showTargetID = e.target.parentElement.parentElement.id
         window.location.replace(`http://localhost:8080/show_details/${showTargetID}`)
         const res = await fetch(`/show_details/${e.target.parentElement.parentElement.id}`);
-    }else if (e.target.parentElement.parentElement.parentElement.matches('.shows')){
+    } else if (e.target.parentElement.parentElement.parentElement.matches('.shows')) {
         showTargetID = e.target.parentElement.parentElement.parentElement.id
         window.location.replace(`http://localhost:8080/show_details/${showTargetID}`)
     }
@@ -142,16 +143,16 @@ let iso = new Isotope('.show_container', {
 
 });
 
-  // bind filter button click
-  let filtersElem = document.querySelector('.filters-button-group');
-  filtersElem.addEventListener( 'click', function( event ) {
+// bind filter button click
+let filtersElem = document.querySelector('.filters-button-group');
+filtersElem.addEventListener('click', function (event) {
     // only work with buttons
-    if ( !matchesSelector( event.target, 'button' ) ) {
-      return;
+    if (!matchesSelector(event.target, 'button')) {
+        return;
     }
     let filterValue = event.target.getAttribute('data-filter');
     console.log('filterValue: ', filterValue)
     // use matching filter function
 
     iso.arrange({ filter: filterValue });
-  });
+});
