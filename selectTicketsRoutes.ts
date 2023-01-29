@@ -13,6 +13,7 @@ selectTicketRoutes.get('/show_tickets/show_55', (req, res) => {
 selectTicketRoutes.get('/show_tickets')
 selectTicketRoutes.post('/filter_date', filterByDate)
 selectTicketRoutes.post('/filter_type', filterByType)
+selectTicketRoutes.post('/select_tickets/:show_id', addTicketsToCart)
 
 
 
@@ -137,7 +138,7 @@ async function getShowforCalendar(req: express.Request, res: express.Response) {
             [show_id]
         )
         let showInfo = showInfoResult.rows
-        console.log("showInfo: ", showInfo);
+        // console.log("showInfo: ", showInfo);
 
         res.json({
             data: showInfo
@@ -148,4 +149,38 @@ async function getShowforCalendar(req: express.Request, res: express.Response) {
             message: '[STR005] - Server error'
         })
     }
+}
+
+async function addTicketsToCart(req: express.Request, res: express.Response) {
+    let show_id = req.params.show_id
+    console.log("req.body: ", req.body);
+    console.log("req.session.user: ", req.session.user)
+
+    for (let ticketInfo of req.body) {
+        console.log("ticketInfo.type: ", ticketInfo.type);
+        console.log("ticketInfo.eventDate: ", ticketInfo.eventDate);
+
+        let ticketIdResult = await client.query(
+            `select id from tickets
+                where show_id = $1 and type = $2 and show_date = $3`,
+            [show_id, ticketInfo.type, ticketInfo.eventDate]
+        )
+
+        let ticketId = ticketIdResult.rows[0].id
+        console.log("ticketIdResult.rows: ", ticketIdResult.rows[0].id);
+
+        await client.query(
+            `insert into users_purchases(user_id, ticket_id, quantity, ticket_paid)
+                values($1, $2, $3, $4)`,
+            [req.session.user.id, ticketId, ticketInfo.quantity, false]
+        )
+    }
+
+    res.json({
+        message: "Done Add Tickets"
+    })
+
+    // console.log("ticketIdResult: ", ticketIdResult);
+    // console.log("ticketIdResult.rows: ", ticketIdResult.rows);
+
 }

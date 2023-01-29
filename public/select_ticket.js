@@ -8,8 +8,11 @@ let locationBtnElem = document.querySelector('#location > option')
 let eventDateElem = document.querySelector('.event-date-selector')
 let ticketTypeElem = document.querySelector('.ticket-type-selector')
 let ticketContainerElem = document.querySelector('.ticket-container')
+let ticketElemAll = document.getElementsByClassName('ticket')
+let checkOutBtnElem = document.querySelector('.check-out-btn')
 
 window.onload = () => {
+    getUserInfo()
     loadShowInfo()
     loadTicketsInfo()
 }
@@ -127,10 +130,11 @@ async function loadTickets(ticketsInfo) {
 eventDateElem.addEventListener('change', (e) => {
     // console.log("changed");
     let dateFormat = new Date(eventDateElem.value)
+    // console.log("dateFormat: ", dateFormat);
     let eventDate = dateFormat + dateFormat.setHours((dateFormat.getHours() + 8))
     let eventTimestamp = new Date(eventDate)
-    // console.log("timestamp: ", eventTimestamp);
-    if (dateFormat == '') {
+    console.log("timestamp: ", eventTimestamp);
+    if (eventDateElem.value == 'All Event-date') {
         loadTicketsInfo()
     } else {
         filterTicketByDate(eventTimestamp)
@@ -188,4 +192,41 @@ async function filterTicketByType(type) {
     let filteredTickets = data.data
     eventDateElem.value = "All Event-date"
     loadTickets(filteredTickets)
+}
+
+checkOutBtnElem.addEventListener('click', () => {
+    let selectedTickets = []
+    let tickets = Array.from(ticketElemAll)
+    for (let ticket of tickets) {
+        if (ticket.lastChild.value >= 1) {
+            let quantity = ticket.lastChild.value
+            let price = ticket.childNodes[3].innerHTML.replace("$", "")
+            let type = ticket.childNodes[2].innerHTML
+            let dateFormat = new Date(ticket.childNodes[0].innerHTML)
+            let eventDate = new Date(dateFormat + dateFormat.setHours((dateFormat.getHours() + 8)))
+            selectedTickets.push({ quantity, price, type, eventDate })
+        }
+    }
+    console.log("selectedTickets: ", selectedTickets);
+    checkOut(selectedTickets)
+})
+
+async function checkOut(selectedTickets) {
+    let res = await fetch(`/select_tickets/${show}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(selectedTickets)
+    })
+
+    let data = await res.json()
+    console.log("data: ", data);
+}
+
+async function getUserInfo() {
+    let res = await fetch('/get_user_info')
+    if (res.ok) {
+        let user = await res.json()
+    }
 }
