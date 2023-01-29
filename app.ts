@@ -11,6 +11,7 @@ import { sessionMiddleware, grantExpress } from "./util/middleware"
 import { chatroomRoutes } from "./chatroomRoutes"
 import { client } from './database/init_data';
 import { roomLists, chatroomId } from './util/model'
+import { shoppingCartRoutes } from "./shoppingCartRoutes"
 
 let app = express()
 let server = new http.Server(app)
@@ -32,6 +33,7 @@ io.use((socket, next) => {
 app.use(userRoutes)
 app.use(chatroomRoutes)
 app.use(selectTicketRoutes)
+app.use(shoppingCartRoutes)
 
 //Geoffrey
 app.use(organiserRoutes)

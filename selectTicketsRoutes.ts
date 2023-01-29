@@ -179,8 +179,4 @@ async function addTicketsToCart(req: express.Request, res: express.Response) {
     res.json({
         message: "Done Add Tickets"
     })
-
-    // console.log("ticketIdResult: ", ticketIdResult);
-    // console.log("ticketIdResult.rows: ", ticketIdResult.rows);
-
 }
