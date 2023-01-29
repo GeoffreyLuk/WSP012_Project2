@@ -10,9 +10,10 @@ let currDate
 let curr_month
 // get the Year value
 let curr_year
-// console.log("curr_month: ", curr_month);
-// console.log("curr_year: ", curr_year);
 
+function getMonthNumberFromName(monthName) {
+    return new Date(`${monthName} 1, 2022`).getMonth() + 1;
+}
 
 // Check if the year is LeapYear
 function isLeapYear(year) {
@@ -55,12 +56,18 @@ function generateCalendar(month, year, showDates) {
                             <span></span>`
             if (i - first_day.getDay() + 1 === currDate.getDate() && year === currDate.getFullYear() && month === currDate.getMonth()) {
                 day.classList.add('curr-date')
+                day.onclick = function (e) {
+                    filterByCalendar(e)
+                }
             }
             for (let showDate of showDates) {
                 let showDateFormat = new Date(showDate.show_date)
                 let showDay = showDateFormat.getDate()
                 if (i - first_day.getDay() + 1 === showDay && i - first_day.getDay() + 1 !== currDate.getDate()) {
                     day.classList.add('curr-date')
+                    day.onclick = function (e) {
+                        filterByCalendar(e)
+                    }
                 }
             }
         }
@@ -80,21 +87,21 @@ month_names.forEach((e, index) => {
 })
 
 // Click the Month to show all month_names
-month_picker.onclick = () => {
-    month_list.classList.add('show')
-}
+// month_picker.onclick = () => {
+//     month_list.classList.add('show')
+// }
 
 // Change to previous year by clicking "<"
-document.querySelector('#prev-year').onclick = () => {
-    --curr_year
-    generateCalendar(curr_month, curr_year)
-}
+// document.querySelector('#prev-year').onclick = () => {
+//     --curr_year
+//     generateCalendar(curr_month, curr_year)
+// }
 
 // Change to next year by clicking ">"
-document.querySelector('#next-year').onclick = () => {
-    ++curr_year
-    generateCalendar(curr_month, curr_year)
-}
+// document.querySelector('#next-year').onclick = () => {
+//     ++curr_year
+//     generateCalendar(curr_month, curr_year)
+// }
 
 async function getTicketInfo() {
     let res = await fetch(`/get_info/${show_id}`)
@@ -106,6 +113,7 @@ async function getTicketInfo() {
     }
 }
 
+
 function getFirstShowDate(showDates) {
     // console.log("showDates: ", showDates);
     let firstShowDate = new Date(showDates[0].show_date)
@@ -116,8 +124,22 @@ function getFirstShowDate(showDates) {
     generateCalendar(curr_month, curr_year, showDates)
 }
 
+function filterByCalendar(e) {
+    let selectedDay = Number(e.target.innerText)
+    let selectedMonth = getMonthNumberFromName(month_picker.innerText) - 1
+    let selectedYear = Number(document.querySelector('#year').innerText)
+    let selectedDate = new Date(selectedYear, selectedMonth, selectedDay)
+    console.log("selectedDate: ", selectedDate);
+    let selectedEventDate = selectedDate + selectedDate.setHours((selectedDate.getHours() + 8))
+    console.log("selectedEventDate: ", selectedEventDate);
+    let selectedEventTimestamp = new Date(selectedEventDate)
+    // Need to think of how to change the option value
+    filterTicketByDate(selectedEventTimestamp)
+}
+
 async function init() {
     getTicketInfo()
 }
 
 init()
+

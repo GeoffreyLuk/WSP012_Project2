@@ -45,7 +45,6 @@ io.on("connection", function (socket) {
     // console.log("Connection Start");
 
     const req = socket.request as express.Request;
-    // console.log("req.session.user: ", req.session.user);
 
 
     if (req.session.user) {
@@ -59,9 +58,7 @@ io.on("connection", function (socket) {
         // // console.log(`已安排 ${req.session.user.first_name} 進入 Room :Test.`);
         // io.to("Test").emit('greeting', `${req.session["user"].name} welcome to Room!`)
         socket.request["session"].save()
-        // console.log("user: ", req.session.user)
     }
-    // console.log("req.session.user: ", req.session["user"])
 
 
     const user = req.session.user
