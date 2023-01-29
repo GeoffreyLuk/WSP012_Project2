@@ -11,7 +11,7 @@ import { formParsePromiseForOrg } from './util/formidable';
 organiserRoutes.get('/showlisting', isLoggedInAPI, (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'show_listing.html'))
 })
-organiserRoutes.get('/organisation', isLoggedInAPI, getAllShows)
+organiserRoutes.get('/organisation', isLoggedInAPI, getOrgShows)
 organiserRoutes.get('/organisation/:show_id', isLoggedInAPI, (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'show_upload.html'))
 })
@@ -19,7 +19,7 @@ organiserRoutes.get('/get/:show_id', isLoggedInAPI, getShowInfo)
 organiserRoutes.post('/upload/:show_id', isLoggedInAPI, uploadShow)
 organiserRoutes.put('/upload/:show_id', isLoggedInAPI, updateShow)
 
-async function getAllShows(req: express.Request, res: express.Response) {
+async function getOrgShows(req: express.Request, res: express.Response) {
     const user = req.session.user.id
     const organisation = await client.query(`select id from organiser_list where user_id = $1`, [user])
     const organisationID = organisation.rows[0].id

@@ -25,6 +25,7 @@ userRoutes.put('/reset_PW', isLoggedInAPI, resetUserPW)
 userRoutes.get('/show_details/:show_id',(req,res)=>{
     res.sendFile(path.join(__dirname,'public','show_details.html'))
 })
+userRoutes.get('/get_all_shows',getAllShows)
 userRoutes.get('/get_details/:show_id', getShowDetails)
 userRoutes.post('/show_details/:show_id', likedShow)
 
@@ -251,23 +252,42 @@ async function resetUserPW(req: express.Request, res: express.Response) {
 //Geoffrey Show Details
 
 async function getShowDetails(req: express.Request, res: express.Response) {
-    const targetShow = req.params.show_id
+    const targetShow = req.params.show_id.split('_').pop()
     console.log ('target : ',targetShow)
-    let returningShow = await client.query(`select shows.* , organiser_list.user_id from
-    shows left outer join organiser_list
-    on organiser_list.id = shows.organiser_id
-    where  shows.id = ($1)`, [targetShow])
-    let returningShowResults = returningShow.rows[0]
-    if (returningShowResults['published'] != true) {
-        if (req.session.user != returningShowResults['user_id']) {
+    let showDetails = await (await client.query(`select shows.show_name, shows.published, shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at , shows.organiser_id ,  locations.venue , locations.address , shows_locations.show_id from
+    shows_locations 
+    left join shows
+    on shows_locations.show_id = shows.id
+	left join locations
+    on shows_locations.location_id = locations.id
+    where shows.id = ($1)`,[targetShow])).rows[0]
+    let organiserDetails = await (await client.query(`select user_id , organiser_name from organiser_list where id = ($1)`,[showDetails['organiser_id']])).rows[0]
+    let pullCategories = (await client.query(`select id , category from categories`)).rows
+    let allCategories = {}
+    pullCategories.forEach((elem)=>{
+        allCategories[elem['id']] = elem['category']
+    })
+    
+    if (showDetails['published'] != true) {
+        if (req.session.user.id != organiserDetails['user_id']) {
             res.status(400).end('no access rights')
         } else {
-            delete returningShowResults['user_id']
-            res.status(200).json(returningShowResults)
+            let respondingData = {}
+            delete organiserDetails['user_id']
+            respondingData['showDetails'] = showDetails
+            respondingData['allCategories'] = allCategories
+            respondingData['organiserDetails'] = organiserDetails
+            res.status(200).json(respondingData)
         }
     }else {
-        delete returningShowResults['user_id']
-        res.status(200).json(returningShowResults)
+            let respondingData = {}
+            delete organiserDetails['user_id']
+            respondingData['showDetails'] = showDetails
+            respondingData['allCategories'] = allCategories
+            respondingData['organiserDetails'] = organiserDetails['organiser_name']
+            console.log(respondingData)
+            res.status(200).json(respondingData)
+
     }
 }
 
@@ -281,4 +301,25 @@ async function likedShow(req: express.Request, res: express.Response) {
     } else {
         // await client.query(/*drop*/)
     }
+}
+
+async function getAllShows(req: express.Request, res: express.Response){
+    console.log('index page get all shows received ')
+    let allShows = await (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
+    shows_locations 
+    left join shows
+    on shows_locations.show_id = shows.id
+	left join locations
+    on shows_locations.location_id = locations.id
+    where shows.published = true
+    order by show_id ASC`)).rows
+    let pullCategories = (await client.query(`select id , category from categories`)).rows
+    let allCategories = {}
+    pullCategories.forEach((elem)=>{
+        allCategories[elem['id']] = elem['category']
+    })
+    let respondingData = {}
+    respondingData['allShows'] = allShows
+    respondingData['allCategories'] = allCategories
+    res.status(200).json(respondingData)
 }
