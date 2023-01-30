@@ -1,0 +1,29 @@
+#main{
+    margin-top: 10rem;
+}
+.row{
+    margin: 1rem;
+}
+#ticketPurchase :hover{
+    color: #f1f2fb;
+}
+.small_details{
+    padding: 1rem;
+}
+
+#show_title{
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+#show_organiser{
+    font-size: 1rem;
+}
+
+#show_content{
+padding: 2rem;
+}
+#show_date{
+    font-size: 1.2rem;
+    font-weight: bold;
+}

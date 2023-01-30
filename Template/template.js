@@ -36,7 +36,7 @@ async function isLoggedin(){
             if (orgPrivilege < 2){
                 mainMenu.innerHTML+=`
                 <li class="nav-item">
-                        <a class="nav-link" href="#">Organisation [not linked]</a>
+                        <a class="nav-link" href="/showlisting">Organisation</a>
                     </li>
                 `
             }

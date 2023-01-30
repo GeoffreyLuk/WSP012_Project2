@@ -44,8 +44,10 @@ app.use(shoppingCartRoutes)
 app.use(organiserRoutes)
 
 // Static files
-app.use(express.static('template'))
+app.use(express.static('Template'))
 app.use(express.static('public'))
+app.use('/show_details',express.static(path.join(__dirname,'public')))
+app.use('/organisation/:show',express.static(path.join(__dirname,'public')))
 app.use(isLoggedIn, express.static('protected'))
 
 io.on("connection", function (socket) {

@@ -48,6 +48,9 @@ body{
 .dropdown-toggle::after{
     color:#f1f2fb !important;
 }
+.dropdown-toggle::before{
+    color:#f1f2fb !important;
+}
 
 /* your stuff */
 

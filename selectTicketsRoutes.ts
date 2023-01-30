@@ -7,10 +7,10 @@ export const selectTicketRoutes = express.Router()
 selectTicketRoutes.get('/get_show_info/:show_id', getShowInfo)
 selectTicketRoutes.get('/get_info/:show_id', getShowforCalendar)
 selectTicketRoutes.get('/get_tickets_info/:show_id', getTicketsInfo)
-selectTicketRoutes.get('/show_tickets/show_55', (req, res) => {
+selectTicketRoutes.get('/show_tickets/:show_id', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'select_tickets.html'))
 })
-selectTicketRoutes.get('/show_tickets')
+// selectTicketRoutes.get('/show_tickets')
 selectTicketRoutes.post('/filter_date', filterByDate)
 selectTicketRoutes.post('/filter_type', filterByType)
 selectTicketRoutes.post('/select_tickets/:show_id', addTicketsToCart)

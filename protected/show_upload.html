@@ -7,39 +7,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link href="/show_upload.css" rel="stylesheet">
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<link href="/template.css" rel="stylesheet">
+    <link href="/assets/protected_css/show_upload.css" rel="stylesheet">
 </head>
 
 <body>
-    show upload <br>
-    <a href="/showlisting">back</a>
-    &nbsp;
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-background">
+        <div class="container-fluid">
+            <a class="navbar-brand text-accent1 slogan" href="#">G&G Tickets</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul id="menu_menu" class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home [not linked]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Chatroom [not linked]</a>
+                    </li>
+                </ul>
+
+                <div class="flex-shrink-0 dropdown-center d-sm-block d-md-none ">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img src="assets/users_icon/default_icon.png" alt="mdo" width="32" height="32"
+                            class="profile_pic rounded-circle">
+                    </a>
+                    <ul class="login_menu dropdown-menu text-small shadow bg-card">
+                    </ul>
+                </div>
+
+                <div class="flex-shrink-0 dropstart d-none d-md-block">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img src="assets/users_icon/default_icon.png" alt="mdo" width="32" height="32"
+                            class="profile_pic rounded-circle">
+                    </a>
+                    <ul class="login_menu dropdown-menu text-small shadow bg-card">
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+    
+    <div id="main" class="text-main container-sm">
+    <a href="/showlisting" class="btn bg-card text-main btn-sm">back</a><br>
     <form id="uploading_show">
+        
+        <fieldset class="bg-card" id="con2">
+            <legend>General Details</legend>
+            <br>
+            <img class="img-fluid" id="image_preview">
+            <input id="show_banner" name="banner" type="file" accept="image/*"> <div class="btn bg-background text-accent2 btn-sm" id="clear_files">clear files</div><br>
+            <div class="row">
+                <div class="col-2"><label for="show_details">Show blurb</label></div>
+                <div class="col-2"></div>
+                <div class="col"><textarea id="show_details" name="details"></textarea></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-2"><label for="show_name">Show name</label></div>
+                <div class="col-2"></div>
+                <div class="col"><input id="show_name" name="name" type="text"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-2"><label for="show_duration">Show duration</label></div>
+                <div class="col-2"></div>
+                <div class="col"><input id="show_duration" name="duration"
+                    type="number"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-2"><label for="sales_start_date">Sales start date</label></div>
+                <div class="col-2"></div>
+                <div class="col"><input id="sales_start_date" name="sales_start"
+                    type="datetime-local"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-2"><label for="sales_end_date">Sales end date</label></div>
+                <div class="col-2"></div>
+                <div class="col"><input id="sales_end_date" name="sales_end"
+                    type="datetime-local"></div>
+            </div>
+            <br>          
+        </fieldset><br>
+
         <fieldset id="con1">
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" role="switch" id="published" name="published">
-                <label class="form-check-label" for="published">published</label>
+                <label class="form-check-label" for="published">Publish</label>
             </div>
 
         </fieldset> <br>
 
-        <fieldset id="con2">
-            <legend>Mandatory Data</legend>
-            <label for="show_banner">show_banner</label><br>
-            <img id="image_preview"><br>
-            <input id="show_banner" name="banner" type="file" accept="image/*"> <div id="clear_files">clear files</div><br><br>
-            <label for="show_details">show_details</label><textarea id="show_details" name="details"></textarea><br><br>
-            <label for="show_name">show_name</label><input id="show_name" name="name" type="text"><br><br>
-            <label for="show_duration">show_duration</label><input id="show_duration" name="duration"
-                type="number"><br><br>
-            <label for="sales_start_date">sales_start_date</label><input id="sales_start_date" name="sales_start"
-                type="datetime-local"><br><br>
-            <label for="sales_end_date">sales_end_date</label><input id="sales_end_date" name="sales_end"
-                type="datetime-local">
-        </fieldset><br>
-
-        <fieldset id="con3">
+        <fieldset class="bg-card" id="con3">
             <legend>Categories</legend>
             <div id="category_container">
                 <div id="form_check_add">
@@ -57,18 +124,28 @@
             </div>
         </fieldset><br>
 
-        <fieldset id="con4">
+        <fieldset class="bg-card" id="con4">
             <legend>Location</legend>
-            <input type="text" name="venue_name" id="venue_name"><label for="venue_name">Venue Name</label><br>
-            <input type="text" name="location" id="location"><label for="location">Address</label>
+            <div class="row">
+                <div class="col-2"><label for="venue_name">Venue</label></div>
+                <div class="col-2"></div>
+                <div class="col"><input type="text" name="venue_name" id="venue_name"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-2"><label for="location">Address</label></div>
+                <div class="col-2"></div>
+                <div class="col"><input type="text" name="location" id="location"></div>
+            </div>
+            <br>
         </fieldset><br>
 
-        <fieldset id="show_description_container">
-            <legend>Show Content</legend>
+        <fieldset class="text-dark bg-card" id="show_description_container">
+            <legend class="text-main">Show Content</legend>
             
         </fieldset><br>
 
-        <fieldset id="con6">
+        <fieldset class="bg-card" id="con6">
             <legend>Ticket Types</legend>
             <div id="ticket_add" class="ticket_button">Add Ticket</div><br>
             <div id="ticket">
@@ -76,7 +153,7 @@
             </div>
         </fieldset><br>
 
-        <fieldset id="con7">
+        <fieldset class="bg-card" id="con7">
             <legend>Discounts</legend>
         <div id="discount_earlyBird" class="discount_container">
             <p>Early Bird Discount</p>
@@ -95,16 +172,18 @@
 
         </fieldset><br>
 
-        <br><br>
-        <input type="submit" value="submit">
-    </form>
-    <script>
+        <br>
+        <div class="row text-center"><input type="submit" value="submit" class="btn bg-card text-accent2 btn-lg"></div>
         
-    </script>
+    </form>
+  
+</div>
+
     <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+    <script src="/template.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-    crossorigin="anonymous"></script>
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
     <script src="/show_upload.js"></script>
 </body>
 

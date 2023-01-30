@@ -1,0 +1,7 @@
+#main{
+    margin-top: 10rem;
+}
+.show_link:hover{
+   transform: translateX(5px);
+   
+}

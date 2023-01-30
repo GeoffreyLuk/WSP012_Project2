@@ -8,7 +8,7 @@ const docFavourites =document.querySelector('#likedShow')
 const docDate = document.querySelector('#show_date')
 const docVenue = document.querySelector('#show_venue')
 const docAddress = document.querySelector('#show_address')
-const liked = document.querySelector
+const mainContainer = document.querySelector('#main')
 
 console.log('paired')
 
@@ -24,7 +24,7 @@ async function main(){
         let endDate = new Date(showDetails['end_date'])
 
     docCategory.innerHTML = `${dataResult['allCategories'][showDetails['category']]}`
-    docTitle.innerHTML = `${[showDetails['details']['title']]}`
+    docTitle.innerHTML = `${[showDetails['show_name']]}`
     docOrganiser.innerHTML = `${dataResult['organiserDetails']}`
     docContent.innerHTML = `${[showDetails['details']['content']]}`
     docDate.innerHTML = `${launchDate.getDate()}/${launchDate.getMonth()}/${launchDate.getFullYear()} - ${endDate.getDate()}/${endDate.getMonth()}/${endDate.getFullYear()}`
@@ -47,7 +47,25 @@ async function switchImage(image) {
 
 
 
-  docFavourites.addEventListener('click', async (e)=>{
+  // docFavourites.addEventListener('click', async (e)=>{
+  //   let res = fetch(`/show_details/${show}`,{
+  //     method: 'POST',
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({application:'fan club'})
+  //   })
+
+  //   const result = await res.json();
+  //   alert(result.message)
+  // })
+
+mainContainer.addEventListener('click',async (e)=>{
+  if (e.target.matches('#ticket_purchase')){
+    let res = fetch(`/show_tickets/${show}`)
+
+  }else if (e.target == docFavourites){
+    e.preventDefault()
     let res = fetch(`/show_details/${show}`,{
       method: 'POST',
       headers: {
@@ -58,4 +76,8 @@ async function switchImage(image) {
 
     const result = await res.json();
     alert(result.message)
-  })
+  }
+  // else if (e.target.matches('show_category')){
+  //   let res = fetch(`/`)
+  // }
+})

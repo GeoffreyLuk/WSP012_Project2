@@ -1,5 +1,36 @@
+#main{
+    margin-top: 10rem;
+}
+.row{
+    margin: 1rem;
+}
+#ticketPurchase :hover{
+    color: #f1f2fb;
+}
+.small_details{
+    padding: 1rem;
+}
+
+#show_title{
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+#show_organiser{
+    font-size: 1rem;
+}
+
+#show_content{
+padding: 2rem;
+}
+#show_date{
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
 .ticket_container{
-    border: 2px solid black;
+    padding: 1rem;
+    border: 2px solid #f1f2fb;
 }
 
 .ticket_button{
@@ -13,7 +44,7 @@
 }
 
 .date_container{
-    border: 2px solid black;
+    border: 2px solid #f1f2fb;
 }
 .date_button{
     padding: 1px;
@@ -26,7 +57,7 @@
 }
 
 .discount_container{
-    border: 2px solid black;
+    border: 2px solid #f1f2fb;
 }
 .discount_button{
     padding: 1px;
@@ -36,4 +67,8 @@
 }
 .discount_button:hover{
     background-color: gray;
+}
+
+fieldset{
+    padding: 1rem;
 }
