@@ -4,7 +4,7 @@ create table users(
     last_name text not null,
     email text not null,
     phone_number integer,
-    icon text,
+    icon text default 'default_icon.png',
     password text not null,
     access_level integer not null default 2,
     last_online timestamp not null,

@@ -1,0 +1,57 @@
+
+/* background colours */
+body{
+    background-color:  #30405f;
+}
+
+.bg-container{
+    background-color: #293758 !important;
+}
+
+.bg-background{
+    background-color: #30405f !important;
+}
+
+.bg-card{
+    background-color: #3e4b69 !important;
+}
+
+.bg-accent1{
+    background-color: #00c5ac !important;
+}
+
+.bg-accent2{
+    background-color: #ec2629 !important;
+}
+
+/*text colours */
+.text-main{
+    color : #f1f2fb !important;
+}
+
+.text-accent1{
+    color: #00c5ac !important;
+}
+
+.text-accent2{
+    color: #ec2629 !important;
+}
+
+/* important stuff*/
+.slogan{
+    font-weight: bold !important;
+    font-size: 2rem !important;
+}
+.dropdown-divider{
+    border-color: #f1f2fb !important;
+}
+.dropdown-toggle::after{
+    color:#f1f2fb !important;
+}
+
+/* your stuff */
+
+.top-margin{
+    margin-top: 10rem;
+}
+

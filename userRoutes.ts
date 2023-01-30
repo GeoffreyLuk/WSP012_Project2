@@ -16,6 +16,40 @@ declare module "express-session" {
     }
 }
 
+//redirects to pages
+userRoutes.get('/login',(req,res)=>{
+res.sendFile(path.join(__dirname,'public','login.html'))
+})
+userRoutes.get('/signup',(req,res)=>{
+    res.sendFile(path.join(__dirname,'public','signup.html'))
+})
+userRoutes.get('/checkLoggedIn',(req,res)=>{
+    if (!req.session.user){
+        res.json({logged : false})
+    }else{res.json({logged : true,'id': req.session.user['id'],
+    'name': req.session.user['first_name'],
+    'privilege' : req.session.user.access_level,
+    'icon' : req.session.user.icon
+    })}
+})
+userRoutes.get('/logout',(req,res)=>{
+    delete req.session.user
+    res.redirect('/?message=succesfully+logged+out')
+})
+userRoutes.get('/show_details/:show_id',(req,res)=>{
+    res.sendFile(path.join(__dirname,'public','show_details.html'))
+})
+userRoutes.get('/editProfile',(req,res)=>{
+    res.sendFile(path.join(__dirname,'protected','edit_profile.html'))
+})
+userRoutes.get('/resetPW',(req,res)=>{
+    res.sendFile(path.join(__dirname,'protected','resetPW.html'))
+})
+userRoutes.get('/chatroom',(req,res)=>{
+    res.sendFile(path.join(__dirname,'public','chatroom.html'))
+})
+
+
 userRoutes.get('/filter',getSelectShows)
 userRoutes.post('/signup', signup)
 userRoutes.post('/login', login)
@@ -23,9 +57,6 @@ userRoutes.get('/login/google', loginGoogle)
 userRoutes.get('/get_user_info', getUserInfo)
 userRoutes.put('/update_user_info', isLoggedInAPI, updateUserInfo)
 userRoutes.put('/reset_PW', isLoggedInAPI, resetUserPW)
-userRoutes.get('/show_details/:show_id',(req,res)=>{
-    res.sendFile(path.join(__dirname,'public','show_details.html'))
-})
 userRoutes.get('/get_all_shows',getAllShows)
 userRoutes.get('/get_details/:show_id', getShowDetails)
 userRoutes.post('/show_details/:show_id', likedShow)
