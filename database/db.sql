@@ -36,14 +36,6 @@ create table direct_messages(
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
-create table activity_tracking (
-    id serial primary key,
-    user_id integer not null,
-    foreign key (user_id) references users(id),
-    behavior text not null,
-    created_at timestamp not null default now(),
-    updated_at timestamp not null default now()
-);
 create table organiser_list (
     id serial primary key,
     user_id integer not null,
@@ -165,6 +157,5 @@ create table favourites(
 -- DROP TABLE tickets;
 -- DROP TABLE shows;
 -- DROP TABLE organiser_list;
--- DROP TABLE activity_tracking;
 -- DROP TABLE locations;
 -- DROP TABLE users;

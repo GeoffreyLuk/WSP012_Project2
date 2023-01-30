@@ -16,6 +16,7 @@ declare module "express-session" {
     }
 }
 
+userRoutes.get('/filter',getSelectShows)
 userRoutes.post('/signup', signup)
 userRoutes.post('/login', login)
 userRoutes.get('/login/google', loginGoogle)
@@ -293,18 +294,19 @@ async function getShowDetails(req: express.Request, res: express.Response) {
 
 async function likedShow(req: express.Request, res: express.Response) {
     const targetShow = req.params.show_id
-    const askingUser = req.body.user
-    let returningShow = await client.query(`select * from favourites where show_id = ${1} and user_id =${2}`, [targetShow, askingUser])
-    let returningShowResults = returningShow.rows[0]
-    if (!returningShowResults) {
-        // await client.query(/*post*/)
-    } else {
-        // await client.query(/*drop*/)
-    }
+    const askingUser = req.session.user.id
+    await client.query(`INSERT into favourites (show_id,user_id) values ($1,$2)`,[
+        targetShow,
+        askingUser
+    ])
+    let targetShowChatroom = (await client.query(`select id from chatrooms where show_id = ($1)`,[targetShow])).rows[0].id
+    await client.query(`INSERT into chatroom_participants (chatroom_id,user_id) values ($1,$2)`,[targetShowChatroom,askingUser])
+    res.json({message: 'successfully regsitered'})
 }
 
 async function getAllShows(req: express.Request, res: express.Response){
     console.log('index page get all shows received ')
+    let pullCategories = (await client.query(`select id , category from categories`)).rows
     let allShows = await (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
     shows_locations 
     left join shows
@@ -313,11 +315,41 @@ async function getAllShows(req: express.Request, res: express.Response){
     on shows_locations.location_id = locations.id
     where shows.published = true
     order by show_id ASC`)).rows
+    
+    let allCategories = {}
+    pullCategories.forEach((elem)=>{
+        allCategories[elem['id']] = elem['category']
+    })
+    let respondingData = {}
+    respondingData['allShows'] = allShows
+    respondingData['allCategories'] = allCategories
+    res.status(200).json(respondingData)
+}
+
+async function getSelectShows(req: express.Request, res: express.Response){
+    console.log(req.query.category)
+    let showQuery = Object(req.query.category)
+    console.log(showQuery)
     let pullCategories = (await client.query(`select id , category from categories`)).rows
     let allCategories = {}
     pullCategories.forEach((elem)=>{
         allCategories[elem['id']] = elem['category']
     })
+    let reverseCat = {}
+    pullCategories.forEach((elem)=>{
+        reverseCat[elem['category']] = elem['id']
+    })
+    console.log('category id', reverseCat[showQuery])
+    let allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
+    shows_locations 
+    left join shows
+    on shows_locations.show_id = shows.id
+	left join locations
+    on shows_locations.location_id = locations.id
+    where shows.published = true and shows.category_id = ($1)
+    order by show_id ASC`,[reverseCat[showQuery]])).rows
+    console.log('all shows ',allShows)
+    
     let respondingData = {}
     respondingData['allShows'] = allShows
     respondingData['allCategories'] = allCategories

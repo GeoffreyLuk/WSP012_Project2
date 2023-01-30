@@ -196,6 +196,18 @@ async function uploadShow(req: express.Request, res: express.Response) {
             fileName
         ])
 
+        // add chatrooms
+        let chatroomID = (await client.query(`INSERT into chatrooms (chatroom_name, show_id) values ($1,$2) returning id`,[
+            showData['title'],
+            returningShowID
+        ])).rows[0].id
+
+        // add organiser as chatroom participant
+        await client.query(`INSERT into chatroom_participants (chatroom_id,user_id) values ($1,$2)`,[
+            chatroomID,
+            req.session.user.id
+        ])
+
 
         res.status(200).json({ message: 'sucessful update' })
     } catch (err) {

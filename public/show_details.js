@@ -4,10 +4,11 @@ const docCategory = document.querySelector('#show_category')
 const docTitle = document.querySelector('#show_title')
 const docOrganiser = document.querySelector('#show_organiser')
 const docContent = document.querySelector('#show_content')
-const docFavourites =document.querySelector('#show_favourites')
+const docFavourites =document.querySelector('#likedShow')
 const docDate = document.querySelector('#show_date')
 const docVenue = document.querySelector('#show_venue')
 const docAddress = document.querySelector('#show_address')
+const liked = document.querySelector
 
 console.log('paired')
 
@@ -43,3 +44,18 @@ async function switchImage(image) {
     const objectURL = URL.createObjectURL(result);
     docImagePreview.src = objectURL;
   }
+
+
+
+  docFavourites.addEventListener('click', async (e)=>{
+    let res = fetch(`/show_details/${show}`,{
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({application:'fan club'})
+    })
+
+    const result = await res.json();
+    alert(result.message)
+  })
