@@ -172,7 +172,7 @@ async function addTicketsToCart(req: express.Request, res: express.Response) {
         await client.query(
             `insert into users_purchases(user_id, ticket_id, quantity, ticket_paid)
                 values($1, $2, $3, $4)`,
-            [req.session.user.id, ticketId, ticketInfo.quantity, false]
+            [req.session["user"].id, ticketId, ticketInfo.quantity, false]
         )
     }
 

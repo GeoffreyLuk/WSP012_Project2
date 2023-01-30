@@ -1,5 +1,5 @@
 
-let signupformElm = document.querySelector('.signup-form > form')
+let signupformElm = document.querySelector('.signup-form')
 let signupformItems = signupformElm.elements
 
 function ValidateEmail() {
