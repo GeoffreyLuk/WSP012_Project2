@@ -23,8 +23,8 @@ app.use(grantExpress as express.RequestHandler);
 app.use(express.json())
 fs.mkdirSync(uploadDir, { recursive: true })
 
-app.get('/template',(req,res)=>{
-    res.sendFile(path.join(__dirname,'template','template.html'))
+app.get('/template', (req, res) => {
+    res.sendFile(path.join(__dirname, 'template', 'template.html'))
 })
 
 // io setup
@@ -108,12 +108,12 @@ io.on("connection", function (socket) {
         }
     })
 
-    socket.on('join_chatroom', (roomId) => {
+    // socket.on('join_chatroom', (roomId) => {
 
-        let chatroom = "room_" + roomId
-        socket.join(chatroom)
-        console.log(`${username} joined Room ${chatroom}`);
-    })
+    //     let chatroom = "room_" + roomId
+    //     socket.join(chatroom)
+    //     console.log(`${username} joined Room ${chatroom}`);
+    // })
 
     // Listen - join showroom when created show
     socket.on("join_new_room", ([roomId]) => {

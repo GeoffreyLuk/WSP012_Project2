@@ -207,9 +207,9 @@ async function proceedPurchaseWithShowId(req: express.Request, res: express.Resp
 
         await client.query(
             `
-        UPDATE users_purchases
-        SET ticket_paid = true
-        FROM users_purchases as up
+        UPDATE users_purchases as up
+        SET ticket_paid = true, updated_at = now(), purchase_date = now()
+        FROM users_purchases 
         	inner join tickets
         		on tickets.id = ticket_id 
         where up.user_id = $1
@@ -238,7 +238,7 @@ async function proceedPurchase(req: express.Request, res: express.Response) {
         await client.query(
             `
         UPDATE users_purchases
-        SET ticket_paid = true
+        SET ticket_paid = true, updated_at = now(), purchase_date = now()
         where user_id = $1
         	and ticket_paid = false 
         `, [userId]

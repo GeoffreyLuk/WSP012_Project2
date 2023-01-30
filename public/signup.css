@@ -1,0 +1,18 @@
+body {
+    width: 100vw;
+    height: 85vh;
+}
+
+.sign-up-form-container {
+    height: 75vh;
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign-up-item-container,
+.sign-up-item {
+    width: 350px;
+    margin: 10px 0 10px 0
+}
