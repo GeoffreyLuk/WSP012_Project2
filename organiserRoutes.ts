@@ -3,21 +3,21 @@ import max from 'date-fns/max';
 import min from 'date-fns/min';
 import format from 'fecha'
 import { client } from './database/init_data';
-import { isLoggedInAPI } from './util/guard';
+import { isLoggedIn } from './util/guard';
 import path from 'path'
 export const organiserRoutes = express.Router()
 import { formParsePromiseForOrg } from './util/formidable';
 
-organiserRoutes.get('/showlisting', isLoggedInAPI, (req, res) => {
+organiserRoutes.get('/showlisting', isLoggedIn, (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'show_listing.html'))
 })
-organiserRoutes.get('/organisation', isLoggedInAPI, getOrgShows)
-organiserRoutes.get('/organisation/:show_id', isLoggedInAPI, (req, res) => {
+organiserRoutes.get('/organisation', isLoggedIn, getOrgShows)
+organiserRoutes.get('/organisation/:show_id', isLoggedIn, (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'show_upload.html'))
 })
-organiserRoutes.get('/get/:show_id', isLoggedInAPI, getShowInfo)
-organiserRoutes.post('/upload/:show_id', isLoggedInAPI, uploadShow)
-organiserRoutes.put('/upload/:show_id', isLoggedInAPI, updateShow)
+organiserRoutes.get('/get/:show_id', isLoggedIn, getShowInfo)
+organiserRoutes.post('/upload/:show_id', isLoggedIn, uploadShow)
+organiserRoutes.put('/upload/:show_id', isLoggedIn, updateShow)
 
 async function getOrgShows(req: express.Request, res: express.Response) {
     const user = req.session.user.id

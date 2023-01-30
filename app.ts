@@ -12,6 +12,7 @@ import { chatroomRoutes } from "./chatroomRoutes"
 import { client } from './database/init_data';
 import { roomLists, chatroomId } from './util/model'
 import { shoppingCartRoutes } from "./shoppingCartRoutes"
+import path from "path"
 
 let app = express()
 let server = new http.Server(app)
@@ -21,6 +22,10 @@ app.use(sessionMiddleware);
 app.use(grantExpress as express.RequestHandler);
 app.use(express.json())
 fs.mkdirSync(uploadDir, { recursive: true })
+
+app.get('/template',(req,res)=>{
+    res.sendFile(path.join(__dirname,'template','template.html'))
+})
 
 // io setup
 io.use((socket, next) => {
@@ -39,6 +44,7 @@ app.use(shoppingCartRoutes)
 app.use(organiserRoutes)
 
 // Static files
+app.use(express.static('template'))
 app.use(express.static('public'))
 app.use(isLoggedIn, express.static('protected'))
 
