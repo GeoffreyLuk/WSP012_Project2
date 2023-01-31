@@ -165,7 +165,7 @@ async function updateMessages(messages) {
             if (timeOnlyBoolean == true){
                 returningString = `${dateString.getHours() < 10 ? '0' + JSON.stringify(dateString.getHours()):JSON.stringify(dateString.getHours()) }:${dateString.getMinutes() < 10 ? '0' + JSON.stringify(dateString.getMinutes()): JSON.stringify(dateString.getMinutes())}`
             }else{
-                returningString = `${dateString.getDate()}/${dateString.getMonth()}/${dateString.getFullYear()-2000} ${dateString.getHours() < 10 ? '0' + JSON.stringify(dateString.getHours()):JSON.stringify(dateString.getHours()) }:${dateString.getMinutes() < 10 ? '0' + JSON.stringify(dateString.getMinutes()): JSON.stringify(dateString.getMinutes())}`
+                returningString = `${dateString.getDate()}/${dateString.getMonth()+1}/${dateString.getFullYear()-2000} ${dateString.getHours() < 10 ? '0' + JSON.stringify(dateString.getHours()):JSON.stringify(dateString.getHours()) }:${dateString.getMinutes() < 10 ? '0' + JSON.stringify(dateString.getMinutes()): JSON.stringify(dateString.getMinutes())}`
             }
             console.log("returning string: ",returningString);
             return returningString

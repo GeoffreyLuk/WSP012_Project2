@@ -1,0 +1,21 @@
+.storage{
+    max-width: 700px;
+    margin: auto;
+    border: 1px solid #f1f2fb;
+}
+.purchase_block {
+    max-width: inherit;
+}
+.price_breakdown{
+    font-weight: bold;
+}
+.header_outline{
+    border-bottom: 1px solid #ec2629;
+}
+.subtitle{
+    font-weight: bold;
+}
+.breaker{
+    margin-top: 1rem;
+    margin-bottom: 3rem;
+} 
