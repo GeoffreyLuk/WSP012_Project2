@@ -150,16 +150,20 @@ async function loadTickets(ticketsInfo) {
 }
 
 eventDateElem.addEventListener('change', (e) => {
-    // console.log("changed");
+    console.log("changed");
     let dateFormat = new Date(eventDateElem.value)
-    // console.log("dateFormat: ", dateFormat);
+    console.log("dateFormat: ", dateFormat);
     let eventDate = dateFormat + dateFormat.setHours((dateFormat.getHours() + 8))
     let eventTimestamp = new Date(eventDate)
     console.log("timestamp: ", eventTimestamp);
     if (eventDateElem.value == 'All Event-date') {
+        console.log('loadTicketsInfo()')
         loadTicketsInfo()
+        return
     } else {
+        console.log('filterTicketByDate')
         filterTicketByDate(eventTimestamp)
+        return
     }
 })
 
@@ -170,7 +174,8 @@ async function filterTicketByDate(eventDate) {
         show
     }
     let eventDay = eventDate.getDate();
-    console.log("filterData: ", filterData);
+    // console.log("eventDay: ", eventDay);
+    // console.log("filterData: ", filterData);
     let res = await fetch('/filter_date', {
         method: 'POST',
         headers: {
@@ -181,7 +186,9 @@ async function filterTicketByDate(eventDate) {
 
     let data = await res.json()
     let filteredTickets = data.data
-    toggleCalendarbyFilter(eventDay)
+    console.log("filteredTickets: ", filteredTickets);
+    // Not working
+    // toggleCalendarbyFilter(eventDay)
     ticketTypeElem.value = "All Ticket-type"
     loadTickets(filteredTickets)
 }
@@ -220,23 +227,27 @@ async function filterTicketByType(type) {
 }
 
 checkOutBtnElem.addEventListener('click', () => {
+    console.log("checkOutBtn clicked");
     let selectedTickets = []
     let tickets = Array.from(ticketElemAll)
     for (let ticket of tickets) {
-        if (ticket.lastChild.value >= 1) {
-            let quantity = ticket.lastChild.value
-            let price = ticket.childNodes[3].innerHTML.replace("$", "")
-            let type = ticket.childNodes[2].innerHTML
-            let dateFormat = new Date(ticket.childNodes[0].innerHTML)
+        console.log(`ticket.lastChild.value: ${ticket.lastChild.value}`);
+        if (ticket.lastChild.lastChild.value >= 1) {
+            console.log("Hi");
+            let quantity = ticket.lastChild.lastChild.value
+            let price = ticket.childNodes[2].innerText.replace("$", "")
+            let type = ticket.childNodes[1].innerText
+            let dateFormat = new Date(ticket.childNodes[0].childNodes[0].innerHTML)
             let eventDate = new Date(dateFormat + dateFormat.setHours((dateFormat.getHours() + 8)))
             selectedTickets.push({ quantity, price, type, eventDate })
         }
     }
-    // console.log("selectedTickets: ", selectedTickets);
+    console.log("selectedTickets: ", selectedTickets);
     checkOut(selectedTickets)
 })
 
 async function checkOut(selectedTickets) {
+    console.log("run check out");
     let res = await fetch(`/select_tickets/${show}`, {
         method: 'POST',
         headers: {
@@ -247,7 +258,7 @@ async function checkOut(selectedTickets) {
     if (res.ok) {
         let data = await res.json()
         console.log("data: ", data);
-        window.location = `/checkout/show_${show}`
+        window.location = `/checkout/${show}`
     }
 }
 

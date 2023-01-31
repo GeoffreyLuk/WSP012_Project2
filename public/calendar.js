@@ -155,12 +155,14 @@ function toggleCalendar(e) {
     }
 }
 
-function toggleCalendarbyFilter(eventDay) {
+async function toggleCalendarbyFilter(eventDay) {
+    console.log("toggleCalendarbyFilter.eventDay", eventDay);
     let calendarDayElems = document.querySelectorAll('.calendar-day-hover')
     let eventDayElem = document.querySelector(`#day${eventDay}`)
     for (let i = 0; i < calendarDayElems.length; i++) {
         var count = 0;
         while (count < calendarDayElems.length) {
+            console.log("toggleCalendarbyFilter working");
             calendarDayElems[count++].classList.remove('active');
         }
         eventDayElem.classList.add(`active`);
