@@ -75,6 +75,7 @@ io.on("connection", function (socket) {
     const userId = user.id
     const username = user.first_name
 
+
     socket.on('join_all_chatroom', async () => {
         // Search chatroom_id in chatroom_participants by user_id
         let chatroomIdResult = await client.query(

@@ -15,7 +15,7 @@ chatroomRoutes.post('/send_msg', sendMessage)
 chatroomRoutes.post('/send_img', uploadPhoto)
 
 chatroomRoutes.get('/chatroom', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'chatroom.html'))
+    res.sendFile(path.join(__dirname, 'protected', 'chatroom.html'))
 })
 
 // Get conversation from database

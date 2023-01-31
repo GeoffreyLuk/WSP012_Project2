@@ -48,9 +48,9 @@ userRoutes.get('/editProfile', (req, res) => {
 userRoutes.get('/resetPW', (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'resetPW.html'))
 })
-userRoutes.get('/chatroom', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'chatroom.html'))
-})
+// userRoutes.get('/chatroom', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'public', 'chatroom.html'))
+// })
 userRoutes.get('/purchase_record', (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'purchaseRecord.html'))
 })
