@@ -47,6 +47,7 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
     let sumTotal = 0
     // console.log("ticketsInfo: ", ticketsInfo)
     showContainerElem.innerHTML = ''
+    totalAmountElem.innerHTML = ''
     if (ticketsInfo.length > 0) {
         if (ifIncludesShow == false) {
             console.log("False");
