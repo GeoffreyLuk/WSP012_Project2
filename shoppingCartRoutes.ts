@@ -76,8 +76,7 @@ async function getCheckoutInfo(req: express.Request, res: express.Response) {
 
 async function getCheckoutInfoWithNoShowId(req: express.Request, res: express.Response) {
     try {
-        // Hardcode
-        let userId = 21
+        let userId = req.session.user.id
 
         let ticketPurchaseResults = await client.query(
             `
@@ -140,8 +139,7 @@ async function getCheckoutInfoWithNoShowId(req: express.Request, res: express.Re
 async function deleteAllTicketsByName(req: express.Request, res: express.Response) {
     try {
         let data = req.body
-        // Hardcode
-        let userId = 21
+        let userId = req.session.user.id
 
         let delTicketsIdResults = await client.query(
             `
@@ -202,8 +200,8 @@ async function proceedPurchaseWithShowId(req: express.Request, res: express.Resp
     try {
         console.log("proceedPurchaseWithShowId");
         let showId = req.params.show_id
-        // hardcode
-        let userId = 21
+        let userId = req.session.user.id
+
 
         await client.query(
             `
@@ -232,8 +230,8 @@ async function proceedPurchaseWithShowId(req: express.Request, res: express.Resp
 async function proceedPurchase(req: express.Request, res: express.Response) {
     try {
         console.log("proceedPurchase");
-        // Hardcode
-        let userId = 21
+        let userId = req.session.user.id
+
 
         await client.query(
             `

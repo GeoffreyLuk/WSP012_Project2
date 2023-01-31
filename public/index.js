@@ -1,5 +1,3 @@
-// Hardcode
-let show = "show_55"
 let dataResult;
 
 
@@ -18,14 +16,14 @@ window.onload = async () => {
     loadingShows(allShowsDetails)
 }
 
-buttonContainer.addEventListener('click', async(e)=>{
-    if (e.target.matches('.filter')){
-        if(e.target.getAttribute('data-filter') == '*'){
+buttonContainer.addEventListener('click', async (e) => {
+    if (e.target.matches('.filter')) {
+        if (e.target.getAttribute('data-filter') == '*') {
             await getAllShows()
             console.log(dataResult)
             let allShowsDetails = dataResult['allShows']
             loadingShows(allShowsDetails)
-        }else{
+        } else {
             await getSelectShows(e.target.getAttribute('data-filter'))
             console.log(dataResult)
             let allShowsDetails = dataResult['allShows']
@@ -58,8 +56,8 @@ async function getAllShows() {
 }
 
 async function getSelectShows(target) {
-    let res = await fetch (`/filter?category=${target}`)
-    if (res.ok){
+    let res = await fetch(`/filter?category=${target}`)
+    if (res.ok) {
         let forExtraction = await res.json()
         dataResult = forExtraction
     }
@@ -67,9 +65,9 @@ async function getSelectShows(target) {
 
 function loadingShows(shows) {
     showContainer.innerHTML = ''
-    
-    function loader(parser, sd, ed , timeline=null) {
-        if(timeline != null){
+
+    function loader(parser, sd, ed, timeline = null) {
+        if (timeline != null) {
             showContainer.innerHTML += `
             <div id="show_${parser['show_id']}" class="${timeline} col-md-3 shows" data-category="${dataResult['allCategories'][parser['category']]}">
                     <div class="card">
@@ -83,7 +81,7 @@ function loadingShows(shows) {
                     </div>
                 </div>
             `;
-        }else{
+        } else {
             showContainer.innerHTML += `
             <div id="show_${parser['show_id']}" class="col-md-3 shows" data-category="${dataResult['allCategories'][parser['category']]}">
                     <div class="card">
@@ -98,7 +96,7 @@ function loadingShows(shows) {
                 </div>
             `;
         }
-        
+
     }
     for (let data of shows) {
         let launchDate = new Date(data['launch_date'])
@@ -106,27 +104,27 @@ function loadingShows(shows) {
 
         if (endDate < new Date()) {
             console.log('previous')
-            loader(data,launchDate,endDate,'previous')
+            loader(data, launchDate, endDate, 'previous')
 
-        //     showContainer.append(`
-        // <div id="show_${data['show_id']}" class="col-md-3 shows ${dataResult['allCategories'][data['category']]}" data-category="${dataResult['allCategories'][data['category']]}">
-        //         <div class="card">
-        //             <img src="/assets/organisations/${data['details']['banner']}" class="card-img-top img-fluid">
-        //             <div class="card-body">
-        //                     <p class="ms-auto badge bg-danger categories">${dataResult['allCategories'][data['category']]}</p>
-        //                     <h5 class="card-title">${data['show_name']}</h5>
-        //                     <p class="card-subtitle mb-2 text-muted">${data['venue']}</p>
-        //                     <p class="card-text">${launchDate.getDate()}/${launchDate.getMonth()}/${launchDate.getFullYear()} - ${endDate.getDate()}/${endDate.getMonth()}/${endDate.getFullYear()}</p>
-        //             </div>
-        //         </div>
-        //     </div>
-        // `)
+            //     showContainer.append(`
+            // <div id="show_${data['show_id']}" class="col-md-3 shows ${dataResult['allCategories'][data['category']]}" data-category="${dataResult['allCategories'][data['category']]}">
+            //         <div class="card">
+            //             <img src="/assets/organisations/${data['details']['banner']}" class="card-img-top img-fluid">
+            //             <div class="card-body">
+            //                     <p class="ms-auto badge bg-danger categories">${dataResult['allCategories'][data['category']]}</p>
+            //                     <h5 class="card-title">${data['show_name']}</h5>
+            //                     <p class="card-subtitle mb-2 text-muted">${data['venue']}</p>
+            //                     <p class="card-text">${launchDate.getDate()}/${launchDate.getMonth()}/${launchDate.getFullYear()} - ${endDate.getDate()}/${endDate.getMonth()}/${endDate.getFullYear()}</p>
+            //             </div>
+            //         </div>
+            //     </div>
+            // `)
         } else if (launchDate > new Date()) {
             console.log('upcoming')
-            loader(data,launchDate,endDate,'upcoming')
+            loader(data, launchDate, endDate, 'upcoming')
         } else if (launchDate < new Date() && new Date() < endDate) {
             console.log('current')
-            loader(data,launchDate,endDate,'current')
+            loader(data, launchDate, endDate, 'current')
         } else { console.log('error') }
 
 

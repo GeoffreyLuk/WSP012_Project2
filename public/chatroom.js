@@ -117,13 +117,16 @@ async function updateChatroomList(roomLists) {
         const div1 = document.createElement('div');
         div1.classList.add('room-id');
         div1.innerText = roomListItem.chatroom_id;
-        div1.onclick = function () {
-            loadMessages(roomListItem.chatroom_id)
-        }
+        // div1.onclick = function () {
+        //     loadMessages(roomListItem.chatroom_id)
+        // }
         div.appendChild(div1);
         const div2 = document.createElement('div');
         div2.classList.add('room-name');
         div2.innerText = roomListItem.chatroom_name;
+        div2.onclick = function () {
+            loadMessages(roomListItem.chatroom_id)
+        }
         div.appendChild(div2);
         roomListElem.appendChild(div)
         // socket.emit('join_chatroom', [roomListItem.chatroom_id])

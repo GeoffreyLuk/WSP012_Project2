@@ -1,4 +1,3 @@
-// Hardcode
 let show = document.URL.split('/show_').pop();
 
 let categoryElem = document.querySelector('.category')
@@ -123,6 +122,15 @@ async function loadTickets(ticketsInfo) {
         let opt1 = document.createElement('option')
         opt1.innerText = 1
         select.appendChild(opt1);
+        let opt2 = document.createElement('option')
+        opt2.innerText = 2
+        select.appendChild(opt2);
+        let opt3 = document.createElement('option')
+        opt3.innerText = 3
+        select.appendChild(opt3);
+        let opt4 = document.createElement('option')
+        opt4.innerText = 4
+        select.appendChild(opt4);
         ticketContainerElem.appendChild(div)
     }
 }
@@ -219,9 +227,11 @@ async function checkOut(selectedTickets) {
         },
         body: JSON.stringify(selectedTickets)
     })
-
-    let data = await res.json()
-    console.log("data: ", data);
+    if (res.ok) {
+        let data = await res.json()
+        console.log("data: ", data);
+        window.location = `/checkout/show_${show}`
+    }
 }
 
 async function getUserInfo() {

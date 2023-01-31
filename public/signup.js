@@ -6,7 +6,7 @@ function ValidateEmail() {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(signupformElm.email.value)) {
         return true
     }
-    alert("Please input valid email")
+    Notiflix.Notify.failure("Invalid Email input")
     return false
 }
 
@@ -17,7 +17,7 @@ function checkIfEmpty() {
                 return false
             }
         } else if (!item.value && item.type != "file") {
-            alert(`${i.placeholder} is empty!`)
+            Notiflix.Notify.failure(`${item.placeholder} is empty!`)
             return false
         }
     }
@@ -29,24 +29,22 @@ signupformElm.addEventListener('submit', async (e) => {
     if (checkIfEmpty()) {
         let uploadData = new FormData(signupformElm)
 
-        // console.log("uploadData: ", uploadData);
         let res = await fetch('/signup', {
             method: 'POST',
             body: uploadData
         })
-        // console.log("res: ", res)
 
         if (res.ok) {
+            Notiflix.Notify.success("Registration success! Welcome to G&G Tickets");
             signupformElm.reset()
+            window.location = '/'
             return
         } else {
-            console.log('register failed')
+            Notiflix.Notify.failure(`Email has already registered!`)
+            return
         }
-
-        let data = res.json()
-        console.log(data);
-        // window.location = '/404.html'
     } else {
+        Notiflix.Notify.failure(`Registration failed!`)
         return
     }
 })
