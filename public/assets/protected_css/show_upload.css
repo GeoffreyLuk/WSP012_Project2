@@ -72,3 +72,13 @@ padding: 2rem;
 fieldset{
     padding: 1rem;
 }
+legend{
+    font-weight: bold;
+    color: #00c5ac;
+    margin-bottom: 1rem;
+}
+
+textarea{
+    width: 25.5rem;
+    min-height: 10rem;
+}

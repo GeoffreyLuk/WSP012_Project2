@@ -134,6 +134,7 @@ function addingDiscounts() {
   <input type="text" id="discount_new/${discountCounter}_name" name="discount_new/${discountCounter}_name"><label for="discount_new/${discountCounter}_name">New Discount ${discountCounter}</label><br>
   <input type="number" id="discount_new/${discountCounter}_amount" name="discount_new/${discountCounter}_amount"><label for="discount_new/${discountCounter}_amount">Discount Amount</label><br>
 </div>
+<br>
 
     `
 
@@ -416,3 +417,4 @@ function renderCKEDITOR() {
       console.log(error);
     });
 }
+

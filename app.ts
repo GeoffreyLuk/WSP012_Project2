@@ -47,7 +47,7 @@ app.use(organiserRoutes)
 app.use(express.static('Template'))
 app.use(express.static('public'))
 app.use('/show_details',express.static(path.join(__dirname,'public')))
-app.use('/organisation/:show',express.static(path.join(__dirname,'public')))
+app.use('/organisation',express.static(path.join(__dirname,'public')))
 app.use(isLoggedIn, express.static('protected'))
 
 io.on("connection", function (socket) {

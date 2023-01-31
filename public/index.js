@@ -136,7 +136,7 @@ function loadingShows(shows) {
 function loadingButtons() {
     for (let keys in dataResult['allCategories']) {
         buttonContainer.innerHTML += `
-        <button id="filter_${dataResult['allCategories'][keys]}" type="button" data-filter="${dataResult['allCategories'][keys]}" class="filter btn btn-dark mx-2 btn-sm">${dataResult['allCategories'][keys]}</button>
+        <button id="filter_${dataResult['allCategories'][keys]}" type="button" data-filter="${dataResult['allCategories'][keys]}" class="filter btn bg-accent1 text-main mx-2 btn-sm">${dataResult['allCategories'][keys]}</button>
     `
     }
 
