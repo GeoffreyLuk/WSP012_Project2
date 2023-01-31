@@ -4,15 +4,31 @@ body {
     /* display: grid; */
     place-items: center;
 }
-
+.curr-date.active {
+    background-color: #ec2629 !important;
+}
 .calendar {
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
     height: max-content;
     width: max-content;
     background-color: #f1f2fb;
     border-radius: 30px;
     padding: 20px;
-    position: relative;
     overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .calendar {
+    position: relative;
+    }
+}
+
+@media (max-width: 767px) {
+    .calendar {
+            position: unset;
+    }
 }
 
 .calendar-header {
@@ -127,8 +143,8 @@ body {
 
 .calendar-days div.curr-date,
 .calendar-days div.curr-date:hover {
-    background-color: var(--blue);
-    color: var(--white);
+    background-color: #00c5ac;
+    color: white;
     border-radius: 50%;
 }
 
@@ -142,9 +158,9 @@ body {
     cursor: pointer;
 }
 
-.month-picker:hover {
+/* .month-picker:hover {
     background-color: var(--color-hover);
-}
+} */
 
 .year-picker {
     display: flex;

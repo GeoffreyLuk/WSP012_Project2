@@ -4,6 +4,7 @@ let calendar = document.querySelector('.calendar')
 let month_picker = calendar.querySelector('#month-picker')
 let month_list = calendar.querySelector('.month-list')
 
+
 // Amend to show launch_date in <shows>
 let currDate
 // get the Month value
@@ -55,6 +56,7 @@ function generateCalendar(month, year, showDates) {
                             <span></span>
                             <span></span>`
             if (i - first_day.getDay() + 1 === currDate.getDate() && year === currDate.getFullYear() && month === currDate.getMonth()) {
+                day.setAttribute('id', `day${i + 1}`)
                 day.classList.add('curr-date')
                 day.onclick = function (e) {
                     filterByCalendar(e)
@@ -64,6 +66,7 @@ function generateCalendar(month, year, showDates) {
                 let showDateFormat = new Date(showDate.show_date)
                 let showDay = showDateFormat.getDate()
                 if (i - first_day.getDay() + 1 === showDay && i - first_day.getDay() + 1 !== currDate.getDate()) {
+                    day.setAttribute('id', `day${i + 1}`)
                     day.classList.add('curr-date')
                     day.onclick = function (e) {
                         filterByCalendar(e)
@@ -125,6 +128,7 @@ function getFirstShowDate(showDates) {
 }
 
 function filterByCalendar(e) {
+    toggleCalendar(e)
     let selectedDay = Number(e.target.innerText)
     let selectedMonth = getMonthNumberFromName(month_picker.innerText) - 1
     let selectedYear = Number(document.querySelector('#year').innerText)
@@ -133,8 +137,44 @@ function filterByCalendar(e) {
     let selectedEventDate = selectedDate + selectedDate.setHours((selectedDate.getHours() + 8))
     console.log("selectedEventDate: ", selectedEventDate);
     let selectedEventTimestamp = new Date(selectedEventDate)
+    // console.log("selectedDay: ", selectedDay);
+    document.querySelector(`#opt${selectedDay}`).setAttribute('selected', 'selected')
     // Need to think of how to change the option value
     filterTicketByDate(selectedEventTimestamp)
+}
+
+function toggleCalendar(e) {
+    console.log("toggle >e: ", e.target);
+    let calendarDayElems = document.querySelectorAll('.calendar-day-hover')
+    for (let i = 0; i < calendarDayElems.length; i++) {
+        var count = 0;
+        while (count < calendarDayElems.length) {
+            calendarDayElems[count++].classList.remove('active');
+        }
+        e.target.classList.add(`active`);
+    }
+}
+
+function toggleCalendarbyFilter(eventDay) {
+    let calendarDayElems = document.querySelectorAll('.calendar-day-hover')
+    let eventDayElem = document.querySelector(`#day${eventDay}`)
+    for (let i = 0; i < calendarDayElems.length; i++) {
+        var count = 0;
+        while (count < calendarDayElems.length) {
+            calendarDayElems[count++].classList.remove('active');
+        }
+        eventDayElem.classList.add(`active`);
+    }
+}
+
+function resetDateFilter() {
+    let calendarDayElems = document.querySelectorAll('.calendar-day-hover')
+    for (let i = 0; i < calendarDayElems.length; i++) {
+        var count = 0;
+        while (count < calendarDayElems.length) {
+            calendarDayElems[count++].classList.remove('active');
+        }
+    }
 }
 
 async function init() {

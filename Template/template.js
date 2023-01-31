@@ -42,8 +42,8 @@ async function isLoggedin() {
                         <a class="nav-link" href="/showlisting">Organisation</a>
                     </li>
                 `
-            } else{
-                mainMenu.innerHTML+=`
+            } else {
+                mainMenu.innerHTML += `
                 <li class="nav-item">
                 <a class="nav-link" href="/chatroom">Chatroom</a>
                 </li>
@@ -64,7 +64,7 @@ async function isLoggedin() {
             `
             })
             profilePic.forEach(element => {
-                element.src = `assets/users_icon/${icon}`
+                element.src = `/assets/users_icon/${icon}`
             })
         }
     }

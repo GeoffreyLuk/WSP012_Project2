@@ -3,9 +3,9 @@ let show = document.URL.split('/show_').pop();
 let categoryElem = document.querySelector('.category')
 let showNameElem = document.querySelector('.show_name')
 let organiserElem = document.querySelector('.organiser')
-let locationBtnElem = document.querySelector('#location > option')
-let eventDateElem = document.querySelector('.event-date-selector')
-let ticketTypeElem = document.querySelector('.ticket-type-selector')
+let locationBtnElem = document.querySelector('#location-selector > option')
+let eventDateElem = document.querySelector('#event-date-selector')
+let ticketTypeElem = document.querySelector('#ticket-type-selector')
 let ticketContainerElem = document.querySelector('.ticket-container')
 let ticketElemAll = document.getElementsByClassName('ticket')
 let checkOutBtnElem = document.querySelector('.check-out-btn')
@@ -76,7 +76,9 @@ async function loadTicketsDetails(ticketsInfo) {
     for (let eventDate of eventDates) {
         let timeFormat = new Date(eventDate)
         let date = timeFormat.toDateString() + " " + timeFormat.getHours() + ":" + timeFormat.getMinutes()
+        let day = timeFormat.getDate()
         const opt = document.createElement('option')
+        opt.setAttribute("id", `opt${day}`)
         opt.text = date
         eventDateElem.appendChild(opt)
     };
@@ -97,25 +99,37 @@ async function loadTickets(ticketsInfo) {
         let time = timeFormat.getHours() + ":" + timeFormat.getMinutes()
         let div = document.createElement('div')
         div.classList.add('ticket')
+        let ticketInfoContainer = document.createElement('div')
+        ticketInfoContainer.classList.add('ticket-info-container')
+        div.appendChild(ticketInfoContainer);
         let div1 = document.createElement('div')
         div1.classList.add('show-date')
         div1.innerText = date
-        div.appendChild(div1);
+        ticketInfoContainer.appendChild(div1);
         let div2 = document.createElement('div')
         div2.classList.add('show-time')
         div2.innerText = time
-        div.appendChild(div2);
+        ticketInfoContainer.appendChild(div2);
+        let ticketInfoTextContainer = document.createElement('div')
+        ticketInfoTextContainer.classList.add('ticket-info-text-container')
+        div.appendChild(ticketInfoTextContainer);
         let div3 = document.createElement('div')
         div3.classList.add('ticket-type')
         div3.innerText = ticketInfoItem.type
-        div.appendChild(div3);
+        ticketInfoTextContainer.appendChild(div3);
+        let ticketInfoTextContainer2 = document.createElement('div')
+        ticketInfoTextContainer2.classList.add('ticket-info-text-container')
+        div.appendChild(ticketInfoTextContainer2);
         let div4 = document.createElement('div')
         div4.classList.add('ticket-price')
         div4.innerText = "$" + ticketInfoItem.pricing
-        div.appendChild(div4);
+        ticketInfoTextContainer2.appendChild(div4);
+        let ticketInfoTextContainer3 = document.createElement('div')
+        ticketInfoTextContainer3.classList.add('ticket-info-text-container')
+        div.appendChild(ticketInfoTextContainer3);
         let select = document.createElement('select')
         select.classList.add('ticket-quantity')
-        div.appendChild(select);
+        ticketInfoTextContainer3.appendChild(select);
         let opt = document.createElement('option')
         opt.innerText = 0
         select.appendChild(opt);
@@ -155,6 +169,7 @@ async function filterTicketByDate(eventDate) {
         eventDate,
         show
     }
+    let eventDay = eventDate.getDate();
     console.log("filterData: ", filterData);
     let res = await fetch('/filter_date', {
         method: 'POST',
@@ -166,6 +181,7 @@ async function filterTicketByDate(eventDate) {
 
     let data = await res.json()
     let filteredTickets = data.data
+    toggleCalendarbyFilter(eventDay)
     ticketTypeElem.value = "All Ticket-type"
     loadTickets(filteredTickets)
 }
@@ -199,6 +215,7 @@ async function filterTicketByType(type) {
     let data = await res.json()
     let filteredTickets = data.data
     eventDateElem.value = "All Event-date"
+    resetDateFilter()
     loadTickets(filteredTickets)
 }
 
@@ -215,7 +232,7 @@ checkOutBtnElem.addEventListener('click', () => {
             selectedTickets.push({ quantity, price, type, eventDate })
         }
     }
-    console.log("selectedTickets: ", selectedTickets);
+    // console.log("selectedTickets: ", selectedTickets);
     checkOut(selectedTickets)
 })
 

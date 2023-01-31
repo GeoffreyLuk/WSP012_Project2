@@ -72,8 +72,16 @@ async function signup(req: express.Request, res: express.Response) {
     try {
         let { fields, files } = await formParsePromiseforSignUp(req)
         // Haven't test
+        console.log("files: ", files);
+        console.log("files.icon: ", files.icon);
 
-        let fileName = files.originalFilename ? files.newFilename : ''
+        let fileName
+        if (!files.icon) {
+            fileName = String('default_icon.png')
+        } else {
+            fileName = String(files.icon.newFilename)
+        }
+        console.log("fileName: ", fileName);
 
         // Hashpassword
         let hashedPassword = await hashPassword(fields.password)
