@@ -44,10 +44,10 @@ async function isLoggedin() {
                 element.innerHTML += `
                 <li><div class="dropdown-item text-main" >Welcome back, ${name}!</div></li>
                 <li><hr class="dropdown-divider text-main"></li>
-                <li><a class="dropdown-item text-main" href="">Shopping Cart [not linked]</a></li>
+                <li><a class="dropdown-item text-main" href="/checkout">Shopping Cart</a></li>
                 <li><hr class="dropdown-divider text-main"></li>
-                <li><a class="dropdown-item text-main" href="/signup">Edit Profile</a></li>
-                <li><a class="dropdown-item text-main" href="/signup">Reset Password</a></li>
+                <li><a class="dropdown-item text-main" href="/editProfile">Edit Profile</a></li>
+                <li><a class="dropdown-item text-main" href="/resetPW">Reset Password</a></li>
                 <li><a class="dropdown-item text-main" href="/purchase_record">Purchase Record</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-main" href="/logout">Logout</a></li>
