@@ -8,7 +8,7 @@ shoppingCartRoutes.get('/checkout/:show_id', directToCheckout) //Done
 shoppingCartRoutes.get('/get_checkout/:show_id', getCheckoutInfo) //Done
 shoppingCartRoutes.post('/delete_tickets_by_name', deleteAllTicketsByName) //Done
 shoppingCartRoutes.post('/delete_ticket/', deleteTicket) //Done
-shoppingCartRoutes.get('/checkout', directToCheckoutWithNoShowId) //Done
+shoppingCartRoutes.get('/checkout', directToCheckoutWithNoShowId) //Doneml-2checkout
 shoppingCartRoutes.get('/get_checkout', getCheckoutInfoWithNoShowId)//Done
 shoppingCartRoutes.post('/proceed_purchase/:show_id', proceedPurchaseWithShowId)//Done
 shoppingCartRoutes.get('/proceed_purchase', proceedPurchase)//Done

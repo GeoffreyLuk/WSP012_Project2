@@ -299,7 +299,7 @@ async function getPurchasedTickets(req: express.Request, res: express.Response) 
     console.log("userId: ", userId);
     let purchasedTickets = (await client.query(
         `
-        select users_purchases.id as purchaseRecord_id, purchase_date, quantity ,pricing, organiser_name, show_name, show_date,venue
+        select users_purchases.id as purchaseRecord_id, purchase_date, quantity ,pricing, organiser_name, show_name, show_date,venue, tickets.show_id
         from users_purchases
         inner join tickets
         	on tickets.id = users_purchases.ticket_id 
@@ -311,13 +311,21 @@ async function getPurchasedTickets(req: express.Request, res: express.Response) 
         	on shows_locations.show_id = shows.id
         inner join locations
         	on locations.id = shows_locations.location_id 
-        where users_purchases.user_id = $1`,
+        where users_purchases.user_id = $1 and users_purchases.ticket_paid = true
+        order by purchaseRecord_id ASC`,
         [userId]
     )).rows
+    let images= await (await client.query(`select id , details from shows`)).rows
+    let imageData = {}
+    images.forEach((elem)=>{
+        imageData[elem['id']] = elem['details']['banner']
+        console.log(elem);
+    })
     console.log("purchasedTickets: ", purchasedTickets);
     res.json({
         data: purchasedTickets,
-        message: "get purchased tickets success"
+        message: "get purchased tickets success",
+        images : imageData
     })
 }
 
