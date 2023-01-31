@@ -359,15 +359,21 @@ async function getShowDetails(req: express.Request, res: express.Response) {
 }
 
 async function likedShow(req: express.Request, res: express.Response) {
-    const targetShow = req.params.show_id
-    const askingUser = req.session.user.id
-    await client.query(`INSERT into favourites (show_id,user_id) values ($1,$2)`, [
+    try{
+        const targetShow = req.params.show_id
+        const askingUser = req.session.user.id
+        await client.query(`INSERT into favourites (show_id,user_id) values ($1,$2)`, [
         targetShow,
         askingUser
     ])
     let targetShowChatroom = (await client.query(`select id from chatrooms where show_id = ($1)`, [targetShow])).rows[0].id
     await client.query(`INSERT into chatroom_participants (chatroom_id,user_id) values ($1,$2)`, [targetShowChatroom, askingUser])
-    res.json({ message: 'successfully regsitered' })
+    res.json({message: 'successfully regsitered' })
+}catch (e){
+    console.log(e)
+    res.status(400).json({message:`error: user not found, please login`})
+}
+    
 }
 
 async function getAllShows(req: express.Request, res: express.Response) {

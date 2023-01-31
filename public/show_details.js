@@ -62,7 +62,7 @@ async function switchImage(image) {
 
 mainContainer.addEventListener('click',async (e)=>{
   if (e.target.matches('#ticket_purchase')){
-    let res = fetch(`/show_tickets/${show}`)
+    window.location.href = `http://localhost:8080/show_tickets/show_${show}`
 
   }else if (e.target == docFavourites){
     e.preventDefault()
