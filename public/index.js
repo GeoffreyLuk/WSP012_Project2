@@ -71,13 +71,13 @@ function loadingShows(shows) {
     function loader(parser, sd, ed , timeline=null) {
         if(timeline != null){
             showContainer.innerHTML += `
-            <div id="show_${parser['show_id']}" class="${timeline} col-md-3 shows" data-category="${dataResult['allCategories'][parser['category']]}">
-                    <div class="card">
+            <div id="show_${parser['show_id']}" class="${timeline} col-md-8 col-lg-4 shows" data-category="${dataResult['allCategories'][parser['category']]}">
+                    <div class="card bg-container text-main">
                         <img src="/assets/organisations/${parser['details']['banner']}" class="${timeline}_img card-img-top img-fluid">
                         <div class="card-body">
-                                <p class="ms-auto badge bg-danger categories">${dataResult['allCategories'][parser['category']]}</p>
+                                <p class="ms-auto badge bg-accent2 categories">${dataResult['allCategories'][parser['category']]}</p>
                                 <h5 class="card-title">${parser['show_name']}</h5>
-                                <p class="card-subtitle mb-2 text-muted">${parser['venue']}</p>
+                                <p class="card-subtitle mb-2 text-muted text-accent1">${parser['venue']}</p>
                                 <p class="card-text">${sd.getDate()}/${sd.getMonth()}/${sd.getFullYear()} - ${ed.getDate()}/${ed.getMonth()}/${ed.getFullYear()}</p>
                         </div>
                     </div>
@@ -85,13 +85,13 @@ function loadingShows(shows) {
             `;
         }else{
             showContainer.innerHTML += `
-            <div id="show_${parser['show_id']}" class="col-md-3 shows" data-category="${dataResult['allCategories'][parser['category']]}">
-                    <div class="card">
+            <div id="show_${parser['show_id']}" col-md-8 col-lg-4 shows" data-category="${dataResult['allCategories'][parser['category']]}">
+                    <div class="card bg-container text-main">
                         <img src="/assets/organisations/${parser['details']['banner']}" class="card-img-top img-fluid">
                         <div class="card-body">
-                                <p class="ms-auto badge bg-danger categories">${dataResult['allCategories'][parser['category']]}</p>
+                                <p class="ms-auto badge bg-accent2 categories">${dataResult['allCategories'][parser['category']]}</p>
                                 <h5 class="card-title">${parser['show_name']}</h5>
-                                <p class="card-subtitle mb-2 text-muted">${parser['venue']}</p>
+                                <p class="card-subtitle mb-2 text-muted text-accent1">${parser['venue']}</p>
                                 <p class="card-text">${sd.getDate()}/${sd.getMonth()}/${sd.getFullYear()} - ${ed.getDate()}/${ed.getMonth()}/${ed.getFullYear()}</p>
                         </div>
                     </div>
@@ -136,7 +136,7 @@ function loadingShows(shows) {
 function loadingButtons() {
     for (let keys in dataResult['allCategories']) {
         buttonContainer.innerHTML += `
-        <button id="filter_${dataResult['allCategories'][keys]}" type="button" data-filter="${dataResult['allCategories'][keys]}" class="filter btn bg-accent1 text-main mx-2 btn-sm">${dataResult['allCategories'][keys]}</button>
+        <button id="filter_${dataResult['allCategories'][keys]}" type="button" data-filter="${dataResult['allCategories'][keys]}" class="filter btn bg-accent2 text-main mx-2 btn-sm">${dataResult['allCategories'][keys]}</button>
     `
     }
 

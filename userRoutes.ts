@@ -368,10 +368,10 @@ async function likedShow(req: express.Request, res: express.Response) {
     ])
     let targetShowChatroom = (await client.query(`select id from chatrooms where show_id = ($1)`, [targetShow])).rows[0].id
     await client.query(`INSERT into chatroom_participants (chatroom_id,user_id) values ($1,$2)`, [targetShowChatroom, askingUser])
-    res.json({message: 'successfully regsitered' })
+    res.status(200).json({message: 'successfully regsitered' })
 }catch (e){
     console.log(e)
-    res.status(400).json({message:`error: user not found, please login`})
+    res.status(500).json({message:`error: user not found, please login`})
 }
     
 }

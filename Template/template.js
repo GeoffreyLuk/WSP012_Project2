@@ -36,9 +36,18 @@ async function isLoggedin() {
             if (orgPrivilege < 2) {
                 mainMenu.innerHTML += `
                 <li class="nav-item">
+                <a class="nav-link" href="/chatroom">Chatroom</a>
+                </li>
+                <li class="nav-item">
                         <a class="nav-link" href="/showlisting">Organisation</a>
                     </li>
                 `
+            } else{
+                mainMenu.innerHTML+=`
+                <li class="nav-item">
+                <a class="nav-link" href="/chatroom">Chatroom</a>
+                </li>
+            `
             }
             loginMenu.forEach(element => {
                 element.innerHTML += `
