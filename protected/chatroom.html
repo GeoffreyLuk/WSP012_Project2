@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link href="template.css" rel="stylesheet">
+    <link href="chatroom.css" rel="stylesheet">
 </head>
 
 <body>
@@ -51,55 +52,39 @@
         </div>
     </nav>
 
-    <div id="main" class="top-margin">
-        <h3>Chatroom</h3>
-        <a href="/login.html">Login</a>
-        <div class="container">
+    <div id="main" class="top-margin text-main">
+        <div class="container-sm m-5">
             <div class="row">
                 <div class="col-4">
                     <!-- DM List -->
-                    <div class="room-list">
+                    <div id="room-list" class="room-list bg-card p-3">
                         <!-- Click -> join room? -->
-                        <div class="Room">
-                            Test Room
-                        </div>
-                        <div class="Room">
-                            Room 1
-                        </div>
-                        <div class="Room">
-                            DM Room
-                        </div>
-                        <div class="Room">
-                            Happy New Year
-                        </div>
                     </div>
                 </div>
                 <div class="col-8">
                     <!-- Message Box -->
-                    <div id="messages-box">
-                        <div class="message">
+                    <div id="messages-box" class="bg-container p-3">
+                        <!-- <div class="message">
                             <div class="sender"></div>
                             <div class="content"></div>
                             <div class="createdAt"></div>
-                        </div>
+                        </div> -->
+
+
                     </div>
-                    <form id="uploadImage" action="/upload" method="POST" enctype="multipart/form-data">
-                        <input type="file" name="image" />
-                        <button type="submit">Upload</button>
-                    </form>
-                    <form id='form' action="">
-                        <input id="input" type="text">
-                        <button type="submit">send</button>
-                    </form>
                 </div>
             </div>
-        </div>
-
-        <div>
-            <form id="show-form" action="">
-
-                <button type="submit">Create Show</button>
-            </form>
+            <div class="row text-center mt-5">
+                <form id="uploadImage" action="/upload" method="POST" enctype="multipart/form-data">
+                    <input id="fileget" type="file" name="image">
+                    <button type="submit">Upload</button>
+                </form>
+                <br><br>
+                <form id='form' action="">
+                    <input id="input" type="text">
+                    <button type="submit">send</button>
+                </form>
+            </div>
         </div>
     </div>
 

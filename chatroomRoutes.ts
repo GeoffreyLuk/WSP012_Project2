@@ -4,6 +4,7 @@ import { chatroomId } from './util/model'
 import { io } from './app';
 import { formParsePromiseforPhoto } from "./util/formidable";
 import path from "path";
+import { isLoggedIn } from "./util/guard";
 
 
 export const chatroomRoutes = express.Router()
@@ -14,7 +15,7 @@ chatroomRoutes.get('/get-chat-history/:chatroom_id', getChatHistoryById)
 chatroomRoutes.post('/send_msg', sendMessage)
 chatroomRoutes.post('/send_img', uploadPhoto)
 
-chatroomRoutes.get('/chatroom', (req, res) => {
+chatroomRoutes.get('/chatroom', isLoggedIn, (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'chatroom.html'))
 })
 
@@ -63,6 +64,9 @@ async function getChatHistoryById(req: express.Request, res: express.Response) {
 // Get Chatroom By UserId - 
 async function getChatRoomById(req: express.Request, res: express.Response) {
     try {
+        console.log('chatroom message request received:')
+        
+        
         // Search chatroom_id in chatroom_participants by user_id
         let chatroomIdResult = await client.query(
             `select distinct chatroom_id from chatroom_participants where user_id = $1`,
@@ -85,7 +89,7 @@ async function getChatRoomById(req: express.Request, res: express.Response) {
             )
 
             let chatroomResult = chatroomIdResult.rows[0]
-
+            console.log('chatroom result: ',chatroomResult);
             chatrooms.push({ chatroom_name: chatroomResult.chatroom_name, chatroom_id: chatroomResult.id })
         }
 

@@ -46,7 +46,7 @@ export function formParsePromiseforSignUp(req: express.Request) {
         uploadDir: './public/assets/users_icon',
         keepExtensions: true,
         maxFiles: 1,
-        maxFileSize: 3 * 1024 * 1024,
+        // maxFileSize: 3 * 1024 * 1024,
         filter: (part) => part.mimetype?.startsWith("image/") || false,
         filename: (originalName, originalExt, part, form) => {
             let fieldName = part.name
@@ -74,7 +74,7 @@ export async function formParsePromiseforPhoto(req: express.Request) {
         uploadDir: './public/assets/message_picture',
         keepExtensions: true,
         maxFiles: 1,
-        maxFileSize: 3 * 1024 * 1024,
+        // maxFileSize: 3 * 1024 * 1024,
         filter: (part) => part.mimetype?.startsWith("image/") || false,
         filename: (originalName, originalExt, part, form) => {
             let fieldName = part.name
