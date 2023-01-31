@@ -4,13 +4,16 @@
     background-color: #f1f2fb
 }
 .card-img-top{
-    width:100%!important;
-    height: 320px !important;
+    aspect-ratio: 177/100;
+    min-width: 294px;
+    max-height: 240px;
+    box-shadow: 0 1px 0 #f1f2fb
 }
 .card{
     margin-bottom: 20px;
-    box-shadow: rgba(100,100,111,0.2) 0px 7px 29px 0px;
+    height: 406px;
 }
 .btn-dark{
 
 }
+

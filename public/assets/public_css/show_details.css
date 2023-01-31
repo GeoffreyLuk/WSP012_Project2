@@ -27,3 +27,10 @@ padding: 2rem;
     font-size: 1.2rem;
     font-weight: bold;
 }
+.small_details{
+    border: 1px solid #f1f2fb;
+}
+
+#show_content{
+    border: 1px solid #f1f2fb;
+}

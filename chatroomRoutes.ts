@@ -65,7 +65,7 @@ async function getChatRoomById(req: express.Request, res: express.Response) {
     try {
         // Search chatroom_id in chatroom_participants by user_id
         let chatroomIdResult = await client.query(
-            `select chatroom_id from chatroom_participants where user_id = $1`,
+            `select distinct chatroom_id from chatroom_participants where user_id = $1`,
             [req.session.user.id]
         )
         // Map the chatroom id

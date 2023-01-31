@@ -1,3 +1,5 @@
+
+
 const show = document.URL.split('_').pop();
 const docImagePreview = document.querySelector('#banner_preview')
 const docCategory = document.querySelector('#show_category')
@@ -61,12 +63,14 @@ async function switchImage(image) {
   // })
 
 mainContainer.addEventListener('click',async (e)=>{
+  console.log(e.target);
+  console.log(docFavourites);
   if (e.target.matches('#ticket_purchase')){
     window.location.href = `http://localhost:8080/show_tickets/show_${show}`
 
   }else if (e.target == docFavourites){
-    e.preventDefault()
-    let res = fetch(`/show_details/${show}`,{
+    console.log('fv');
+    let res = await fetch(`/show_details/${show}`,{
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
