@@ -31,7 +31,7 @@ function ValidateEmail(item) {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(item.value)) {
         return true
     }
-    alert("Please input valid email")
+    Notiflix.Notify.failure("Invalid Email Input")
     return false
 }
 
@@ -43,7 +43,7 @@ function checkNewEmail(item) {
             emailData = editFormElm.newEmail.value
             return true
         } else {
-            console.log("New email address is not the same as confirm new email address, please try again.");
+            Notiflix.Notify.failure("Please Enter Correct Email Address")
             return false
         }
     } else {
@@ -59,12 +59,12 @@ function checkIfEmpty() {
                 return false
             }
         } else if (!item.value && item.type != "checkbox") {
-            alert(`${i.placeholder} is empty!`)
+            Notiflix.Notify.failure(`${item.placeholder} is empty`)
             return false
             // Check if the checkbox is true
         } else if (item.type == "checkbox") {
             if (!editFormElm.elements.agree.checked) {
-                alert("You have to confirm before submit")
+                Notiflix.Notify.failure(`Please Confirm Before Submit`)
                 return false
             }
         }
@@ -96,6 +96,7 @@ editFormElm.addEventListener('submit', async (e) => {
         // post handling
 
         if (!res.ok) {
+            Notiflix.Notify.failure(`Edit Profile Failed.`)
             return
         }
 

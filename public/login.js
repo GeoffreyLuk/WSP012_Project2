@@ -16,6 +16,7 @@ loginFormElm.addEventListener('submit', async (e) => {
     })
 
     if (!res.ok) {
+        Notiflix.Notify.failure(`Invalid Email/ Password.`)
         return
     }
 

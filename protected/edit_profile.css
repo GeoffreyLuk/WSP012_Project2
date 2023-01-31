@@ -1,0 +1,147 @@
+.container {
+    margin-top: 100px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.session-title {
+    background-color: #00c5ac;
+    padding: 20px;
+    margin: auto;
+    text-align: center;
+    font-weight: bold;
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+}
+
+.session-title.active {
+    background-color: #05A0BF;
+}
+
+.session-container table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.session-name {
+    cursor:pointer;
+}
+
+.session-name-text{
+    color: #f1f2fb;
+}
+
+.form-container {
+    margin-top: 150px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    padding: 40px 15px;
+}
+
+.profile_item {
+    margin: auto;
+    margin-top: 10px;
+}
+
+.login_item {
+    margin: 20px 0 20px 0;
+}
+
+.edit-email-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.new-email {
+    margin-right: 5px;
+}
+
+.confirm-email{
+    margin-left: 5px;
+}
+
+.original_email, .login-item-title, .confirmation {
+    font-weight: bold;
+    color: #f1f2fb;
+}
+
+/* Checkbox */
+.checkbox-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-side-checkbox{
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    user-select: none;
+}
+
+.checkbox{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    border: 1px solid black;
+    background-color: #eee;
+}
+
+.left-side-checkbox:hover input~.checkmark {
+    background-color: #00c5ac;
+}
+
+.left-side-checkbox .checkbox:checked~.checkmark {
+    background-color: #00c5ac;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.left-side-checkbox .checkbox:checked~.checkmark:after {
+    display: block;
+}
+
+.left-side-checkbox .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.submit-btn {
+    display:block;
+    margin:auto;
+    padding: 0px 5px 0px 5px;
+    text-align: center;
+    /* font-size: 18px; */
+    border-radius: 5px;
+    font-weight: bold;
+    background: #00c5ac;
+    color: #f1f2fb;
+}
