@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev app.ts",
+    "start": "ts-node app.ts",
     "format": "prettier --write .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "defaultData": "ts-node XLSX_db_upload.ts"

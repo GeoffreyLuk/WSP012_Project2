@@ -19,3 +19,42 @@
     margin-top: 1rem;
     margin-bottom: 3rem;
 } 
+
+.no_show{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Tab Head */
+a {
+    text-decoration: none;
+}
+
+.session-title {
+    background-color: #00c5ac;
+    padding: 20px;
+    margin: auto;
+    text-align: center;
+    font-weight: bold;
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+}
+
+.session-title.active {
+    background-color: #05A0BF;
+}
+
+.session-container table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.session-name {
+    cursor: pointer;
+}
+
+.session-name-text {
+    color: #f1f2fb;
+}
+/* End of Tab Head */
+

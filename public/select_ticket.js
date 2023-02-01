@@ -258,7 +258,7 @@ async function checkOut(selectedTickets) {
     if (res.ok) {
         let data = await res.json()
         console.log("data: ", data);
-        window.location = `/checkout/${show}`
+        window.location = `/checkout/show_${show}`
     }
 }
 
