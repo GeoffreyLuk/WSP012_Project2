@@ -4,10 +4,7 @@
     flex-direction: column;
     align-items: center;
 }
-.detail-event-title{
-    position: fixed;
-    margin-top: 100px;
-}
+
 .category{
     padding: 5px 5px 5px 5px;
     width: 150px;
@@ -47,10 +44,18 @@
 .filter-container{
     position: fixed;
 }
+.detail-event-title{
+    position: fixed;
+    margin-top: 100px;
+}
 }
 @media (max-width: 767px) {
 .filter-container{
     position: unset;
+}
+.detail-event-title{
+    position: unset;
+    margin-top: 100px;
 }
 }
 .ticket {

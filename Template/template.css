@@ -1,3 +1,7 @@
+/* Font Family */
+html * {
+    font-family: 'Lora', serif;
+}
 
 /* background colours */
 body{

@@ -8,7 +8,6 @@ body {
     background-color: #ec2629 !important;
 }
 .calendar {
-    margin-top: 250px;
     margin-left: auto;
     margin-right: auto;
     height: max-content;
@@ -22,12 +21,14 @@ body {
 @media (min-width: 768px) {
     .calendar {
     position: relative;
+    margin-top: 450px;
     }
 }
 
 @media (max-width: 767px) {
     .calendar {
-            position: unset;
+        position: unset;
+        margin-top: 100px;
     }
 }
 

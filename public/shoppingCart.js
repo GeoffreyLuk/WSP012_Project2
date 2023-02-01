@@ -149,13 +149,20 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
             const div1 = document.createElement('div')
             div1.classList.add('show-info')
             event.appendChild(div1)
-            const delBtn = document.createElement('a')
-            delBtn.classList.add('delete')
-            delBtn.onclick = function () {
-                deleteAllShowTicketsByShowName(showsInfo.organiser_name)
+            const btnContainer = document.createElement('div')
+            btnContainer.classList.add('btnContainer')
+            btnContainer.onclick = function () {
+                deleteAllShowTicketsByShowName(showsItem.organiser_name)
             }
-            delBtn.innerText = "deleteAllShowTicketsByShowName"
-            div1.appendChild(delBtn)
+            btnContainer.innerHTML += `<i class="bi bi-x-circle"></i>`
+            div1.appendChild(btnContainer)
+            // const delBtn = document.createElement('a')
+            // delBtn.classList.add('delete')
+            // delBtn.onclick = function () {
+            //     deleteAllShowTicketsByShowName(showsInfo.organiser_name)
+            // }
+            // delBtn.innerText = "deleteAllShowTicketsByShowName"
+            // div1.appendChild(delBtn)
             const div2 = document.createElement('div')
             div2.classList.add('organiser-name')
             div2.innerText = showsInfo.organiser_name
@@ -173,13 +180,20 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                 const ticket = document.createElement('div');
                 ticket.classList.add('ticket')
                 ticketContainer.appendChild(ticket)
-                const delBtn = document.createElement('a')
-                delBtn.classList.add('delete')
-                delBtn.onclick = function () {
+                const btnContainer = document.createElement('div')
+                btnContainer.classList.add('btnContainer')
+                btnContainer.onclick = function () {
                     deleteShowTicket(ticketsItem.users_purchases_id)
                 }
-                delBtn.innerText = "deleteShowTicket"
-                ticket.appendChild(delBtn)
+                btnContainer.innerHTML += `<i class="bi bi-x-circle"></i>`
+                ticket.appendChild(btnContainer)
+                // const delBtn = document.createElement('a')
+                // delBtn.classList.add('delete')
+                // delBtn.onclick = function () {
+                //     deleteShowTicket(ticketsItem.users_purchases_id)
+                // }
+                // delBtn.innerText = "deleteShowTicket"
+                // ticket.appendChild(delBtn)
                 const ticketType = document.createElement('div');
                 ticketType.classList.add('ticket-type')
                 ticketType.innerText = ticketsItem.type
