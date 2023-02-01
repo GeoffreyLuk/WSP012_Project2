@@ -2,6 +2,6 @@
     margin-top: 10rem;
 }
 .show_link:hover{
-   transform: translateX(5px);
-   
+   transform: translateX(5px) translateY(-5px);
+   color:#00c5ac ;
 }

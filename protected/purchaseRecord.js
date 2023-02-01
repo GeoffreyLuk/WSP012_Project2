@@ -30,7 +30,7 @@ function loadPurchasedTickets(ticketsInfo, imageinfo) {
     // console.log("ticketsInfo: ", ticketsInfo);
     ticketContainerElem.innerHTML = ''
     if (ticketsInfo.length == 0) {
-        ticketContainerElem.innerHTML = `<h1 class="text-accent1">No Shows to Show</h1>`
+        ticketContainerElem.innerHTML = `<h1 class="text-center text-accent1">No Shows to Show</h1>`
     } else {
         for (let recordItem of ticketsInfo) {
 
