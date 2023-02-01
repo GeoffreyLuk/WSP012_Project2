@@ -483,7 +483,7 @@ async function getSelectShows(req: express.Request, res: express.Response) {
                 on shows_locations.show_id = shows.id
                 left join locations
                 on shows_locations.location_id = locations.id
-                where shows.published = true and shows.end_date < ($2) and shows.category_id = ($1)
+                where shows.published = true and shows.end_date < ($1) and shows.category_id = ($2)
                 order by shows.launch_date DESC`,[new Date (),reverseCat[showQuery]])).rows
         break;
         case 'Current':
@@ -493,7 +493,7 @@ async function getSelectShows(req: express.Request, res: express.Response) {
             on shows_locations.show_id = shows.id
             left join locations
             on shows_locations.location_id = locations.id
-            where shows.published = true and shows.end_date > ($2) and shows.launch_date < ($1) and shows.category_id = ($1)
+            where shows.published = true and shows.end_date > ($1) and shows.launch_date < ($1) and shows.category_id = ($2)
             order by shows.launch_date DESC`,[new Date (),reverseCat[showQuery]])).rows
 
         break;
@@ -504,7 +504,7 @@ async function getSelectShows(req: express.Request, res: express.Response) {
             on shows_locations.show_id = shows.id
             left join locations
             on shows_locations.location_id = locations.id
-            where shows.published = true and shows.launch_date > ($2) and shows.category_id = ($1)
+            where shows.published = true and shows.launch_date > ($1) and shows.category_id = ($2)
             order by shows.launch_date DESC`,[new Date (),reverseCat[showQuery]])).rows
         break;
     }

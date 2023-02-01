@@ -97,6 +97,10 @@ uploadPhoto.addEventListener('submit', async (e) => {
     
         let data = res.json()
         console.log("uploadPhoto - data: ", data.data);
+
+        if (!res.ok){
+            Notiflix.Notify.failure(`server side error`)
+        }
     }
     return
 })

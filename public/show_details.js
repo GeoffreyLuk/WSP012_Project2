@@ -79,7 +79,13 @@ mainContainer.addEventListener('click',async (e)=>{
     })
 
     const result = await res.json();
-    alert(result.message)
+
+    if (res.ok){
+      Notiflix.Notify.success(result.message)
+    }else{
+      Notiflix.Notify.failure(result.message)
+    }
+    
   }
   // else if (e.target.matches('show_category')){
   //   let res = fetch(`/`)
