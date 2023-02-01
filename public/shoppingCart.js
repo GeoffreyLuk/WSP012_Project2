@@ -4,7 +4,7 @@ let totalAmountElem = document.querySelector('.total-amount')
 let checkboxElem = document.querySelector('.check-out-form').elements
 let checkoutBtnElem = document.querySelector('.checkout-btn')
 let ifIncludesShow = window.location.toString().includes("show_")
-let alterElem = document.querySelector('.check-out-item > a')
+let alterElem = document.querySelector('.checkout-btn')
 
 
 console.log("URL to string: ", ifIncludesShow);
@@ -45,14 +45,10 @@ async function getUserInfo() {
 
 async function loadTicketsByShowId(ticketsInfo, showsInfo) {
     let sumTotal = 0
-    // console.log("ticketsInfo: ", ticketsInfo)
     showContainerElem.innerHTML = ''
     totalAmountElem.innerHTML = ''
     if (ticketsInfo.length > 0) {
         if (ifIncludesShow == false) {
-            console.log("False");
-            console.log("ticketsInfo: ", ticketsInfo);
-            // console.log("showsInfo: ", showsInfo);
             for (let showsItem of showsInfo) {
                 console.log("showsItem: ", showsItem);
                 const event = document.createElement('div')
@@ -69,13 +65,6 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                 }
                 btnContainer.innerHTML += `<i class="bi bi-x-circle"></i>`
                 showInfo.appendChild(btnContainer)
-                // const delBtn = document.createElement('a')
-                // delBtn.classList.add('delete')
-                // delBtn.onclick = function () {
-                //     deleteAllShowTicketsByShowName(showsItem.organiser_name)
-                // }
-                // delBtn.innerText = "deleteAllShowTicketsByShowName"
-                // btnContainer.appendChild(delBtn)
                 const organiserName = document.createElement('div')
                 organiserName.classList.add('organiser-name')
                 organiserName.innerText = showsItem.organiser_name
@@ -86,17 +75,17 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                 showInfo.appendChild(showName)
             }
             for (let ticketsItem of ticketsInfo) {
-                console.log("Run ticketsInfo Loop");
-                console.log("ticketsItem.quantity: ", ticketsItem.quantity);
+                // console.log("Run ticketsInfo Loop");
+                // console.log("ticketsItem.quantity: ", ticketsItem.quantity);
                 for (i = 0; i < showContainerElem.childNodes.length; i++) {
-                    // console.log("showContainerElem.childNodes[i].id:", showContainerElem.childNodes[i].id);
                     if (("show_" + ticketsItem.show_id) == showContainerElem.childNodes[i].id) {
                         let eventId = showContainerElem.childNodes[i].id
                         let event = document.querySelector(`#${eventId}`)
-                        // console.log("eventId", eventId);
                         let timeFormat = new Date(ticketsItem.show_date)
                         let time = timeFormat.toDateString() + " / " + timeFormat.getHours() + ":" + timeFormat.getMinutes()
-                        // console.log("time: ", time);
+                        let properDate = (dateFormater(timeFormat, false) + " " + dateFormater(timeFormat, true))
+                        let properTime = dateFormater(timeFormat, true)
+                        console.log("properTime: ", properTime);
                         const ticketContainer = document.createElement('div');
                         ticketContainer.classList.add('ticket-container')
                         event.appendChild(ticketContainer);
@@ -110,13 +99,6 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                         }
                         btnContainer.innerHTML += `<i class="bi bi-x-circle"></i>`
                         ticket.appendChild(btnContainer)
-                        // const delBtn = document.createElement('a')
-                        // delBtn.classList.add('delete')
-                        // delBtn.onclick = function () {
-                        //     deleteShowTicket(ticketsItem.users_purchases_id)
-                        // }
-                        // delBtn.innerText = "deleteShowTicket"
-                        // ticket.appendChild(delBtn)
                         const ticketType = document.createElement('div');
                         ticketType.classList.add('ticket-type')
                         ticketType.innerText = ticketsItem.type
@@ -131,7 +113,7 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                         ticket.appendChild(ticketQuant)
                         const ticketDate = document.createElement('div');
                         ticketDate.classList.add('ticket-date')
-                        ticketDate.innerText = time
+                        ticketDate.innerText = properDate
                         ticket.appendChild(ticketDate)
                         const ticketVenue = document.createElement('div');
                         ticketVenue.classList.add('ticket-venue')
@@ -152,17 +134,10 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
             const btnContainer = document.createElement('div')
             btnContainer.classList.add('btnContainer')
             btnContainer.onclick = function () {
-                deleteAllShowTicketsByShowName(showsItem.organiser_name)
+                deleteAllShowTicketsByShowName(showsInfo.organiser_name)
             }
             btnContainer.innerHTML += `<i class="bi bi-x-circle"></i>`
             div1.appendChild(btnContainer)
-            // const delBtn = document.createElement('a')
-            // delBtn.classList.add('delete')
-            // delBtn.onclick = function () {
-            //     deleteAllShowTicketsByShowName(showsInfo.organiser_name)
-            // }
-            // delBtn.innerText = "deleteAllShowTicketsByShowName"
-            // div1.appendChild(delBtn)
             const div2 = document.createElement('div')
             div2.classList.add('organiser-name')
             div2.innerText = showsInfo.organiser_name
@@ -174,6 +149,7 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
             for (let ticketsItem of ticketsInfo) {
                 let timeFormat = new Date(ticketsItem.show_date)
                 let time = timeFormat.toDateString() + " / " + timeFormat.getHours() + ":" + timeFormat.getMinutes()
+                let properDate = (dateFormater(timeFormat, false) + " " + dateFormater(timeFormat, true))
                 const ticketContainer = document.createElement('div');
                 ticketContainer.classList.add('ticket-container')
                 event.appendChild(ticketContainer);
@@ -187,13 +163,6 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                 }
                 btnContainer.innerHTML += `<i class="bi bi-x-circle"></i>`
                 ticket.appendChild(btnContainer)
-                // const delBtn = document.createElement('a')
-                // delBtn.classList.add('delete')
-                // delBtn.onclick = function () {
-                //     deleteShowTicket(ticketsItem.users_purchases_id)
-                // }
-                // delBtn.innerText = "deleteShowTicket"
-                // ticket.appendChild(delBtn)
                 const ticketType = document.createElement('div');
                 ticketType.classList.add('ticket-type')
                 ticketType.innerText = ticketsItem.type
@@ -202,20 +171,22 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                 ticketPrice.classList.add('ticket-price')
                 ticketPrice.innerText = "$" + ticketsItem.pricing
                 ticket.appendChild(ticketPrice)
+                const ticketQuant = document.createElement('div');
+                ticketQuant.classList.add('ticket-quantity')
+                ticketQuant.innerText = ticketsItem.quantity
+                ticket.appendChild(ticketQuant)
                 const ticketDate = document.createElement('div');
                 ticketDate.classList.add('ticket-date')
-                ticketDate.innerText = time
+                ticketDate.innerText = properDate
                 ticket.appendChild(ticketDate)
                 const ticketVenue = document.createElement('div');
                 ticketVenue.classList.add('ticket-venue')
                 ticketVenue.innerText = showsInfo.venue
                 ticket.appendChild(ticketVenue)
-                sumTotal += ticketsItem.pricing
+                sumTotal += (ticketsItem.quantity * ticketsItem.pricing)
                 totalAmountElem.innerText = "$" + sumTotal
             }
         }
-
-        // console.log("sumTotal: ", sumTotal);
     }
 }
 
@@ -230,7 +201,8 @@ async function deleteAllShowTicketsByShowName(organiserName) {
         body: JSON.stringify(data)
     })
     if (res.ok) {
-        console.log("Cool!");
+        await Notiflix.Notify.success(`Removed ${organiserName}'s tickets`);
+        location.reload();
     }
 }
 
@@ -245,13 +217,13 @@ async function deleteShowTicket(selectedTicketId) {
         body: JSON.stringify(data)
     })
     if (res.ok) {
-        console.log("deleteShowTicket works");
+        await Notiflix.Notify.success(`Removed tickets`);
+        location.reload();
     }
 }
 
 function ifChecked() {
     if (!checkboxElem.agree.checked) {
-        console.log("No check");
         return false
     } else {
         return true
@@ -260,7 +232,6 @@ function ifChecked() {
 
 checkoutBtnElem.addEventListener('click', (e) => {
     e.preventDefault()
-    console.log("Clicked");
     if (ifChecked()) {
         proceedPayment()
     } else {
@@ -271,10 +242,8 @@ checkoutBtnElem.addEventListener('click', (e) => {
 async function proceedPayment() {
     let res
     if (ifIncludesShow == false) {
-        console.log("No show id");
         res = await fetch(`/proceed_purchase`)
     } else {
-        console.log("Show ID");
         let data = { show }
         res = await fetch(`/proceed_purchase/${show}`, {
             method: 'POST',
@@ -283,7 +252,6 @@ async function proceedPayment() {
             },
             body: JSON.stringify(data)
         })
-        console.log(data);
     }
     if (res.ok) {
         let data = await res.json()
@@ -295,11 +263,22 @@ async function proceedPayment() {
 
 function alterCheckoutBtn() {
     if (ifIncludesShow == false) {
-        alterElem.setAttribute("href", "/proceed_purchase")
+        checkoutBtnElem.setAttribute("href", "/proceed_purchase")
     } else {
-        alterElem.setAttribute("href", `/proceed_purchase/${show}`)
+        checkoutBtnElem.setAttribute("href", `/proceed_purchase/${show}`)
     }
     return
 }
 
 init()
+
+function dateFormater(dateObject, timeOnlyBoolean = false) {
+    let returningString;
+    if (timeOnlyBoolean == true) {
+        returningString = `${dateObject.getHours() < 10 ? '0' + JSON.stringify(dateObject.getHours()) : JSON.stringify(dateObject.getHours())}:${dateObject.getMinutes() < 10 ? '0' + JSON.stringify(dateObject.getMinutes()) : JSON.stringify(dateObject.getMinutes())}`
+    } else {
+        returningString = `${dateObject.getDate()}-${dateObject.getMonth() + 1}-${dateObject.getFullYear() - 2000}`
+    }
+    console.log("returning string: ", returningString);
+    return returningString
+}

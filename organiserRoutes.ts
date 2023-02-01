@@ -206,13 +206,13 @@ async function uploadShow(req: express.Request, res: express.Response) {
         ])
 
         // add chatrooms
-        let chatroomID = (await client.query(`INSERT into chatrooms (chatroom_name, show_id) values ($1,$2) returning id`,[
+        let chatroomID = (await client.query(`INSERT into chatrooms (chatroom_name, show_id) values ($1,$2) returning id`, [
             showData['title'],
             returningShowID
         ])).rows[0].id
 
         // add organiser as chatroom participant
-        await client.query(`INSERT into chatroom_participants (chatroom_id,user_id) values ($1,$2)`,[
+        await client.query(`INSERT into chatroom_participants (chatroom_id,user_id) values ($1,$2)`, [
             chatroomID,
             req.session.user.id
         ])
@@ -327,13 +327,13 @@ async function updateShow(req: express.Request, res: express.Response) {
         //tickets need to update reactively
         console.log('inserting tickets')
         let pulledstuff = await (await client.query(`select id from tickets where show_id = ${showId}`)).rows
-        console.log('pulledstuff: ',pulledstuff)
-        let pulledTickets :string[] = []
-        pulledstuff.forEach((elem)=>{
+        console.log('pulledstuff: ', pulledstuff)
+        let pulledTickets: string[] = []
+        pulledstuff.forEach((elem) => {
             pulledTickets.push(elem['id'])
         })
-        console.log('pulledtickets: ',pulledTickets)
-        let existingTickets :any = []
+        console.log('pulledtickets: ', pulledTickets)
+        let existingTickets: any = []
         let newTickets = []
 
         for (let keys in ticketsData) {
@@ -357,25 +357,25 @@ async function updateShow(req: express.Request, res: express.Response) {
                 newTickets.push(keys)
             }
         }
-        console.log('existingTickets: ',existingTickets)
-        let filterArr = pulledTickets.filter(function(item) {
-            if (existingTickets.includes(JSON.stringify(item))){
+        console.log('existingTickets: ', existingTickets)
+        let filterArr = pulledTickets.filter(function (item) {
+            if (existingTickets.includes(JSON.stringify(item))) {
                 return false
-            } else{ return true}
-          })
+            } else { return true }
+        })
 
         console.log('filter: ', filterArr)
 
         if (filterArr.length > 0) {
-            filterArr.forEach(async (e:any) => {
+            filterArr.forEach(async (e: any) => {
                 await client.query(`delete from tickets where id = ${e}`)
             })
         }
 
         if (newTickets.length > 0) {
             for (let values of newTickets) {
-                    console.log(values)
-                    await client.query(`INSERT into tickets (show_id,type,pricing,show_date,max_quantity) values ($1,$2,$3,$4,$5)`, [
+                console.log(values)
+                await client.query(`INSERT into tickets (show_id,type,pricing,show_date,max_quantity) values ($1,$2,$3,$4,$5)`, [
                     showId,
                     ticketsData[values]['type'],
                     ticketsData[values]['pricing'],

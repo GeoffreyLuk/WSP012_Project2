@@ -189,3 +189,13 @@ async function init() {
 
 init()
 
+function dateFormater(dateObject, timeOnlyBoolean = false) {
+    let returningString;
+    if (timeOnlyBoolean == true) {
+        returningString = `${dateObject.getHours() < 10 ? '0' + JSON.stringify(dateObject.getHours()) : JSON.stringify(dateObject.getHours())}:${dateObject.getMinutes() < 10 ? '0' + JSON.stringify(dateObject.getMinutes()) : JSON.stringify(dateObject.getMinutes())}`
+    } else {
+        returningString = `${dateObject.getDate()}/${dateObject.getMonth() + 1}/${dateObject.getFullYear() - 2000}`
+    }
+    console.log("returning string: ", returningString);
+    return returningString
+}

@@ -12,7 +12,7 @@ async function getUserInfo() {
 async function checkIfEmpty() {
     for (let item of resetPWFormItems) {
         if (!item.value && item.type != "checkbox") {
-            alert(`${i.placeholder} is empty!`)
+            Notiflix.Notify.failure(`${item.placeholder} is empty`)
             return false
         }
     }
@@ -23,7 +23,7 @@ async function checkPWCorrect() {
     if (resetPWFormElm.old_PW.value == resetPWFormElm.new_PW.value) {
         return true
     } else {
-        console.log("Incorrect new password, please try again");
+        Notiflix.Notify.failure(`Incorrect New Password`)
         return false
     }
 }
@@ -50,7 +50,7 @@ resetPWFormElm.addEventListener('submit', async (e) => {
         if (res.ok) {
             resetPWFormElm.reset()
         } else {
-            console.log('Reset Password Failed')
+            Notiflix.Notify.failure(`Reset Password Failed`)
         }
         let data = res.json()
         console.log(data);

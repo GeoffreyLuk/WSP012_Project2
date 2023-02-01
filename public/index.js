@@ -89,22 +89,22 @@ async function getSelectShows(target, param) {
 
 function loadingShows(shows) {
     showContainer.innerHTML = ''
-    if (shows.length == 0){
+    if (shows.length == 0) {
         showContainer.innerHTML += `<h3 class="text-accent1 text-center">No Shows to Show</h3>`
-    }else{
-    for (let data of shows) {
-        let launchDate = new Date(data['launch_date'])
-        let endDate = new Date(data['end_date'])
+    } else {
+        for (let data of shows) {
+            let launchDate = new Date(data['launch_date'])
+            let endDate = new Date(data['end_date'])
 
-        if (endDate < new Date()) {
-            loader(data, launchDate, endDate, 'Previous')
-        } else if (launchDate > new Date()) {
-            loader(data, launchDate, endDate, 'Upcoming')
-        } else if (launchDate < new Date() && new Date() < endDate) {
-            loader(data, launchDate, endDate, 'Current')
-        } else { console.log('error') }
+            if (endDate < new Date()) {
+                loader(data, launchDate, endDate, 'Previous')
+            } else if (launchDate > new Date()) {
+                loader(data, launchDate, endDate, 'Upcoming')
+            } else if (launchDate < new Date() && new Date() < endDate) {
+                loader(data, launchDate, endDate, 'Current')
+            } else { console.log('error') }
+        }
     }
-}
 
 
     function loader(parser, sd, ed, timeline = null) {
@@ -159,11 +159,16 @@ showContainer.addEventListener('click', async (e) => {
     let showTargetID;
     if (e.target.parentElement.parentElement.matches('.shows')) {
         showTargetID = e.target.parentElement.parentElement.id
-        window.location.replace(`http://localhost:8080/show_details/${showTargetID}`)
-        const res = await fetch(`/show_details/${e.target.parentElement.parentElement.id}`);
+        window.location.replace(`/show_details/${showTargetID}`)
+        //window.location.replace(`http://localhost:8080/show_details/${showTargetID}`)
+        // window.location.href({}, '', `/show_details/${showTargetID}`)
+        // const res = await fetch(`/show_details/${showTargetID}`);
     } else if (e.target.parentElement.parentElement.parentElement.matches('.shows')) {
         showTargetID = e.target.parentElement.parentElement.parentElement.id
-        window.location.replace(`http://localhost:8080/show_details/${showTargetID}`)
+        window.location.replace(`/show_details/${showTargetID}`)
+        //window.location.replace(`http://localhost:8080/show_details/${showTargetID}`)
+        // window.location.href({}, '', `/show_details/${showTargetID}`)
+        // const res = await fetch(`/show_details/${showTargetID}`);
     }
 })
 

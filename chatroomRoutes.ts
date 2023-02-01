@@ -9,7 +9,7 @@ import { isLoggedIn } from "./util/guard";
 
 export const chatroomRoutes = express.Router()
 
-chatroomRoutes.post('/create_show', createShow)
+// chatroomRoutes.post('/create_show', createShow)
 chatroomRoutes.get('/get_chatroom', getChatRoomById)
 chatroomRoutes.get('/get-chat-history/:chatroom_id', getChatHistoryById)
 chatroomRoutes.post('/send_msg', sendMessage)
@@ -53,7 +53,7 @@ async function getChatHistoryById(req: express.Request, res: express.Response) {
             message: "Load messages success"
         })
     } catch (err) {
-        console.log(err);
+        console.log("error: ", err);
         res.status(500).json({
             message: '[CHR001] - Server error'
         })
@@ -64,9 +64,7 @@ async function getChatHistoryById(req: express.Request, res: express.Response) {
 // Get Chatroom By UserId - 
 async function getChatRoomById(req: express.Request, res: express.Response) {
     try {
-        console.log('chatroom message request received:')
-        
-        
+        // console.log('chatroom message request received:')
         // Search chatroom_id in chatroom_participants by user_id
         let chatroomIdResult = await client.query(
             `select distinct chatroom_id from chatroom_participants where user_id = $1`,
@@ -89,7 +87,7 @@ async function getChatRoomById(req: express.Request, res: express.Response) {
             )
 
             let chatroomResult = chatroomIdResult.rows[0]
-            console.log('chatroom result: ',chatroomResult);
+            console.log('chatroom result: ', chatroomResult);
             chatrooms.push({ chatroom_name: chatroomResult.chatroom_name, chatroom_id: chatroomResult.id })
         }
 
@@ -106,54 +104,54 @@ async function getChatRoomById(req: express.Request, res: express.Response) {
 }
 
 // Show - [POST - Create] -> create chatroom -> participant
-async function createShow(req: express.Request, res: express.Response) {
-    let { organiser_id, category_id, show_name, show_duration, sales_start_date, sales_end_date, published, launch_date, end_date, details } = req.body
-    // console.log("req.body: ", req.body);
+// async function createShow(req: express.Request, res: express.Response) {
+//     let { organiser_id, category_id, show_name, show_duration, sales_start_date, sales_end_date, published, launch_date, end_date, details } = req.body
+//     // console.log("req.body: ", req.body);
 
-    // insert data to "SHOWS"
-    await client.query(
-        `insert into shows(organiser_id, category_id, show_name, show_duration, sales_start_date, sales_end_date, published, launch_date, end_date, details)
-            values ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)`,
-        [organiser_id, category_id, show_name, show_duration, sales_start_date, sales_end_date, published, launch_date, end_date, details]
-    )
+//     // insert data to "SHOWS"
+//     await client.query(
+//         `insert into shows(organiser_id, category_id, show_name, show_duration, sales_start_date, sales_end_date, published, launch_date, end_date, details)
+//             values ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)`,
+//         [organiser_id, category_id, show_name, show_duration, sales_start_date, sales_end_date, published, launch_date, end_date, details]
+//     )
 
-    // get show_id from query
-    let show_id = await client.query(
-        `select id from shows where show_name = $1`,
-        [show_name]
-    )
-    // console.log("show_id: ", show_id.rows[0]);
+//     // get show_id from query
+//     let show_id = await client.query(
+//         `select id from shows where show_name = $1`,
+//         [show_name]
+//     )
+//     // console.log("show_id: ", show_id.rows[0]);
 
-    // insert data to "Chatrooms"
-    await client.query(
-        `insert into chatrooms(chatroom_name, show_id)
-            values ($1, $2)`,
-        [show_name, show_id.rows[0].id]
-    )
-    // console.log("Inserted to Chatroom ");
-    // get chatroom id from query
-    let chatroom_id = await client.query(
-        `select id from chatrooms where show_id = $1`,
-        [show_id.rows[0].id]
-    )
-    // console.log("chatroom_id: ", show_id.rows[0].id);
-    // get user_id from query
-    let user_id = await client.query(
-        `select user_id from organiser_list where id = $1`,
-        [organiser_id]
-    )
-    // console.log("user_id", user_id.rows[0].user_id);
-    // insert data to "chatroom_participants"
-    await client.query(
-        `insert into chatroom_participants(chatroom_id, user_id)
-            values($1, $2)`,
-        [chatroom_id.rows[0].id, user_id.rows[0].user_id]
-    )
-    res.json({
-        roomId: "room_" + chatroom_id.rows[0].id,
-    })
+//     // insert data to "Chatrooms"
+//     await client.query(
+//         `insert into chatrooms(chatroom_name, show_id)
+//             values ($1, $2)`,
+//         [show_name, show_id.rows[0].id]
+//     )
+//     // console.log("Inserted to Chatroom ");
+//     // get chatroom id from query
+//     let chatroom_id = await client.query(
+//         `select id from chatrooms where show_id = $1`,
+//         [show_id.rows[0].id]
+//     )
+//     // console.log("chatroom_id: ", show_id.rows[0].id);
+//     // get user_id from query
+//     let user_id = await client.query(
+//         `select user_id from organiser_list where id = $1`,
+//         [organiser_id]
+//     )
+//     // console.log("user_id", user_id.rows[0].user_id);
+//     // insert data to "chatroom_participants"
+//     await client.query(
+//         `insert into chatroom_participants(chatroom_id, user_id)
+//             values($1, $2)`,
+//         [chatroom_id.rows[0].id, user_id.rows[0].user_id]
+//     )
+//     res.json({
+//         roomId: "room_" + chatroom_id.rows[0].id,
+//     })
 
-}
+// }
 
 // Send Msg function
 async function sendMessage(req: express.Request, res: express.Response) {
