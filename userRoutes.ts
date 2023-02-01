@@ -42,7 +42,9 @@ userRoutes.get('/logout', (req, res) => {
     res.redirect('/?message=succesfully+logged+out')
 })
 userRoutes.get('/show_details/:show_id', (req, res) => {
+    // res.redirect('/show_details.html')
     res.sendFile(path.join(__dirname, 'public', 'show_details.html'))
+    // res.sendFile(path.resolve(__dirname + '/public/show_details.html'))
 })
 userRoutes.get('/editProfile', (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'edit_profile.html'))
@@ -51,7 +53,7 @@ userRoutes.get('/resetPW', (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'resetPW.html'))
 })
 // userRoutes.get('/chatroom', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'public', 'chatroom.html'))
+//     res.sendFile(path.join('public', 'chatroom.html'))
 // })
 userRoutes.get('/purchase_record', (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'purchaseRecord.html'))
@@ -106,7 +108,6 @@ async function signup(req: express.Request, res: express.Response) {
         res.json({
             message: 'Register Successfully'
         })
-        console.log('Register Successfully!');
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -313,9 +314,9 @@ async function getPurchasedTickets(req: express.Request, res: express.Response) 
         order by purchaseRecord_id ASC`,
         [userId]
     )).rows
-    let images= await (await client.query(`select id , details from shows`)).rows
+    let images = await (await client.query(`select id , details from shows`)).rows
     let imageData = {}
-    images.forEach((elem)=>{
+    images.forEach((elem) => {
         imageData[elem['id']] = elem['details']['banner']
 
     })
@@ -323,7 +324,7 @@ async function getPurchasedTickets(req: express.Request, res: express.Response) 
     res.json({
         data: purchasedTickets,
         message: "get purchased tickets success",
-        images : imageData
+        images: imageData
     })
 }
 
@@ -392,10 +393,10 @@ async function getAllShows(req: express.Request, res: express.Response) {
     console.log('index page get all shows received ')
     let dateFilter = req.body.range
     let allShows;
-    
+
     let pullCategories = (await client.query(`select id , category from categories`)).rows
-    
-    switch(dateFilter){
+
+    switch (dateFilter) {
         case '*':
             allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
             shows_locations 
@@ -405,7 +406,7 @@ async function getAllShows(req: express.Request, res: express.Response) {
             on shows_locations.location_id = locations.id
             where shows.published = true
             order by shows.launch_date DESC`)).rows
-        break;
+            break;
         case 'Previous':
             allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
                 shows_locations 
@@ -414,8 +415,8 @@ async function getAllShows(req: express.Request, res: express.Response) {
                 left join locations
                 on shows_locations.location_id = locations.id
                 where shows.published = true and shows.end_date < ($1)
-                order by shows.launch_date DESC`,[new Date ()])).rows
-        break;
+                order by shows.launch_date DESC`, [new Date()])).rows
+            break;
         case 'Current':
             allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
             shows_locations 
@@ -424,9 +425,9 @@ async function getAllShows(req: express.Request, res: express.Response) {
             left join locations
             on shows_locations.location_id = locations.id
             where shows.published = true and shows.end_date > ($1) and shows.launch_date < ($1)
-            order by shows.launch_date DESC`,[new Date ()])).rows
+            order by shows.launch_date DESC`, [new Date()])).rows
 
-        break;
+            break;
         case 'Upcoming':
             allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
             shows_locations 
@@ -435,8 +436,8 @@ async function getAllShows(req: express.Request, res: express.Response) {
             left join locations
             on shows_locations.location_id = locations.id
             where shows.published = true and shows.launch_date > ($1)
-            order by shows.launch_date DESC`,[new Date ()])).rows
-        break;
+            order by shows.launch_date DESC`, [new Date()])).rows
+            break;
     }
 
     let allCategories = {}
@@ -464,8 +465,8 @@ async function getSelectShows(req: express.Request, res: express.Response) {
         reverseCat[elem['category']] = elem['id']
     })
     console.log('before query');
-    
-    switch(dateFilter){
+
+    switch (dateFilter) {
         case '*':
             allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
             shows_locations 
@@ -474,8 +475,8 @@ async function getSelectShows(req: express.Request, res: express.Response) {
             left join locations
             on shows_locations.location_id = locations.id
             where shows.published = true and shows.category_id = ($1)
-            order by shows.launch_date DESC`,[reverseCat[showQuery]])).rows
-        break;
+            order by shows.launch_date DESC`, [reverseCat[showQuery]])).rows
+            break;
         case 'Previous':
             allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
                 shows_locations 
@@ -484,8 +485,8 @@ async function getSelectShows(req: express.Request, res: express.Response) {
                 left join locations
                 on shows_locations.location_id = locations.id
                 where shows.published = true and shows.end_date < ($1) and shows.category_id = ($2)
-                order by shows.launch_date DESC`,[new Date (),reverseCat[showQuery]])).rows
-        break;
+                order by shows.launch_date DESC`, [new Date(), reverseCat[showQuery]])).rows
+            break;
         case 'Current':
             allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
             shows_locations 
@@ -494,9 +495,9 @@ async function getSelectShows(req: express.Request, res: express.Response) {
             left join locations
             on shows_locations.location_id = locations.id
             where shows.published = true and shows.end_date > ($1) and shows.launch_date < ($1) and shows.category_id = ($2)
-            order by shows.launch_date DESC`,[new Date (),reverseCat[showQuery]])).rows
+            order by shows.launch_date DESC`, [new Date(), reverseCat[showQuery]])).rows
 
-        break;
+            break;
         case 'Upcoming':
             allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
             shows_locations 
@@ -505,15 +506,15 @@ async function getSelectShows(req: express.Request, res: express.Response) {
             left join locations
             on shows_locations.location_id = locations.id
             where shows.published = true and shows.launch_date > ($1) and shows.category_id = ($2)
-            order by shows.launch_date DESC`,[new Date (),reverseCat[showQuery]])).rows
-        break;
+            order by shows.launch_date DESC`, [new Date(), reverseCat[showQuery]])).rows
+            break;
     }
 
     // allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
     // shows_locations 
     // left join shows
     // on shows_locations.show_id = shows.id
-	// left join locations
+    // left join locations
     // on shows_locations.location_id = locations.id
     // where shows.published = true and shows.category_id = ($1)
     // order by shows.launch_date DESC`, [reverseCat[showQuery]])).rows

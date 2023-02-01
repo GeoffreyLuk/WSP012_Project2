@@ -152,31 +152,39 @@ async function getShowforCalendar(req: express.Request, res: express.Response) {
 }
 
 async function addTicketsToCart(req: express.Request, res: express.Response) {
-    let show_id = req.params.show_id
-    // console.log("req.body: ", req.body);
-    // console.log("req.session.user: ", req.session.user)
+    try {
+        let show_id = req.params.show_id
+        // console.log("req.body: ", req.body);
+        // console.log("req.session.user: ", req.session.user)
 
-    for (let ticketInfo of req.body) {
-        // console.log("ticketInfo.type: ", ticketInfo.type);
-        // console.log("ticketInfo.eventDate: ", ticketInfo.eventDate);
+        for (let ticketInfo of req.body) {
+            // console.log("ticketInfo.type: ", ticketInfo.type);
+            // console.log("ticketInfo.eventDate: ", ticketInfo.eventDate);
 
-        let ticketIdResult = await client.query(
-            `select id from tickets
+            let ticketIdResult = await client.query(
+                `select id from tickets
                 where show_id = $1 and type = $2 and show_date = $3`,
-            [show_id, ticketInfo.type, ticketInfo.eventDate]
-        )
+                [show_id, ticketInfo.type, ticketInfo.eventDate]
+            )
 
-        let ticketId = ticketIdResult.rows[0].id
-        // console.log("ticketIdResult.rows: ", ticketIdResult.rows[0].id);
+            let ticketId = ticketIdResult.rows[0].id
+            // console.log("ticketIdResult.rows: ", ticketIdResult.rows[0].id);
 
-        await client.query(
-            `insert into users_purchases(user_id, ticket_id, quantity, ticket_paid)
+            await client.query(
+                `insert into users_purchases(user_id, ticket_id, quantity, ticket_paid)
                 values($1, $2, $3, $4)`,
-            [req.session["user"].id, ticketId, ticketInfo.quantity, false]
-        )
+                [req.session["user"].id, ticketId, ticketInfo.quantity, false]
+            )
+        }
+
+        res.json({
+            message: "Done Add Tickets"
+        })
+    } catch (err) {
+        console.log("error: ", err);
+        res.status(500).json({
+            message: '[STR006] - Server error'
+        })
     }
 
-    res.json({
-        message: "Done Add Tickets"
-    })
 }

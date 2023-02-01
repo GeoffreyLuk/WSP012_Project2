@@ -40,7 +40,7 @@ signupformElm.addEventListener('submit', async (e) => {
             window.location = '/'
             return
         } else {
-            Notiflix.Notify.failure(`Email has already registered!`)
+            // Notiflix.Notify.failure(`Email has already registered!`)
             return
         }
     } else {

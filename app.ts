@@ -46,13 +46,12 @@ app.use(organiserRoutes)
 // Static files
 app.use(express.static('Template'))
 app.use(express.static('public'))
-app.use('/show_details',express.static(path.join(__dirname,'public')))
-app.use('/organisation',express.static(path.join(__dirname,'public')))
+app.use('/show_details', express.static(path.join(__dirname, 'public')))
+app.use('/organisation', express.static(path.join(__dirname, 'public')))
 app.use(isLoggedIn, express.static('protected'))
 
 io.on("connection", function (socket) {
     console.log('socket connected: ', socket.id);
-    // console.log("Connection Start");
 
     const req = socket.request as express.Request;
 
@@ -72,43 +71,51 @@ io.on("connection", function (socket) {
 
 
     const user = req.session.user
-    const userId = user.id
-    const username = user.first_name
+    const userId = req.session.user?.id
+    const username = req.session.user?.first_name
 
 
     socket.on('join_all_chatroom', async () => {
-        // Search chatroom_id in chatroom_participants by user_id
-        let chatroomIdResult = await client.query(
-            `select chatroom_id from chatroom_participants where user_id = $1`,
-            [userId]
-        )
-        // Map the chatroom id
-        let chatroomsId: chatroomId[] = chatroomIdResult.rows.map(data => {
-            return data.chatroom_id
-        })
-
-        // console.log("chatroomId: ", chatroomsId);
-        let chatrooms: {
-            chatroom_name: string,
-            chatroom_id: number
-        }[] = []
-        // Search each chatroomName by chatroom id
-        for (let chatroomId of chatroomsId) {
+        try {
+            // Search chatroom_id in chatroom_participants by user_id
             let chatroomIdResult = await client.query(
-                `select * from chatrooms where id = $1`,
-                [chatroomId]
+                `select chatroom_id from chatroom_participants where user_id = $1`,
+                [userId]
             )
+            // Map the chatroom id
+            let chatroomsId: chatroomId[] = chatroomIdResult.rows.map(data => {
+                return data.chatroom_id
+            })
 
-            let chatroomResult = chatroomIdResult.rows[0]
-            // console.log("chatroomResult: ", chatroomResult);
+            // console.log("chatroomId: ", chatroomsId);
+            let chatrooms: {
+                chatroom_name: string,
+                chatroom_id: number
+            }[] = []
+            // Search each chatroomName by chatroom id
+            for (let chatroomId of chatroomsId) {
+                let chatroomIdResult = await client.query(
+                    `select * from chatrooms where id = $1`,
+                    [chatroomId]
+                )
 
-            chatrooms.push({ chatroom_name: chatroomResult.chatroom_name, chatroom_id: chatroomResult.id })
+                let chatroomResult = chatroomIdResult.rows[0]
+                // console.log("chatroomResult: ", chatroomResult);
+
+                chatrooms.push({ chatroom_name: chatroomResult.chatroom_name, chatroom_id: chatroomResult.id })
+            }
+
+            for (let chatroom of chatrooms) {
+                socket.join(String("room_" + chatroom.chatroom_id))
+                console.log(`${username} joined Room ${chatroom.chatroom_id}`);
+            }
+        } catch (err) {
+            console.log("error: ", err);
+            // res.status(500).json({
+            //     message: '[APP001] - Server error'
+            // })
         }
 
-        for (let chatroom of chatrooms) {
-            socket.join(String("room_" + chatroom.chatroom_id))
-            console.log(`${username} joined Room ${chatroom.chatroom_id}`);
-        }
     })
 
     // socket.on('join_chatroom', (roomId) => {
@@ -120,11 +127,16 @@ io.on("connection", function (socket) {
 
     // Listen - join showroom when created show
     socket.on("join_new_room", ([roomId]) => {
-        let chatroom = "room_" + roomId
-        // // const user = getCurrentUser(socket.id);
-        socket.join(chatroom)
-        console.log(`${username} joined Room ${chatroom}`);
-        // io.to(user.room).emit("message", formatMessage(user.username, msg));
+        try {
+            let chatroom = "room_" + roomId
+            // // const user = getCurrentUser(socket.id);
+            socket.join(chatroom)
+            console.log(`${username} joined Room ${chatroom}`);
+            // io.to(user.room).emit("message", formatMessage(user.username, msg));
+        } catch (err) {
+            console.log("error", err)
+        }
+
     });
 
 });
