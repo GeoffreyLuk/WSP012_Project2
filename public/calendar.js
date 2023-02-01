@@ -136,17 +136,23 @@ function getFirstShowDate(showDates) {
 }
 
 async function filterByCalendar(e) {
-    await toggleCalendar(e)
     let selectedDay = Number(e.target.innerText)
+    // console.log("filterByCalendar-selectedDay: ", selectedDay);
     let selectedMonth = getMonthNumberFromName(month_picker.innerText) - 1
+    // console.log("filterByCalendar-selectedMonth: ", selectedMonth);
     let selectedYear = Number(document.querySelector('#year').innerText)
+    // console.log("filterByCalendar-selectedYear: ", selectedYear);
     let selectedDate = new Date(selectedYear, selectedMonth, selectedDay)
-    // console.log("selectedDate: ", selectedDate);
-    let selectedEventDate = selectedDate + selectedDate.setHours((selectedDate.getHours() + 8))
-    // console.log("selectedEventDate: ", selectedEventDate);
+    // console.log("filterByCalendar-selectedDate: ", selectedDate);
+    // let timeElem = document.querySelector('.show-time')
+    let selectedHr = eventDateElem.options[1].innerText.substr(16, 2)
+    // console.log("filterByCalendar-selectedHr: ", selectedHr);
+    let selectedEventDate = selectedDate + selectedDate.setHours((selectedDate.getHours() + Number(selectedHr)))
+    // console.log("filterByCalendar-selectedEventDate: ", selectedEventDate);
     let selectedEventTimestamp = new Date(selectedEventDate)
-    // console.log("selectedDay: ", selectedDay);
+    // console.log("filterByCalendar-selectedDay: ", selectedDay);
     document.querySelector(`#opt_${selectedDay}`).setAttribute('selected', 'selected')
+    await toggleCalendar(e)
     filterTicketByDate(selectedEventTimestamp)
 }
 
@@ -162,6 +168,7 @@ function toggleCalendar(e) {
 }
 
 function toggleCalendarbyFilter(eventDay) {
+    console.log("eventDay: ", eventDay);
     let calendarDayElems = document.querySelectorAll('.calendar-day-hover')
     let eventDayElem = document.querySelector(`#day_${eventDay}`)
     for (let i = 0; i < calendarDayElems.length; i++) {

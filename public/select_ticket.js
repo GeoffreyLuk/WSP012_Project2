@@ -153,17 +153,17 @@ async function loadTickets(ticketsInfo) {
 eventDateElem.addEventListener('change', (e) => {
     console.log("changed");
     let dateFormat = new Date(eventDateElem.value)
-    console.log("dateFormat: ", dateFormat);
-    let eventDate = dateFormat + dateFormat.setHours((dateFormat.getHours() + 8))
-    let eventTimestamp = new Date(eventDate)
+    console.log("on click - dateFormat: ", dateFormat);
+    let eventTimestamp = new Date(dateFormat)
     let eventDay = eventTimestamp.getDate();
     console.log("timestamp: ", eventTimestamp);
     if (eventDateElem.value == 'All Event-date') {
-        console.log('loadTicketsInfo()')
+        // console.log('loadTicketsInfo()')
+        resetDateFilter()
         loadTicketsInfo()
         return
     } else {
-        console.log('filterTicketByDate')
+        // console.log('filterTicketByDate-eventDay: ', eventDay)
         filterTicketByDate(eventTimestamp)
         toggleCalendarbyFilter(eventDay)
         return
@@ -171,9 +171,10 @@ eventDateElem.addEventListener('change', (e) => {
 })
 
 async function filterTicketByDate(eventDate) {
-    // console.log("eventDate: ", eventDate);
+    let filterDate = new Date(eventDate + eventDate.setHours((eventDate.getHours() + 8)))
+    console.log("filterDate: ", filterDate);
     let filterData = {
-        eventDate,
+        filterDate,
         show
     }
     // let eventDay = eventDate.getDate();
@@ -191,7 +192,6 @@ async function filterTicketByDate(eventDate) {
     let filteredTickets = data.data
     ticketTypeElem.value = "All Ticket-type"
     loadTickets(filteredTickets)
-
 }
 
 ticketTypeElem.addEventListener('change', (e) => {

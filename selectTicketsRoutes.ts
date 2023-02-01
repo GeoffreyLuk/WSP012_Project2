@@ -79,14 +79,16 @@ async function getTicketsInfo(req: express.Request, res: express.Response) {
 
 async function filterByDate(req: express.Request, res: express.Response) {
     try {
-        let { eventDate, show } = req.body
+        let { filterDate, show } = req.body
+        // console.log("filterDate, show: ", filterDate, show);
 
         let filterResult = await client.query(
             `
         select * from tickets 
             where show_id = $1 and show_date = $2
-        `, [show, eventDate]
+        `, [show, filterDate]
         )
+        // console.log("filterResult: ", filterResult.rows);
 
         let filteredTickets = filterResult.rows
 

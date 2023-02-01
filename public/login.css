@@ -73,10 +73,12 @@ span{
     font:inherit;
     vertical-align:baseline;
     font-weight: bold;
+    color: #f1f2fb;
 }
 
 .small_text {
     text-align:center;
+    color: #f1f2fb;
 }
 
 a {
