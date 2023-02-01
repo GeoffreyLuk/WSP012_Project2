@@ -31,7 +31,6 @@ function ValidateEmail(item) {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(item.value)) {
         return true
     }
-    Notiflix.Notify.failure("Invalid Email Input")
     return false
 }
 

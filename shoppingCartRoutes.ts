@@ -31,7 +31,7 @@ async function getCheckoutInfo(req: express.Request, res: express.Response) {
         console.log("showId: ", showId);
 
         let ticketPurchaseResults = await client.query(
-            `select users_purchases.id as users_purchases_id, type, pricing, show_date from users_purchases
+            `select quantity, users_purchases.id as users_purchases_id, type, pricing, show_date from users_purchases
             inner join tickets
             on tickets.id = ticket_id
             where show_id = $1 and user_id = $2 and ticket_paid = false`,
@@ -57,7 +57,7 @@ async function getCheckoutInfo(req: express.Request, res: express.Response) {
         )
 
         let showsInfo = showInfoResult.rows[0]
-        console.log("showsInfo: ", showsInfo);
+        // console.log("showsInfo: ", showsInfo);
 
         res.json({
             ticketsInfo,
@@ -76,9 +76,9 @@ async function getCheckoutInfo(req: express.Request, res: express.Response) {
 
 async function getCheckoutInfoWithNoShowId(req: express.Request, res: express.Response) {
     try {
-        console.log("getCheckoutInfoWithNoShowId");
+        // console.log("getCheckoutInfoWithNoShowId");
 
-        let userId = req.session.user.id
+        let userId = req.session["user"]["id"]
 
         let ticketPurchaseResults = await client.query(
             `
