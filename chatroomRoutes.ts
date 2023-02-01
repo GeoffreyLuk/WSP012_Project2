@@ -207,7 +207,7 @@ async function uploadPhoto(req: express.Request, res: express.Response) {
 
         io.to("room_" + fields.room_id).emit('new_msg', data)
 
-        res.json({
+        res.status(200).json({
             message: "Uploaded image"
         })
         console.log("Done Uploading Image");

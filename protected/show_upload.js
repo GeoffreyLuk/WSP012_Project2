@@ -44,7 +44,7 @@ window.onload = async () => {
     await loadingData(false)
     renderCKEDITOR()
     //use post
-    uploadForm.addEventListener('submit', async (e) => {await submitAction(e,'POST')})
+    uploadForm.addEventListener('submit', async (e) => { await submitAction(e, 'POST') })
 
   } else {
     await loadingData(true)
@@ -52,7 +52,7 @@ window.onload = async () => {
     renderCKEDITOR()
 
     //use put
-    uploadForm.addEventListener('submit', async (e) => {await submitAction(e, 'PUT')})
+    uploadForm.addEventListener('submit', async (e) => { await submitAction(e, 'PUT') })
   };
 };
 
@@ -192,9 +192,9 @@ uploadForm.addEventListener('click', (e) => {
 uploadForm.addEventListener('click', (e) => {
   if (e.target.matches('.ticket_delete')) {
     deleting(e.target.id)
-  }else if (e.target.matches('.discount_delete')) {
+  } else if (e.target.matches('.discount_delete')) {
     deleting(e.target.id)
-  }else if (e.target.matches('#clear_files')){
+  } else if (e.target.matches('#clear_files')) {
     docShowBanner.value = ''
     docImagePreview.src = ''
   }
@@ -210,12 +210,12 @@ uploadForm.addEventListener('click', (e) => {
   }
 })
 
-docPublished.addEventListener('click', (e)=>{
+docPublished.addEventListener('click', (e) => {
   publishedIsTrue = !publishedIsTrue
   publishedChecked()
 })
 
-docEarlyBirdDiscount.addEventListener('click',(e)=>{
+docEarlyBirdDiscount.addEventListener('click', (e) => {
   earlyBirdIsTrue = !earlyBirdIsTrue
   earlyBirdChecked()
 })
@@ -237,18 +237,18 @@ function previewImage(event) {
 }
 
 //functions for controlling action
-function publishedChecked(){
-  if (publishedIsTrue){
-    docPublished.setAttribute('checked','true')
-  }else{
+function publishedChecked() {
+  if (publishedIsTrue) {
+    docPublished.setAttribute('checked', 'true')
+  } else {
     docPublished.removeAttribute('checked')
   }
 }
 
-function earlyBirdChecked(){
-  if (earlyBirdIsTrue){
-    docEarlyBirdDiscount.setAttribute('checked','true')
-  }else{
+function earlyBirdChecked() {
+  if (earlyBirdIsTrue) {
+    docEarlyBirdDiscount.setAttribute('checked', 'true')
+  } else {
     docEarlyBirdDiscount.removeAttribute('checked')
   }
 }
@@ -268,143 +268,153 @@ function pulling(section, target = 'input') {
 
 async function loadingData(update) {
   const res = await fetch(`/get/${show}`);
-  dataResult = await res.json();
 
-  addingCategories(dataResult['categories'])
-
-
-  if (update != true) {
-
+  if (!res.ok) {
+    Notiflix.Notify.failure(finalResult['message'])
+    return
   } else {
-    //published
-    publishedIsTrue = dataResult['data']['published']
-    publishedChecked()
 
-    //pictures
-    async function switchImage() {
-      const res = await fetch(
-        `/assets/organisations/${dataResult['data']['details']['banner']}`
-      );
-      const result = await res.blob();
-      const objectURL = URL.createObjectURL(result);
-      docImagePreview.src = objectURL;
+    dataResult = await res.json();
+
+    addingCategories(dataResult['categories'])
+
+
+    if (update != true) {
+
+    } else {
+      //published
+      publishedIsTrue = dataResult['data']['published']
+      publishedChecked()
+
+      //pictures
+      async function switchImage() {
+        const res = await fetch(
+          `/assets/organisations/${dataResult['data']['details']['banner']}`
+        );
+        const result = await res.blob();
+        const objectURL = URL.createObjectURL(result);
+        docImagePreview.src = objectURL;
+      }
+      switchImage()
+
+      //Mandatory Data
+      docShowDetails.value = dataResult['data']['details']['description']
+      docShowName.value = dataResult['data']['show_name']
+      docShowDuration.value = dataResult['data']['show_duration']
+      docSalesStart.value = datetimeLocal(dataResult['data']['sales_start_date'])
+      docSalesEnd.value = datetimeLocal(dataResult['data']['sales_end_date'])
+
+
+      //category
+      document.querySelector(`#${dataResult['categories'][dataResult['data']['category_id']]}`).setAttribute('checked', 'true')
+
+      //location
+      docVenueName.value = dataResult['locations'][dataResult['shows_locations']['location_id']]['venue']
+      docVenueLocation.value = dataResult['locations'][dataResult['shows_locations']['location_id']]['address']
+
+
+      //show Content
+      textArea.value = dataResult['data']['details']['content']
+
+      //ticket types
+      for (let values of dataResult['tickets']) {
+        tickets[`existingTicket/${values.id}`] = { type: values.type, price: values.pricing, quantity: values.max_quantity, show_date: values.show_date }
+      }
+
+      //discounts
+      earlyBirdIsTrue = dataResult['data']['ticket_discount']['early_discount']
+      earlyBirdChecked()
+      if (earlyBirdIsTrue) {
+        docEarlyBirdDiscount.setAttribute('checked', 'true')
+        docEarlyBirdEnd.value = datetimeLocal(dataResult['data']['ticket_discount']['early_date'])
+        docEarlyBirdAmount.value = dataResult['data']['ticket_discount']['discount_amount']
+      } else {
+
+      }
+      let otherDiscount = dataResult['data']['ticket_discount']['other_discount']
+      for (key in otherDiscount) {
+        discounts[key] = otherDiscount[key]
+      }
+      loadingDiscounts()
     }
-    switchImage()
-
-    //Mandatory Data
-    docShowDetails.value = dataResult['data']['details']['description']
-    docShowName.value = dataResult['data']['show_name']
-    docShowDuration.value = dataResult['data']['show_duration']
-    docSalesStart.value = datetimeLocal(dataResult['data']['sales_start_date'])
-    docSalesEnd.value = datetimeLocal(dataResult['data']['sales_end_date'])
-
-
-    //category
-    document.querySelector(`#${dataResult['categories'][dataResult['data']['category_id']]}`).setAttribute('checked', 'true')
-
-    //location
-    docVenueName.value = dataResult['locations'][dataResult['shows_locations']['location_id']]['venue']
-    docVenueLocation.value = dataResult['locations'][dataResult['shows_locations']['location_id']]['address']
-
-
-    //show Content
-    textArea.value = dataResult['data']['details']['content']
-
-    //ticket types
-    for (let values of dataResult['tickets']) {
-      tickets[`existingTicket/${values.id}`] = { type: values.type, price: values.pricing, quantity: values.max_quantity, show_date:values.show_date }
-    }
-
-    //discounts
-    earlyBirdIsTrue = dataResult['data']['ticket_discount']['early_discount']
-    earlyBirdChecked()
-    if (earlyBirdIsTrue) {
-      docEarlyBirdDiscount.setAttribute('checked','true')
-      docEarlyBirdEnd.value = datetimeLocal(dataResult['data']['ticket_discount']['early_date'])
-      docEarlyBirdAmount.value = dataResult['data']['ticket_discount']['discount_amount']
-    }else{
-
-    }
-    let otherDiscount = dataResult['data']['ticket_discount']['other_discount']
-    for (key in otherDiscount) {
-      discounts[key] = otherDiscount[key]
-    }
-    loadingDiscounts()
   }
 
 }
 
-async function submitAction(e, para){
-    e.preventDefault()
-    const form = e.target;
-    const formData = new FormData(form);
+async function submitAction(e, para) {
+  e.preventDefault()
+  const form = e.target;
+  const formData = new FormData(form);
 
-    let groupedData = {}
-    
-    //show id
-    if (e ='put'){
-     groupedData['showID'] = dataResult.data.id 
-    }
+  let groupedData = {}
 
-    //published
-    groupedData['publishedData'] = publishedIsTrue
-    //banner
-    groupedData['bannerData'] = form.banner.files[0]? form.banner.files[0].name : ''
-    //mandatory
-    groupedData['mandatoryData'] = {
-      description: form.details.value,
-      title: form.name.value,
-      show_duration: form.show_duration.value,
-      sales_start_date: form.sales_start_date.value,
-      sales_end_date: form.sales_end_date.value
-    }
-    //categories
-    groupedData['categoriesData'] = pulling('#con3', '[checked=true]')[0].value
-    groupedData['new_category'] = document.querySelector('#new_category_text').value
-    //locations
-    groupedData['locationData'] = {
-      venue: form.venue_name.value,
-      location: form.location.value
-    }
-    //show content
-    groupedData['showContentData'] = document.querySelector('.ck-editor__editable_inline').innerHTML
-    //tickets
-    let ticketsData = {}
-    pulling('#con6','.ticket_container').forEach((element)=>{
-      let trueID = element.id.split('_').pop()
-      ticketsData[trueID] = {show_date: pulling('#con6',`input[id*="${trueID}"]`)[0].value, 
-      type: pulling('#con6',`input[id*="${trueID}"]`)[1].value,
-      pricing: pulling('#con6',`input[id*="${trueID}"]`)[2].value,
-      max_quantity: pulling('#con6',`input[id*="${trueID}"]`)[3].value}
-    })
-    groupedData['ticketsData'] = ticketsData
-
-    //discounts
-    let discountsData = {}
-    let other_discount = {}
-    pulling('#con7','.discount_container').forEach((element)=>{
-      let trueID = element.id.split('_').pop()
-        if (trueID != 'earlyBird') {
-      other_discount[pulling('#con7',`input[id*="${trueID}"]`)[0].value] = pulling('#con7',`input[id*="${trueID}"]`)[1].value}
-    })
-    discountsData['early_date'] = form.earlyBird_end_date.value
-    discountsData['discount_amount'] = form.earlyBird_amount.value
-    discountsData['early_discount'] = earlyBirdIsTrue
-    discountsData['other_discount'] = other_discount
-    groupedData['discountsData'] = discountsData
-
-    //groupedData into formData
-    formData.append('groupedData', JSON.stringify(groupedData))
-
-
-    const res = await fetch(`/upload/${show}`, {
-      method: para,
-      body: formData
-    })
-
-    const finalResult = await res.json()
-    alert(finalResult['message'])
+  //show id
+  if (e = 'put') {
+    groupedData['showID'] = dataResult.data.id
   }
+
+  //published
+  groupedData['publishedData'] = publishedIsTrue
+  //banner
+  groupedData['bannerData'] = form.banner.files[0] ? form.banner.files[0].name : ''
+  //mandatory
+  groupedData['mandatoryData'] = {
+    description: form.details.value,
+    title: form.name.value,
+    show_duration: form.show_duration.value,
+    sales_start_date: form.sales_start_date.value,
+    sales_end_date: form.sales_end_date.value
+  }
+  //categories
+  groupedData['categoriesData'] = pulling('#con3', '[checked=true]')[0].value
+  groupedData['new_category'] = document.querySelector('#new_category_text').value
+  //locations
+  groupedData['locationData'] = {
+    venue: form.venue_name.value,
+    location: form.location.value
+  }
+  //show content
+  groupedData['showContentData'] = document.querySelector('.ck-editor__editable_inline').innerHTML
+  //tickets
+  let ticketsData = {}
+  pulling('#con6', '.ticket_container').forEach((element) => {
+    let trueID = element.id.split('_').pop()
+    ticketsData[trueID] = {
+      show_date: pulling('#con6', `input[id*="${trueID}"]`)[0].value,
+      type: pulling('#con6', `input[id*="${trueID}"]`)[1].value,
+      pricing: pulling('#con6', `input[id*="${trueID}"]`)[2].value,
+      max_quantity: pulling('#con6', `input[id*="${trueID}"]`)[3].value
+    }
+  })
+  groupedData['ticketsData'] = ticketsData
+
+  //discounts
+  let discountsData = {}
+  let other_discount = {}
+  pulling('#con7', '.discount_container').forEach((element) => {
+    let trueID = element.id.split('_').pop()
+    if (trueID != 'earlyBird') {
+      other_discount[pulling('#con7', `input[id*="${trueID}"]`)[0].value] = pulling('#con7', `input[id*="${trueID}"]`)[1].value
+    }
+  })
+  discountsData['early_date'] = form.earlyBird_end_date.value
+  discountsData['discount_amount'] = form.earlyBird_amount.value
+  discountsData['early_discount'] = earlyBirdIsTrue
+  discountsData['other_discount'] = other_discount
+  groupedData['discountsData'] = discountsData
+
+  //groupedData into formData
+  formData.append('groupedData', JSON.stringify(groupedData))
+
+
+  const res = await fetch(`/upload/${show}`, {
+    method: para,
+    body: formData
+  })
+
+  const finalResult = await res.json()
+  Notiflix.Notify.success(finalResult['message'])
+}
 
 //ckeditor placed after loading data
 function renderCKEDITOR() {

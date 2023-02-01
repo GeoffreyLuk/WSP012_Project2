@@ -20,16 +20,16 @@ window.onload = async () => {
 
 trueButtonContainer.addEventListener('click', async (e) => {
     if (e.target.matches('.filter')) {
-        if (e.target.classList.contains('filter_date')){
+        if (e.target.classList.contains('filter_date')) {
             filter_date_target = e.target.getAttribute('data-filter');
             console.log(filter_date_target);
-            document.querySelectorAll('.filter_date').forEach((elem)=>{
+            document.querySelectorAll('.filter_date').forEach((elem) => {
                 elem.classList.remove('active')
             })
             document.querySelector(`.filter_date[data-filter="${filter_date_target}"]`).classList.add('active')
         }
-    
-        if (e.target.classList.contains('filter_category')){
+
+        if (e.target.classList.contains('filter_category')) {
             filter_category_target = e.target.getAttribute('data-filter');
         }
 
@@ -38,7 +38,7 @@ trueButtonContainer.addEventListener('click', async (e) => {
             let allShowsDetails = dataResult['allShows']
             loadingShows(allShowsDetails)
         } else {
-            await getSelectShows(filter_category_target,filter_date_target)
+            await getSelectShows(filter_category_target, filter_date_target)
             let allShowsDetails = dataResult['allShows']
             loadingShows(allShowsDetails)
         }
@@ -60,12 +60,12 @@ async function getUserInfo() {
 }
 
 async function getAllShows(param) {
-    let res = await fetch('/get_all_shows',{
+    let res = await fetch('/get_all_shows', {
         method: "Post",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({range:param})
+        body: JSON.stringify({ range: param })
     })
     if (res.ok) {
         let forExtraction = await res.json()
@@ -73,13 +73,13 @@ async function getAllShows(param) {
     }
 }
 
-async function getSelectShows(target,param) {
-    let res = await fetch(`/filter?category=${target}`,{
+async function getSelectShows(target, param) {
+    let res = await fetch(`/filter?category=${target}`, {
         method: "Post",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({range:param})
+        body: JSON.stringify({ range: param })
     })
     if (res.ok) {
         let forExtraction = await res.json()
@@ -89,6 +89,23 @@ async function getSelectShows(target,param) {
 
 function loadingShows(shows) {
     showContainer.innerHTML = ''
+    if (shows.length == 0){
+        showContainer.innerHTML += `<h3 class="text-accent1 text-center">No Shows to Show</h3>`
+    }else{
+    for (let data of shows) {
+        let launchDate = new Date(data['launch_date'])
+        let endDate = new Date(data['end_date'])
+
+        if (endDate < new Date()) {
+            loader(data, launchDate, endDate, 'Previous')
+        } else if (launchDate > new Date()) {
+            loader(data, launchDate, endDate, 'Upcoming')
+        } else if (launchDate < new Date() && new Date() < endDate) {
+            loader(data, launchDate, endDate, 'Current')
+        } else { console.log('error') }
+    }
+}
+
 
     function loader(parser, sd, ed, timeline = null) {
         if (timeline != null) {
@@ -101,7 +118,7 @@ function loadingShows(shows) {
                                 <p class="ms-auto badge bg-accent2 categories">${dataResult['allCategories'][parser['category']]}</p>
                                 <h5 class="card-title">${parser['show_name']}</h5>
                                 <p class="card-subtitle mb-2 text-muted text-accent1">${parser['venue']}</p>
-                                <p class="card-text">${dateFormater(sd,false)} - ${dateFormater(ed,false)}</p>
+                                <p class="card-text">${dateFormater(sd, false)} - ${dateFormater(ed, false)}</p>
                         </div>
                     </div>
                 </div>
@@ -115,7 +132,7 @@ function loadingShows(shows) {
                                 <p class="ms-auto badge bg-accent2 categories">${dataResult['allCategories'][parser['category']]}</p>
                                 <h5 class="card-title">${parser['show_name']}</h5>
                                 <p class="card-subtitle mb-2 text-muted text-accent1">${parser['venue']}</p>
-                                <p class="card-text">${dateFormater(sd,false)} - ${dateFormater(ed,false)}</p>
+                                <p class="card-text">${dateFormater(sd, false)} - ${dateFormater(ed, false)}</p>
                         </div>
                     </div>
                 </div>
@@ -123,34 +140,10 @@ function loadingShows(shows) {
         }
 
     }
-    for (let data of shows) {
-        let launchDate = new Date(data['launch_date'])
-        let endDate = new Date(data['end_date'])
-
-        if (endDate < new Date()) {
-            loader(data, launchDate, endDate, 'Previous')
-
-            //     showContainer.append(`
-            // <div id="show_${data['show_id']}" class="col-md-3 shows ${dataResult['allCategories'][data['category']]}" data-category="${dataResult['allCategories'][data['category']]}">
-            //         <div class="card">
-            //             <img src="/assets/organisations/${data['details']['banner']}" class="card-img-top img-fluid">
-            //             <div class="card-body">
-            //                     <p class="ms-auto badge bg-danger categories">${dataResult['allCategories'][data['category']]}</p>
-            //                     <h5 class="card-title">${data['show_name']}</h5>
-            //                     <p class="card-subtitle mb-2 text-muted">${data['venue']}</p>
-            //                     <p class="card-text">${launchDate.getDate()}/${launchDate.getMonth()}/${launchDate.getFullYear()} - ${endDate.getDate()}/${endDate.getMonth()}/${endDate.getFullYear()}</p>
-            //             </div>
-            //         </div>
-            //     </div>
-            // `)
-        } else if (launchDate > new Date()) {
-            loader(data, launchDate, endDate, 'Upcoming')
-        } else if (launchDate < new Date() && new Date() < endDate) {
-            loader(data, launchDate, endDate, 'Current')
-        } else { console.log('error') }
 
 
-    }
+
+
 }
 
 function loadingButtons() {
@@ -201,5 +194,5 @@ function dateFormater(dateObject, timeOnlyBoolean = false) {
         returningString = `${dateObject.getDate()}/${dateObject.getMonth() + 1}/${dateObject.getFullYear() - 2000}`
     }
     return returningString
-  }
+}
 
