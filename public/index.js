@@ -76,7 +76,7 @@ function loadingShows(shows) {
                                 <p class="ms-auto badge bg-accent2 categories">${dataResult['allCategories'][parser['category']]}</p>
                                 <h5 class="card-title">${parser['show_name']}</h5>
                                 <p class="card-subtitle mb-2 text-muted text-accent1">${parser['venue']}</p>
-                                <p class="card-text">${sd.getDate()}/${sd.getMonth()}/${sd.getFullYear()} - ${ed.getDate()}/${ed.getMonth()}/${ed.getFullYear()}</p>
+                                <p class="card-text">${dateFormater(sd,false)} - ${dateFormater(ed,false)}</p>
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ function loadingShows(shows) {
                                 <p class="ms-auto badge bg-accent2 categories">${dataResult['allCategories'][parser['category']]}</p>
                                 <h5 class="card-title">${parser['show_name']}</h5>
                                 <p class="card-subtitle mb-2 text-muted text-accent1">${parser['venue']}</p>
-                                <p class="card-text">${sd.getDate()}/${sd.getMonth()}/${sd.getFullYear()} - ${ed.getDate()}/${ed.getMonth()}/${ed.getFullYear()}</p>
+                                <p class="card-text">${dateFormater(sd,false)} - ${dateFormater(ed,false)}</p>
                         </div>
                     </div>
                 </div>
@@ -172,3 +172,14 @@ filtersElem.addEventListener('click', function (event) {
 
     iso.arrange({ filter: 'abc' });
 });
+
+function dateFormater(dateObject, timeOnlyBoolean = false) {
+    let returningString;
+    if (timeOnlyBoolean == true) {
+        returningString = `${dateObject.getHours() < 10 ? '0' + JSON.stringify(dateObject.getHours()) : JSON.stringify(dateObject.getHours())}:${dateObject.getMinutes() < 10 ? '0' + JSON.stringify(dateObject.getMinutes()) : JSON.stringify(dateObject.getMinutes())}`
+    } else {
+        returningString = `${dateObject.getDate()}/${dateObject.getMonth() + 1}/${dateObject.getFullYear() - 2000}`
+    }
+    console.log("returning string: ", returningString);
+    return returningString
+  }

@@ -29,7 +29,7 @@ async function main(){
     docTitle.innerHTML = `${[showDetails['show_name']]}`
     docOrganiser.innerHTML = `${dataResult['organiserDetails']}`
     docContent.innerHTML = `${[showDetails['details']['content']]}`
-    docDate.innerHTML = `${launchDate.getDate()}/${launchDate.getMonth()}/${launchDate.getFullYear()} - ${endDate.getDate()}/${endDate.getMonth()}/${endDate.getFullYear()}`
+    docDate.innerHTML = `${dateFormater(launchDate,false)} - ${dateFormater(endDate,false)}`
     docVenue.innerHTML = `${[showDetails['venue']]}`
     docAddress.innerHTML = `${[showDetails['address']]}`
 
@@ -85,3 +85,14 @@ mainContainer.addEventListener('click',async (e)=>{
   //   let res = fetch(`/`)
   // }
 })
+
+function dateFormater(dateObject, timeOnlyBoolean = false) {
+  let returningString;
+  if (timeOnlyBoolean == true) {
+      returningString = `${dateObject.getHours() < 10 ? '0' + JSON.stringify(dateObject.getHours()) : JSON.stringify(dateObject.getHours())}:${dateObject.getMinutes() < 10 ? '0' + JSON.stringify(dateObject.getMinutes()) : JSON.stringify(dateObject.getMinutes())}`
+  } else {
+      returningString = `${dateObject.getDate()}/${dateObject.getMonth() + 1}/${dateObject.getFullYear() - 2000}`
+  }
+  console.log("returning string: ", returningString);
+  return returningString
+}
