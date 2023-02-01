@@ -62,11 +62,23 @@
                 <div class="underline mx-auto"></div>
             </div>
         </div>
-        <div class="row mt-5 button-group filters-button-group">
+        <div class=" row mt-5 button-group filters-button-group">
             <div id="button_containers" class="d-flex justify-content-center">
+                <h5 class="text-main">Category Filters: </h5>
                 <button id="filter_all" type="button" data-filter="*"
-                    class="filter btn bg-accent2 text-main mx-2 btn-sm">All</button>
-
+                    class="filter filter_category btn bg-accent2 text-main mx-2 btn-sm">All</button>
+            </div>
+            <div><br></div>
+            <div id="date_toggle_containers" class="d-flex justify-content-center">
+                <h5 class="text-main">Date Filters: </h5>
+                <button id="filter_date_all" type="button" data-filter="*"
+                class="filter_date filter btn bg-accent2 text-main mx-2 btn-sm">All</button>
+                <button id="filter_date_upcoming" type="button" data-filter="Upcoming"
+                class="filter_date filter btn bg-accent2 text-main mx-2 btn-sm active">Upcoming</button>
+                <button id="filter_date_current" type="button" data-filter="Current"
+                class="filter_date filter btn bg-accent2 text-main mx-2 btn-sm">Current</button>
+                <button id="filter_date_previous" type="button" data-filter="Previous"
+                class="filter_date filter btn bg-accent2 text-main mx-2 btn-sm">Previous</button>                     
             </div>
         </div>
     </div>

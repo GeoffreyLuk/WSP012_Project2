@@ -17,3 +17,35 @@
 
 }
 
+.show{
+    position: relative;
+}
+
+.time_badge{
+    width: fit-content;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.Previous{
+    z-index: 999
+}
+
+.Upcoming{
+    background-color: #00c5ac !important;
+    z-index: 999
+}
+
+.Current{
+    background-color: #ec2629 !important;
+    z-index: 999
+}
+
+.Previous_img{
+    filter: grayscale(70%)
+}
+
+.filter_date.active{
+    background-color: #00c5ac !important;
+}

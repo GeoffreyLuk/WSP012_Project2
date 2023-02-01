@@ -24,12 +24,12 @@ async function loadingData() {
     const res = await fetch(`/organisation`)
     const result = await res.json();
     newListContainer.innerHTML += `
-        <div class='show_link' id="show_new">New Show</div><br>
+        <h3 class='show_link' id="show_new">New Show</h3><br>
         `
 
     result.shows.forEach(element => {
         let content = `
-        <div class='show_link' id="show_${element.id}">${element.show_name}</div><br>
+        <h3 class='show_link' id="show_${element.id}">${element.show_name}</h3><br>
         `
         if (element.published == true) {
             publishedListContainer.innerHTML += content
