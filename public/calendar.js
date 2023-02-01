@@ -56,9 +56,13 @@ function generateCalendar(month, year, showDates) {
                             <span></span>
                             <span></span>`
             if (i - first_day.getDay() + 1 === currDate.getDate() && year === currDate.getFullYear() && month === currDate.getMonth()) {
-                day.setAttribute('id', `day${i + 1}`)
+                // console.log("i - first_day.getDay() + 1", (i - first_day.getDay() + 1));
+                day.setAttribute('id', `day_${(i - first_day.getDay() + 1)}`)
                 day.classList.add('curr-date')
                 day.onclick = function (e) {
+                    document.querySelectorAll('.targetDate').forEach((elem) => {
+                        elem.removeAttribute('selected')
+                    })
                     filterByCalendar(e)
                 }
             }
@@ -66,9 +70,13 @@ function generateCalendar(month, year, showDates) {
                 let showDateFormat = new Date(showDate.show_date)
                 let showDay = showDateFormat.getDate()
                 if (i - first_day.getDay() + 1 === showDay && i - first_day.getDay() + 1 !== currDate.getDate()) {
-                    day.setAttribute('id', `day${i + 1}`)
+                    // console.log("i in showDate Loop: ", (i - first_day.getDay() + 1));
+                    day.setAttribute('id', `day_${(i - first_day.getDay() + 1)}`)
                     day.classList.add('curr-date')
                     day.onclick = function (e) {
+                        document.querySelectorAll('.targetDate').forEach((elem) => {
+                            elem.removeAttribute('selected')
+                        })
                         filterByCalendar(e)
                     }
                 }
@@ -127,8 +135,8 @@ function getFirstShowDate(showDates) {
     generateCalendar(curr_month, curr_year, showDates)
 }
 
-function filterByCalendar(e) {
-    toggleCalendar(e)
+async function filterByCalendar(e) {
+    await toggleCalendar(e)
     let selectedDay = Number(e.target.innerText)
     let selectedMonth = getMonthNumberFromName(month_picker.innerText) - 1
     let selectedYear = Number(document.querySelector('#year').innerText)
@@ -137,9 +145,8 @@ function filterByCalendar(e) {
     let selectedEventDate = selectedDate + selectedDate.setHours((selectedDate.getHours() + 8))
     console.log("selectedEventDate: ", selectedEventDate);
     let selectedEventTimestamp = new Date(selectedEventDate)
-    // console.log("selectedDay: ", selectedDay);
-    document.querySelector(`#opt${selectedDay}`).setAttribute('selected', 'selected')
-    // Need to think of how to change the option value
+    console.log("selectedDay: ", selectedDay);
+    document.querySelector(`#opt_${selectedDay}`).setAttribute('selected', 'selected')
     filterTicketByDate(selectedEventTimestamp)
 }
 
@@ -149,6 +156,7 @@ function toggleCalendar(e) {
     for (let i = 0; i < calendarDayElems.length; i++) {
         var count = 0;
         while (count < calendarDayElems.length) {
+            console.log("toggleCalendar working");
             calendarDayElems[count++].classList.remove('active');
         }
         e.target.classList.add(`active`);
@@ -156,16 +164,15 @@ function toggleCalendar(e) {
 }
 
 async function toggleCalendarbyFilter(eventDay) {
-    console.log("toggleCalendarbyFilter.eventDay", eventDay);
     let calendarDayElems = document.querySelectorAll('.calendar-day-hover')
-    let eventDayElem = document.querySelector(`#day${eventDay}`)
+    let eventDayElem = document.querySelector(`#day_${eventDay}`)
     for (let i = 0; i < calendarDayElems.length; i++) {
         var count = 0;
         while (count < calendarDayElems.length) {
             console.log("toggleCalendarbyFilter working");
-            calendarDayElems[count++].classList.remove('active');
+            await calendarDayElems[count++].classList.remove('active')
         }
-        eventDayElem.classList.add(`active`);
+        eventDayElem.classList.add('class', 'active');
     }
 }
 

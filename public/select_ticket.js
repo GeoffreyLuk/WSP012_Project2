@@ -78,7 +78,8 @@ async function loadTicketsDetails(ticketsInfo) {
         let date = timeFormat.toDateString() + " " + timeFormat.getHours() + ":" + timeFormat.getMinutes()
         let day = timeFormat.getDate()
         const opt = document.createElement('option')
-        opt.setAttribute("id", `opt${day}`)
+        opt.setAttribute('class', 'targetDate')
+        opt.setAttribute("id", `opt_${day}`)
         opt.text = date
         eventDateElem.appendChild(opt)
     };
@@ -155,6 +156,7 @@ eventDateElem.addEventListener('change', (e) => {
     console.log("dateFormat: ", dateFormat);
     let eventDate = dateFormat + dateFormat.setHours((dateFormat.getHours() + 8))
     let eventTimestamp = new Date(eventDate)
+    let eventDay = eventTimestamp.getDate();
     console.log("timestamp: ", eventTimestamp);
     if (eventDateElem.value == 'All Event-date') {
         console.log('loadTicketsInfo()')
@@ -163,6 +165,7 @@ eventDateElem.addEventListener('change', (e) => {
     } else {
         console.log('filterTicketByDate')
         filterTicketByDate(eventTimestamp)
+        toggleCalendarbyFilter(eventDay)
         return
     }
 })
@@ -173,7 +176,7 @@ async function filterTicketByDate(eventDate) {
         eventDate,
         show
     }
-    let eventDay = eventDate.getDate();
+    // let eventDay = eventDate.getDate();
     // console.log("eventDay: ", eventDay);
     // console.log("filterData: ", filterData);
     let res = await fetch('/filter_date', {
@@ -186,11 +189,9 @@ async function filterTicketByDate(eventDate) {
 
     let data = await res.json()
     let filteredTickets = data.data
-    console.log("filteredTickets: ", filteredTickets);
-    // Not working
-    // toggleCalendarbyFilter(eventDay)
     ticketTypeElem.value = "All Ticket-type"
     loadTickets(filteredTickets)
+
 }
 
 ticketTypeElem.addEventListener('change', (e) => {
