@@ -43,7 +43,7 @@
 }
 
 .Previous_img{
-    filter: grayscale(70%)
+    filter: grayscale(100%)
 }
 
 .filter_date.active{

@@ -20,6 +20,7 @@ organiserRoutes.post('/upload/:show_id', isLoggedIn, uploadShow)
 organiserRoutes.put('/upload/:show_id', isLoggedIn, updateShow)
 
 async function getOrgShows(req: express.Request, res: express.Response) {
+    try{
     const user = req.session.user.id
     const organisation = await client.query(`select id from organiser_list where user_id = $1`, [user])
     const organisationID = organisation.rows[0].id
@@ -28,8 +29,15 @@ async function getOrgShows(req: express.Request, res: express.Response) {
     returningData['shows'] = organisationShowData.rows
     res.json(returningData)
 }
+catch(err){
+    console.log(err);
+        res.status(500).json({
+            message: '[USR004] - Server error'})
+}
+}
 
 async function getShowInfo(req: express.Request, res: express.Response) {
+    try {
     //data dump
     const returningData = {}
 
@@ -57,7 +65,7 @@ async function getShowInfo(req: express.Request, res: express.Response) {
     }
     returningData['locations'] = locations
 
-    try {
+    
         if (show_id == 'new') {
             //all null
             returningData['data'] = ''
@@ -164,8 +172,9 @@ async function uploadShow(req: express.Request, res: express.Response) {
             showData['sales_start_date'],
             showData['sales_end_date'],
             groupedData['publishedData'],
-            maxDate,
-            minDate
+            minDate,
+            maxDate
+            
         ])
         let returningShowID = returningShow.rows[0].id
 
@@ -301,8 +310,8 @@ async function updateShow(req: express.Request, res: express.Response) {
             showData['sales_start_date'],
             showData['sales_end_date'],
             groupedData['publishedData'],
-            maxDate,
             minDate,
+            maxDate,
             new Date(),
             showId
         ])
