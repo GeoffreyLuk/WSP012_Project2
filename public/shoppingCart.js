@@ -4,11 +4,7 @@ let totalAmountElem = document.querySelector('.total-amount')
 let checkboxElem = document.querySelector('.check-out-form').elements
 let checkoutBtnElem = document.querySelector('.checkout-btn')
 let ifIncludesShow = window.location.toString().includes("show_")
-let alterElem = document.querySelector('.checkout-btn')
 
-
-console.log("URL to string: ", ifIncludesShow);
-console.log("show: ", show);
 
 async function init() {
     getUserInfo()
@@ -30,8 +26,6 @@ async function loadCheckout() {
         let ticketsInfo = data.ticketsInfo
         let showsInfo = data.showsInfo
         loadTicketsByShowId(ticketsInfo, showsInfo)
-    } else {
-        console.log("7.7");
     }
 }
 
@@ -201,7 +195,7 @@ async function deleteAllShowTicketsByShowName(organiserName) {
         body: JSON.stringify(data)
     })
     if (res.ok) {
-        await Notiflix.Notify.success(`Removed ${organiserName}'s tickets`);
+        await Notiflix.Notify.success(`Removed ${organiserName}'s tickets success`);
         location.reload();
     }
 }
@@ -217,13 +211,14 @@ async function deleteShowTicket(selectedTicketId) {
         body: JSON.stringify(data)
     })
     if (res.ok) {
-        await Notiflix.Notify.success(`Removed tickets`);
+        await Notiflix.Notify.success(`Removed tickets success`);
         location.reload();
     }
 }
 
 function ifChecked() {
     if (!checkboxElem.agree.checked) {
+        Notiflix.Notify.failure(`Please confirm purchase.`);
         return false
     } else {
         return true
@@ -255,7 +250,10 @@ async function proceedPayment() {
     }
     if (res.ok) {
         let data = await res.json()
-        console.log("proceedPayment data: ", data);
+        await Notiflix.Notify.success(`Purchased! Redirect to home page in 2 seconds...`);
+        setTimeout(function () {
+            window.location.href = "/";
+        }, 2000)
     } else {
         console.log("failed");
     }
@@ -279,6 +277,6 @@ function dateFormater(dateObject, timeOnlyBoolean = false) {
     } else {
         returningString = `${dateObject.getDate()}-${dateObject.getMonth() + 1}-${dateObject.getFullYear() - 2000}`
     }
-    console.log("returning string: ", returningString);
+    // console.log("returning string: ", returningString);
     return returningString
 }

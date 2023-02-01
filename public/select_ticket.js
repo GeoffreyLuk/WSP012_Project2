@@ -232,14 +232,22 @@ checkOutBtnElem.addEventListener('click', () => {
     let selectedTickets = []
     let tickets = Array.from(ticketElemAll)
     for (let ticket of tickets) {
-        console.log(`ticket.lastChild.value: ${ticket.lastChild.value}`);
+        console.log(`ticket.lastChild.value: ${ticket.lastChild.lastChild.value}`);
         if (ticket.lastChild.lastChild.value >= 1) {
             console.log("Hi");
             let quantity = ticket.lastChild.lastChild.value
             let price = ticket.childNodes[2].innerText.replace("$", "")
             let type = ticket.childNodes[1].innerText
-            let dateFormat = new Date(ticket.childNodes[0].childNodes[0].innerHTML)
-            let eventDate = new Date(dateFormat + dateFormat.setHours((dateFormat.getHours() + 8)))
+            let selectedDate = new Date(ticket.childNodes[0].childNodes[0].innerHTML)
+            console.log("selectedDate: ", selectedDate);
+            let selectedTime = ticket.childNodes[0].childNodes[1].innerHTML
+            console.log("selectedTime: ", selectedTime);
+            let selectedHr = selectedTime.substr(0, 2)
+            console.log("selectedHr: ", selectedHr);
+            // let dateFormat = new Date(selectedDate + selectedTime)
+            // console.log("dateFormat: ", dateFormat);
+            let eventDate = new Date(selectedDate + selectedDate.setHours((selectedDate.getHours() + Number(selectedHr) + 8)))
+            console.log("eventDate: ", eventDate);
             selectedTickets.push({ quantity, price, type, eventDate })
         }
     }

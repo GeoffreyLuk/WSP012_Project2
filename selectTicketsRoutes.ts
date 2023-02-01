@@ -154,10 +154,14 @@ async function getShowforCalendar(req: express.Request, res: express.Response) {
 async function addTicketsToCart(req: express.Request, res: express.Response) {
     try {
         let show_id = req.params.show_id
+        console.log("show_id: ", show_id);
+
         // console.log("req.body: ", req.body);
         // console.log("req.session.user: ", req.session.user)
 
         for (let ticketInfo of req.body) {
+            console.log("ticketInfo: ", ticketInfo);
+
             // console.log("ticketInfo.type: ", ticketInfo.type);
             // console.log("ticketInfo.eventDate: ", ticketInfo.eventDate);
 
@@ -166,9 +170,9 @@ async function addTicketsToCart(req: express.Request, res: express.Response) {
                 where show_id = $1 and type = $2 and show_date = $3`,
                 [show_id, ticketInfo.type, ticketInfo.eventDate]
             )
+            console.log("ticketIdResult.rows: ", ticketIdResult.rows[0]);
 
             let ticketId = ticketIdResult.rows[0].id
-            // console.log("ticketIdResult.rows: ", ticketIdResult.rows[0].id);
 
             await client.query(
                 `insert into users_purchases(user_id, ticket_id, quantity, ticket_paid)
