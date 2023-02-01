@@ -141,36 +141,33 @@ async function filterByCalendar(e) {
     let selectedMonth = getMonthNumberFromName(month_picker.innerText) - 1
     let selectedYear = Number(document.querySelector('#year').innerText)
     let selectedDate = new Date(selectedYear, selectedMonth, selectedDay)
-    console.log("selectedDate: ", selectedDate);
+    // console.log("selectedDate: ", selectedDate);
     let selectedEventDate = selectedDate + selectedDate.setHours((selectedDate.getHours() + 8))
-    console.log("selectedEventDate: ", selectedEventDate);
+    // console.log("selectedEventDate: ", selectedEventDate);
     let selectedEventTimestamp = new Date(selectedEventDate)
-    console.log("selectedDay: ", selectedDay);
+    // console.log("selectedDay: ", selectedDay);
     document.querySelector(`#opt_${selectedDay}`).setAttribute('selected', 'selected')
     filterTicketByDate(selectedEventTimestamp)
 }
 
 function toggleCalendar(e) {
-    console.log("toggle >e: ", e.target);
     let calendarDayElems = document.querySelectorAll('.calendar-day-hover')
     for (let i = 0; i < calendarDayElems.length; i++) {
         var count = 0;
         while (count < calendarDayElems.length) {
-            console.log("toggleCalendar working");
             calendarDayElems[count++].classList.remove('active');
         }
         e.target.classList.add(`active`);
     }
 }
 
-async function toggleCalendarbyFilter(eventDay) {
+function toggleCalendarbyFilter(eventDay) {
     let calendarDayElems = document.querySelectorAll('.calendar-day-hover')
     let eventDayElem = document.querySelector(`#day_${eventDay}`)
     for (let i = 0; i < calendarDayElems.length; i++) {
         var count = 0;
         while (count < calendarDayElems.length) {
-            console.log("toggleCalendarbyFilter working");
-            await calendarDayElems[count++].classList.remove('active')
+            calendarDayElems[count++].classList.remove('active')
         }
         eventDayElem.classList.add('class', 'active');
     }
