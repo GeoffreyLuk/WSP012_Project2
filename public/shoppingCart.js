@@ -62,13 +62,20 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                 const showInfo = document.createElement('div')
                 showInfo.classList.add('show-info')
                 event.appendChild(showInfo)
-                const delBtn = document.createElement('a')
-                delBtn.classList.add('delete')
-                delBtn.onclick = function () {
+                const btnContainer = document.createElement('div')
+                btnContainer.classList.add('btnContainer')
+                btnContainer.onclick = function () {
                     deleteAllShowTicketsByShowName(showsItem.organiser_name)
                 }
-                delBtn.innerText = "deleteAllShowTicketsByShowName"
-                showInfo.appendChild(delBtn)
+                btnContainer.innerHTML += `<i class="bi bi-x-circle"></i>`
+                showInfo.appendChild(btnContainer)
+                // const delBtn = document.createElement('a')
+                // delBtn.classList.add('delete')
+                // delBtn.onclick = function () {
+                //     deleteAllShowTicketsByShowName(showsItem.organiser_name)
+                // }
+                // delBtn.innerText = "deleteAllShowTicketsByShowName"
+                // btnContainer.appendChild(delBtn)
                 const organiserName = document.createElement('div')
                 organiserName.classList.add('organiser-name')
                 organiserName.innerText = showsItem.organiser_name
@@ -80,28 +87,36 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
             }
             for (let ticketsItem of ticketsInfo) {
                 console.log("Run ticketsInfo Loop");
+                console.log("ticketsItem.quantity: ", ticketsItem.quantity);
                 for (i = 0; i < showContainerElem.childNodes.length; i++) {
-                    console.log("showContainerElem.childNodes[i].id:", showContainerElem.childNodes[i].id);
+                    // console.log("showContainerElem.childNodes[i].id:", showContainerElem.childNodes[i].id);
                     if (("show_" + ticketsItem.show_id) == showContainerElem.childNodes[i].id) {
                         let eventId = showContainerElem.childNodes[i].id
                         let event = document.querySelector(`#${eventId}`)
-                        console.log("eventId", eventId);
+                        // console.log("eventId", eventId);
                         let timeFormat = new Date(ticketsItem.show_date)
                         let time = timeFormat.toDateString() + " / " + timeFormat.getHours() + ":" + timeFormat.getMinutes()
-                        console.log("time: ", time);
+                        // console.log("time: ", time);
                         const ticketContainer = document.createElement('div');
                         ticketContainer.classList.add('ticket-container')
                         event.appendChild(ticketContainer);
                         const ticket = document.createElement('div');
                         ticket.classList.add('ticket')
                         ticketContainer.appendChild(ticket)
-                        const delBtn = document.createElement('a')
-                        delBtn.classList.add('delete')
-                        delBtn.onclick = function () {
+                        const btnContainer = document.createElement('div')
+                        btnContainer.classList.add('btnContainer')
+                        btnContainer.onclick = function () {
                             deleteShowTicket(ticketsItem.users_purchases_id)
                         }
-                        delBtn.innerText = "deleteShowTicket"
-                        ticket.appendChild(delBtn)
+                        btnContainer.innerHTML += `<i class="bi bi-x-circle"></i>`
+                        ticket.appendChild(btnContainer)
+                        // const delBtn = document.createElement('a')
+                        // delBtn.classList.add('delete')
+                        // delBtn.onclick = function () {
+                        //     deleteShowTicket(ticketsItem.users_purchases_id)
+                        // }
+                        // delBtn.innerText = "deleteShowTicket"
+                        // ticket.appendChild(delBtn)
                         const ticketType = document.createElement('div');
                         ticketType.classList.add('ticket-type')
                         ticketType.innerText = ticketsItem.type
@@ -110,6 +125,10 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                         ticketPrice.classList.add('ticket-price')
                         ticketPrice.innerText = "$" + ticketsItem.pricing
                         ticket.appendChild(ticketPrice)
+                        const ticketQuant = document.createElement('div');
+                        ticketQuant.classList.add('ticket-quantity')
+                        ticketQuant.innerText = ticketsItem.quantity
+                        ticket.appendChild(ticketQuant)
                         const ticketDate = document.createElement('div');
                         ticketDate.classList.add('ticket-date')
                         ticketDate.innerText = time
@@ -118,7 +137,7 @@ async function loadTicketsByShowId(ticketsInfo, showsInfo) {
                         ticketVenue.classList.add('ticket-venue')
                         ticketVenue.innerText = ticketsItem.venue
                         ticket.appendChild(ticketVenue)
-                        sumTotal += ticketsItem.pricing
+                        sumTotal += (ticketsItem.quantity * ticketsItem.pricing)
                         totalAmountElem.innerText = "$" + sumTotal
                     }
                 }

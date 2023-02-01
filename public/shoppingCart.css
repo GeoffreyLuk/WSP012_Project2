@@ -1,0 +1,105 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css");
+
+.event,.booking-container {
+    border-radius: 5px;
+    background-color: #f1f2fb;
+    padding-bottom: 5px;
+    /* border: 2px solid #f1f2fb; */
+}
+
+.show-info{
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background-color: #00c5ac;
+    font-size: 20px;
+    color: #f1f2fb;
+    font-weight: bold;
+}
+
+.organiser-name, .show-name{
+    padding-left: 10px;
+}
+
+.show-info > .btnContainer {
+    padding-left: 5px;
+    font-size: 25px !important;
+    font-weight: bold;
+}
+
+.ticket-container{
+    margin: 10px;
+}
+
+.ticket {
+    color: #00c5ac;
+    border: 2px solid #00c5ac;
+    padding-left: 5px;
+    margin: 5px;
+}
+
+.ticket >.btnContainer, .ticket-type,
+.ticket-price,.ticket-quantity,.ticket-date,.ticket-venue{
+    margin: 5px 0 5px 5px;
+}
+
+.ticket-type, .ticket-price, .ticket-quantity{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.ticket-date, .ticket-venue {
+    color: #ec2629 !important;
+    font-size: 14px;
+}
+
+.booking-summary-title{
+    background-color: #00c5ac;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    text-align:center;
+    padding: 10px 5px 10px 5px;
+    font-size: 24px;
+    border-bottom: 2px solid #f1f2fb;
+    font-weight: bold;
+}
+
+.total-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 24px;
+    font-weight:bold;
+}
+
+.total-title{
+    margin-top: 10px;
+    padding-left: 10px;
+}
+
+.total-amount{
+    margin-top: 10px;
+    padding-right: 10px;
+}
+
+.check-out-form{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.check-out-item{
+    padding-left: 10px;
+    margin: 10px 0 0 0;
+}
+
+.checkout-btn {
+    margin: 10px 0 10px 0px;
+    padding: 3px 10px 3px 10px;
+    text-align: center;
+    font-size: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    background: #00c5ac;
+    color: #f1f2fb;
+}

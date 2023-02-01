@@ -24,9 +24,9 @@ async function directToCheckout(req: express.Request, res: express.Response) {
 
 async function getCheckoutInfo(req: express.Request, res: express.Response) {
     try {
-        // console.log("getCheckoutInfo");
-        // let userId = req.session["user"]["id"]
-        let userId = 21
+        console.log("getCheckoutInfo");
+        let userId = req.session["user"]["id"]
+        // let userId = 21
         let showId = req.params.show_id
         console.log("showId: ", showId);
 
@@ -76,11 +76,13 @@ async function getCheckoutInfo(req: express.Request, res: express.Response) {
 
 async function getCheckoutInfoWithNoShowId(req: express.Request, res: express.Response) {
     try {
+        console.log("getCheckoutInfoWithNoShowId");
+
         let userId = req.session.user.id
 
         let ticketPurchaseResults = await client.query(
             `
-        select shows.id as show_id, users_purchases.id as users_purchases_id, type, pricing, show_date, venue from users_purchases
+        select quantity, shows.id as show_id, users_purchases.id as users_purchases_id, type, pricing, show_date, venue from users_purchases
             inner join tickets
             on tickets.id = ticket_id
             inner join shows
@@ -121,7 +123,7 @@ async function getCheckoutInfoWithNoShowId(req: express.Request, res: express.Re
             showsInfo.push(showInfoResults)
         }
         // console.log("showInfo: ", showsInfo);
-        // console.log("ticketsInfo: ", ticketsInfo);
+        console.log("ticketsInfo: ", ticketsInfo);
 
         res.json({
             ticketsInfo,
