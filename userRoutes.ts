@@ -178,6 +178,8 @@ async function loginGoogle(req: express.Request, res: express.Response) {
         });
 
         const googleUserProfile = await fetchRes.json();
+        console.log('googleUserProfile: ', googleUserProfile);
+
         let foundUser = (await client.query(`SELECT * FROM users WHERE users.email = $1`, [googleUserProfile.email])).rows[0];
 
         if (!foundUser) {

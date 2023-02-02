@@ -19,9 +19,10 @@ loginFormElm.addEventListener('submit', async (e) => {
         Notiflix.Notify.failure(`Invalid Email/ Password.`)
         return
     }
-
-    let data = await res.json()
-    console.log("data: ", data);
-    console.log("first_name", data.first_name);
-    window.location = '/'
+    Notiflix.Notify.success("Login success! Redirecting to homepage");
+    loginFormElm.reset()
+    setTimeout(function () {
+        window.location.href = "/";
+    }, 1000)
+    return
 })

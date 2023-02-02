@@ -251,12 +251,12 @@ checkOutBtnElem.addEventListener('click', () => {
             selectedTickets.push({ quantity, price, type, eventDate })
         }
     }
-    console.log("selectedTickets: ", selectedTickets);
+    // console.log("selectedTickets: ", selectedTickets);
     checkOut(selectedTickets)
 })
 
 async function checkOut(selectedTickets) {
-    console.log("run check out");
+    // console.log("run check out");
     let res = await fetch(`/select_tickets/${show}`, {
         method: 'POST',
         headers: {
@@ -266,8 +266,12 @@ async function checkOut(selectedTickets) {
     })
     if (res.ok) {
         let data = await res.json()
-        console.log("data: ", data);
-        window.location = `/checkout/show_${show}`
+        // console.log("data: ", data);
+        // window.location = `/checkout/show_${show}`
+        Notiflix.Notify.success(`Added to shopping cart, redirecting to checkout...`);
+        setTimeout(function () {
+            window.location.href = `/checkout/show_${show}`;
+        }, 2000)
     }
 }
 

@@ -37,7 +37,9 @@ signupformElm.addEventListener('submit', async (e) => {
         if (res.ok) {
             Notiflix.Notify.success("Registration success! Welcome to G&G Tickets");
             signupformElm.reset()
-            window.location = '/'
+            setTimeout(function () {
+                window.location.href = "/";
+            }, 2000)
             return
         } else {
             // Notiflix.Notify.failure(`Email has already registered!`)
