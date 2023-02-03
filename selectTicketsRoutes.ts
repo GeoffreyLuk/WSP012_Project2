@@ -22,7 +22,11 @@ async function getShowInfo(req: express.Request, res: express.Response) {
         let show_id = req.params.show_id
 
         let showInfoResult = await client.query(
-            `select show_name, ticket_discount, sales_start_date, sales_end_date, launch_date, end_date , category, venue, address, organiser_name from shows 
+            `select show_name, ticket_discount, sales_start_date,
+            sales_end_date, launch_date, end_date ,
+             category, venue, address,
+             organiser_name 
+             from shows 
             inner join shows_locations
                 on shows.id = show_id
             inner join locations

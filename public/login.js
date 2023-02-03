@@ -1,5 +1,19 @@
 let loginFormElm = document.querySelector('.login-form-container > form')
 
+window.onload = async () => {
+    console.log(123)
+    await getUserInfo()
+}
+
+async function getUserInfo() {
+    let res = await fetch('/get_user_info')
+    if (res.ok) {
+        window.location.href = "/"
+        // let user = await res.json()
+        // console.log(user)
+    }
+}
+
 loginFormElm.addEventListener('submit', async (e) => {
     e.preventDefault()
     let loginData = {

@@ -1,6 +1,6 @@
 import express from 'express'
 import formidable from 'formidable'
-import { client } from './db';
+import { client } from '../database/init_data';
 export let uploadDir = './uploads'
 import { format } from 'fecha';
 
@@ -10,36 +10,6 @@ declare module "express-session" {
         user?: any;
     }
 }
-
-
-// export let form = formidable({
-//     uploadDir,
-//     keepExtensions: true,
-//     maxFiles: 1,
-//     maxFileSize: 10 * 1024 * 1024,
-//     filter: (part) => part.mimetype?.startsWith("image/") || false,
-//     filename: (originalName, originalExt, part, form) => {
-//         let fieldName = part.name
-//         let timestamp = Date.now()
-//         let ext = part.mimetype?.split('/').pop()
-//         return `${fieldName}-${timestamp}.${ext}`
-//     }
-// })
-
-// export function formParsePromise(req: express.Request) {
-//     return new Promise<any>((resolve, reject) => {
-//         form.parse(req, (err, fields, files) => {
-//             if (err) {
-//                 reject(err)
-//                 return
-//             }
-//             resolve({
-//                 fields,
-//                 files
-//             })
-//         })
-//     })
-// }
 
 export function formParsePromiseforSignUp(req: express.Request) {
     let form = new formidable.IncomingForm({
@@ -104,7 +74,7 @@ export async function formParsePromiseForOrg(req: express.Request) {
         [req.session.user.id]
     )
     let orgName = organNameResult.rows[0].organiser_name
-    console.log(orgName.rows);
+    // console.log(orgName.rows);
 
     let form = formidable({
         uploadDir: './public/assets/organisations',

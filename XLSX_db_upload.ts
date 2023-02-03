@@ -5,11 +5,7 @@ import path from 'path';
 import { hashPassword } from './util/hash';
 
 dotenv.config();
-const client = new pg.Client({
-  database: process.env.DB_NAME,
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-});
+import { client } from './database/init_data'; 
 
 var wb = XLSX.readFile('database/Project_Data.xlsx')
 

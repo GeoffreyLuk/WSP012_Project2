@@ -4,11 +4,13 @@ import { client } from "./database/init_data";
 
 export const shoppingCartRoutes = express.Router()
 
+shoppingCartRoutes.get('/checkout', directToCheckoutWithNoShowId) //Doneml-2checkout
 shoppingCartRoutes.get('/checkout/:show_id', directToCheckout) //Done
+
+
 shoppingCartRoutes.get('/get_checkout/:show_id', getCheckoutInfo) //Done
 shoppingCartRoutes.post('/delete_tickets_by_name', deleteAllTicketsByName) //Done
 shoppingCartRoutes.post('/delete_ticket/', deleteTicket) //Done
-shoppingCartRoutes.get('/checkout', directToCheckoutWithNoShowId) //Doneml-2checkout
 shoppingCartRoutes.get('/get_checkout', getCheckoutInfoWithNoShowId)//Done
 shoppingCartRoutes.post('/proceed_purchase/:show_id', proceedPurchaseWithShowId)//Done
 shoppingCartRoutes.get('/proceed_purchase', proceedPurchase)//Done
@@ -31,7 +33,8 @@ async function getCheckoutInfo(req: express.Request, res: express.Response) {
         console.log("showId: ", showId);
 
         let ticketPurchaseResults = await client.query(
-            `select quantity, users_purchases.id as users_purchases_id, type, pricing, show_date from users_purchases
+            `select quantity, users_purchases.id as users_purchases_id, type, pricing, show_date 
+            from users_purchases
             inner join tickets
             on tickets.id = ticket_id
             where show_id = $1 and user_id = $2 and ticket_paid = false`,
@@ -158,16 +161,34 @@ async function deleteAllTicketsByName(req: express.Request, res: express.Respons
 
         // console.log("delTicketsIdResults: ", delTicketsIdResults.rows);
         let delTicketIds = delTicketsIdResults.rows
+        delTicketIds = delTicketIds.map(e => e.ticket_id)
         console.log("delTicketIds: ", delTicketIds);
 
-        for (let delTicketId of delTicketIds) {
-            console.log("delTicketId.ticket_id: ", delTicketId.ticket_id)
-            await client.query(
-                `
-            delete from users_purchases where user_id = $1 and ticket_id = $2 and ticket_paid = false`,
-                [userId, delTicketId.ticket_id]
-            )
-        }
+        // for (let delTicketId of delTicketIds) {
+        //     console.log("delTicketId.ticket_id: ", delTicketId.ticket_id)
+        //     await client.query(
+        //         `
+        //     delete from users_purchases where user_id = $1 and ticket_id = $2 and ticket_paid = false`,
+        //         [userId, delTicketIds]
+        //     )
+        // }
+        // [1,2,3]
+        // (1,2,3)
+
+
+        let tIds = `(${delTicketIds.map(v => JSON.stringify(Number(v))).join(', ')})`;
+        // tIds = tIds.replace(`"`, "")
+        // tIds = tIds.replace(`"`, "")
+
+        console.log(tIds)
+        const a = await client.query(
+            ` delete from users_purchases where user_id = $1 and ticket_id in ${tIds} and ticket_paid = false`,
+            [userId]
+        )
+
+
+        console.log(a.command)
+
         res.json({ message: 'delete tickets ok' })
     } catch (err) {
         console.log(err);

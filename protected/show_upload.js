@@ -42,18 +42,20 @@ window.onload = async () => {
 
   if (show == 'show_new') {
     await loadingData(false)
-    renderCKEDITOR()
+    // renderCKEDITOR()
     //use post
     uploadForm.addEventListener('submit', async (e) => { await submitAction(e, 'POST') })
 
   } else {
     await loadingData(true)
     existingShow()
-    renderCKEDITOR()
+    // renderCKEDITOR()
 
     //use put
     uploadForm.addEventListener('submit', async (e) => { await submitAction(e, 'PUT') })
   };
+  renderCKEDITOR()
+
 };
 
 async function existingShow() {

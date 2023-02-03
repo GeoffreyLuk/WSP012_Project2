@@ -32,8 +32,6 @@ async function main(){
     docDate.innerHTML = `${dateFormater(launchDate,false)} - ${dateFormater(endDate,false)}`
     docVenue.innerHTML = `${[showDetails['venue']]}`
     docAddress.innerHTML = `${[showDetails['address']]}`
-
-
 } 
 
 main()
@@ -46,21 +44,6 @@ async function switchImage(image) {
     const objectURL = URL.createObjectURL(result);
     docImagePreview.src = objectURL;
   }
-
-
-
-  // docFavourites.addEventListener('click', async (e)=>{
-  //   let res = fetch(`/show_details/${show}`,{
-  //     method: 'POST',
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({application:'fan club'})
-  //   })
-
-  //   const result = await res.json();
-  //   alert(result.message)
-  // })
 
 mainContainer.addEventListener('click',async (e)=>{
   console.log(e.target);
@@ -87,9 +70,6 @@ mainContainer.addEventListener('click',async (e)=>{
     }
     
   }
-  // else if (e.target.matches('show_category')){
-  //   let res = fetch(`/`)
-  // }
 })
 
 function dateFormater(dateObject, timeOnlyBoolean = false) {

@@ -60,6 +60,8 @@ async function getShowInfo(req: express.Request, res: express.Response) {
     //locations need regardless
     let locations = {};
     let pullData_locations = await client.query(`select id,venue,address,capacity from locations`)
+
+    // Needing mapping
     for (let data of pullData_locations.rows) {
         locations[data['id']] = { 'venue': data['venue'], 'address': data['address'], 'capacity': data['capacity'] }
     }
@@ -92,6 +94,7 @@ async function getShowInfo(req: express.Request, res: express.Response) {
                 return
             }
         }
+        console.log
         res.status(200).json(returningData)
     }
     catch (err) {
@@ -104,6 +107,7 @@ async function getShowInfo(req: express.Request, res: express.Response) {
 
 async function uploadShow(req: express.Request, res: express.Response) {
     try {
+        
         let { fields, files } = await formParsePromiseForOrg(req)
         let fileName = files.banner ? files.banner['newFilename'] : ''
         let groupedData = JSON.parse(fields['groupedData'])
@@ -129,7 +133,9 @@ async function uploadShow(req: express.Request, res: express.Response) {
         console.log('inserting locations')
         if (groupedData['locationData']['venue'] != '') {
             let locations = groupedData['locationData']
-            let returningLocation = await client.query(`INSERT into locations (venue,address) values ($1,$2) returning id`, [locations['venue'], locations['location']])
+            let returningLocation = await client.query(`INSERT into locations (venue,address)
+             values ($1,$2) returning id`,
+             [locations['venue'], locations['location']])
             defaultLocation = returningLocation.rows[0].id
         }
 
@@ -326,12 +332,15 @@ async function updateShow(req: express.Request, res: express.Response) {
 
         //tickets need to update reactively
         console.log('inserting tickets')
-        let pulledstuff = await (await client.query(`select id from tickets where show_id = ${showId}`)).rows
+        let pulledstuff = (await client.query(`select id from tickets where show_id = ${showId}`)).rows
         console.log('pulledstuff: ', pulledstuff)
+
+        // Should be Mapping
         let pulledTickets: string[] = []
         pulledstuff.forEach((elem) => {
             pulledTickets.push(elem['id'])
         })
+
         console.log('pulledtickets: ', pulledTickets)
         let existingTickets: any = []
         let newTickets = []
@@ -372,9 +381,8 @@ async function updateShow(req: express.Request, res: express.Response) {
             })
         }
 
-        if (newTickets.length > 0) {
             for (let values of newTickets) {
-                console.log(values)
+                // console.log(values)
                 await client.query(`INSERT into tickets (show_id,type,pricing,show_date,max_quantity) values ($1,$2,$3,$4,$5)`, [
                     showId,
                     ticketsData[values]['type'],
@@ -383,7 +391,6 @@ async function updateShow(req: express.Request, res: express.Response) {
                     ticketsData[values]['max_quantity']
                 ])
             }
-        }
 
 
 
@@ -391,8 +398,7 @@ async function updateShow(req: express.Request, res: express.Response) {
 
         //image
         console.log('inserting images')
-        if (!fileName) {
-        } else {
+        if (fileName) {
             await client.query(`INSERT into images (show_id,organiser_id,path) values ($1,$2,$3)`, [
                 showId,
                 organiserID,

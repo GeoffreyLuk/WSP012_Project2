@@ -7,15 +7,13 @@ const buttonContainer = document.querySelector('#button_containers')
 const dateToggleContainer = document.querySelector('#date_toggle_containers')
 const trueButtonContainer = document.querySelector('.filters-button-group')
 
-// const socket = io.connect();
-// socket.on('greeting', (data) => {
-//     alert(data)
-// })
 window.onload = async () => {
-    await getAllShows(filter_date_target)
-    let allShowsDetails = dataResult['allShows']
-    loadingButtons()
-    loadingShows(allShowsDetails)
+    const dataResult = await getAllShows(filter_date_target)
+    let allShows = dataResult['allShows']
+    let allCategories = dataResult['allCategories']
+
+    loadingButtons(allCategories)
+    loadingShows(allShows)
 }
 
 trueButtonContainer.addEventListener('click', async (e) => {
@@ -44,20 +42,19 @@ trueButtonContainer.addEventListener('click', async (e) => {
         }
     }
 })
+// async function main() {
+//     await getUserInfo()
 
-async function main() {
-    await getUserInfo()
+// }
 
-}
+// main()
 
-main()
-
-async function getUserInfo() {
-    let res = await fetch('/get_user_info')
-    if (res.ok) {
-        let user = await res.json()
-    }
-}
+// async function getUserInfo() {
+//     let res = await fetch('/get_user_info')
+//     if (res.ok) {
+//         let user = await res.json()
+//     }
+// }
 
 async function getAllShows(param) {
     let res = await fetch('/get_all_shows', {
@@ -70,7 +67,9 @@ async function getAllShows(param) {
     if (res.ok) {
         let forExtraction = await res.json()
         dataResult = forExtraction
+        return forExtraction
     }
+    return []
 }
 
 async function getSelectShows(target, param) {
@@ -146,8 +145,8 @@ function loadingShows(shows) {
 
 }
 
-function loadingButtons() {
-    for (let keys in dataResult['allCategories']) {
+function loadingButtons(allCategories) {
+    for (let keys in allCategories) {
         buttonContainer.innerHTML += `
         <button id="filter_${dataResult['allCategories'][keys]}" type="button" data-filter="${dataResult['allCategories'][keys]}" class="filter filter_category btn bg-accent2 text-main mx-2 btn-sm">${dataResult['allCategories'][keys]}</button>
     `
@@ -160,36 +159,14 @@ showContainer.addEventListener('click', async (e) => {
     if (e.target.parentElement.parentElement.matches('.shows')) {
         showTargetID = e.target.parentElement.parentElement.id
         window.location.replace(`/show_details/${showTargetID}`)
-        //window.location.replace(`http://localhost:8080/show_details/${showTargetID}`)
-        // window.location.href({}, '', `/show_details/${showTargetID}`)
-        // const res = await fetch(`/show_details/${showTargetID}`);
     } else if (e.target.parentElement.parentElement.parentElement.matches('.shows')) {
         showTargetID = e.target.parentElement.parentElement.parentElement.id
         window.location.replace(`/show_details/${showTargetID}`)
-        //window.location.replace(`http://localhost:8080/show_details/${showTargetID}`)
-        // window.location.href({}, '', `/show_details/${showTargetID}`)
-        // const res = await fetch(`/show_details/${showTargetID}`);
     }
 })
 
-//iso init
-let iso = new Isotope('.show_container', {
-    itemSelector: '.shows',
-    layoutMode: 'fitRows'
-});
 
-// bind filter button click
-let filtersElem = document.querySelector('.filters-button-group');
-filtersElem.addEventListener('click', function (event) {
-    // only work with buttons
-    if (!matchesSelector(event.target, 'button')) {
-        return;
-    }
-    let filterValue = event.target.getAttribute('data-filter');
-    // use matching filter function
 
-    iso.arrange({ filter: 'abc' });
-});
 
 function dateFormater(dateObject, timeOnlyBoolean = false) {
     let returningString;

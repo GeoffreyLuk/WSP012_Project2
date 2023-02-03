@@ -5,13 +5,15 @@ export const isLoggedIn = (
     res: express.Response,
     next: express.NextFunction
 ) => {
-    console.log(req.session?.user)
+    console.log("user: ", req.session?.user)
     if (req.session?.user) {
         //called Next here
         next()
     } else {
         // redirect to index page
-        res.redirect('/?error=no access right')
+        console.log("user not found")
+        res.redirect('/login.html')
+        return 
     }
 }
 

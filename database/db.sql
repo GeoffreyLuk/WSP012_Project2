@@ -147,15 +147,17 @@ create table favourites(
     updated_at timestamp not null default now()
 );
 -- Delete Table
--- DROP TABLE favourites;
--- DROP TABLE users_purchases;
--- DROP TABLE images;
--- DROP TABLE chatroom_messages;
--- DROP TABLE chatroom_participants;
--- DROP TABLE shows_locations;
--- DROP TABLE chatrooms;
--- DROP TABLE tickets;
--- DROP TABLE shows;
--- DROP TABLE organiser_list;
--- DROP TABLE locations;
--- DROP TABLE users;
+DROP TABLE favourites;
+DROP TABLE users_purchases;
+DROP TABLE images;
+DROP TABLE chatroom_messages;
+DROP TABLE chatroom_participants;
+DROP TABLE shows_locations;
+DROP TABLE chatrooms;
+DROP TABLE tickets;
+DROP TABLE shows;
+DROP TABLE organiser_list;
+DROP TABLE locations;
+DROP TABLE categories;
+DROP TABLE direct_messages;
+DROP TABLE users;

@@ -9,7 +9,7 @@ import { uploadDir } from "./util/formidable"
 import { isLoggedIn } from "./util/guard"
 import { sessionMiddleware, grantExpress } from "./util/middleware"
 import { chatroomRoutes } from "./chatroomRoutes"
-import { client } from './database/init_data';
+import { client } from "./database/init_data" 
 import { roomLists, chatroomId } from './util/model'
 import { shoppingCartRoutes } from "./shoppingCartRoutes"
 import path from "path"
@@ -140,19 +140,6 @@ io.on("connection", function (socket) {
     });
 
 });
-
-
-// socket.io('join_new_show')
-// app.get('/', (req, res) => {
-
-//     res.end('ok')
-// })
-
-// 404 HTML
-// app.use((req, res) => {
-//     res.redirect("404.html")
-// })
-
 server.listen(8080, () => {
     console.log(`server listening on http://localhost:8080`);
 })

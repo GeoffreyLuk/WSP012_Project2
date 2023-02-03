@@ -145,7 +145,7 @@ async function loadMessages(roomId) {
     if (res.ok) {
         let data = await res.json()
         console.log("loading messages")
-        console.log(data);
+        // console.log(data);
         let messages = data.data
         if (data.messages == "No Message.") {
             return

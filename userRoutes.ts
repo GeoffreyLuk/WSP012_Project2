@@ -4,7 +4,7 @@ import fetch from 'cross-fetch'
 import { client } from './database/init_data';
 import { formParsePromiseforSignUp } from './util/formidable';
 import { checkPassword, hashPassword } from './util/hash';
-import { isLoggedInAPI } from './util/guard';
+import { isLoggedIn, isLoggedInAPI } from './util/guard';
 import path from 'path'
 
 export const userRoutes = express.Router()
@@ -69,19 +69,20 @@ userRoutes.put('/update_user_info', isLoggedInAPI, updateUserInfo)
 userRoutes.put('/reset_PW', isLoggedInAPI, resetUserPW)
 userRoutes.post('/get_all_shows', getAllShows)
 userRoutes.get('/get_details/:show_id', getShowDetails)
-userRoutes.post('/show_details/:show_id', likedShow)
+userRoutes.post('/show_details/:show_id', isLoggedIn, likedShow)
 userRoutes.get('/get_purchased_tickets/:user_id', getPurchasedTickets)
 
 async function signup(req: express.Request, res: express.Response) {
     try {
         let { fields, files } = await formParsePromiseforSignUp(req)
 
-        let fileName
-        if (!files.icon) {
-            fileName = String('default_icon.png')
-        } else {
-            fileName = String(files.icon.newFilename)
-        }
+        // let fileName
+        // if (!files.icon) {
+        //     fileName = String('default_icon.png')
+        // } else {
+        //     fileName = String(files.icon.newFilename)
+        // }
+        let fileName = files.icon ? String(files.icon.newFilename) : String('default_icon.png')
 
         // Hashpassword
         let hashedPassword = await hashPassword(fields.password)
@@ -133,7 +134,7 @@ async function login(req: express.Request, res: express.Response) {
 
         let foundUser = selectedUserResult.rows[0];
         if (!foundUser) {
-            res.status(402).json({
+            res.status(401).json({
                 message: "Current email hasn't register, please sign up first."
             })
             return
@@ -141,7 +142,7 @@ async function login(req: express.Request, res: express.Response) {
 
         let validatePassword = await checkPassword(password, foundUser.password)
         if (!validatePassword) {
-            res.status(402).json({
+            res.status(401).json({
                 message: "Wrong password, please try again."
             })
             return
@@ -205,16 +206,23 @@ async function loginGoogle(req: express.Request, res: express.Response) {
 }
 
 async function getUserInfo(req: express.Request, res: express.Response) {
-    res.json(req.session.user || {})
+    const user = req.session.user
+    if (user) {
+        res.json(req.session.user)
+        return 
+    }
+    return res.status(400).json({
+        msg: "please login first"
+    })
 }
 
 async function updateUserInfo(req: express.Request, res: express.Response) {
     try {
         let { newEmail, email, firstName, lastName, phoneNumber } = req.body
 
-        let selectedUserResult = await client.query(
-            `select * from users where email = $1`, [req.session.user?.email]
-        )
+        // let selectedUserResult = await client.query(
+        //     `select * from users where email = $1`, [req.session.user?.email]
+        // )
         let selectedNewEmailResult = await client.query(
             `select * from users where email = $1`, [newEmail]
         )
@@ -232,7 +240,7 @@ async function updateUserInfo(req: express.Request, res: express.Response) {
             [firstName, lastName, phoneNumber, email, req.session.user?.id]
         )
 
-        selectedUserResult = await client.query(
+        let selectedUserResult = await client.query(
             `select * from users where email = $1`, [email]
         )
 
@@ -260,6 +268,7 @@ async function resetUserPW(req: express.Request, res: express.Response) {
         let selectedUserResult = await client.query(
             `select * from users where email = $1`, [req.session.user?.email]
         )
+        // if user
 
         let foundUser = selectedUserResult.rows[0]
 
@@ -316,12 +325,15 @@ async function getPurchasedTickets(req: express.Request, res: express.Response) 
         order by purchaseRecord_id ASC`,
         [userId]
     )).rows
-    let images = await (await client.query(`select id , details from shows`)).rows
+    let images = (await client.query(`select id , details from shows`)).rows
+
+    // Using Map
     let imageData = {}
     images.forEach((elem) => {
         imageData[elem['id']] = elem['details']['banner']
-
     })
+
+
     console.log("purchasedTickets: ", purchasedTickets);
     res.json({
         data: purchasedTickets,
@@ -336,47 +348,55 @@ async function getPurchasedTickets(req: express.Request, res: express.Response) 
 async function getShowDetails(req: express.Request, res: express.Response) {
     const targetShow = req.params.show_id.split('_').pop()
     console.log('target : ', targetShow)
-    let showDetails = await (await client.query(`select shows.show_name, shows.published, shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at , shows.organiser_id ,  locations.venue , locations.address , shows_locations.show_id from
+    let showDetails = await (await client.query(`select shows.show_name, shows.published, shows.category_id as category, categories.category as category_name,
+     shows.details, shows.launch_date , shows.end_date, shows.created_at , 
+     organiser_list.organiser_name,
+     shows.updated_at , shows.organiser_id ,  locations.venue ,
+      locations.address , shows_locations.show_id
+      from
     shows_locations 
     left join shows
     on shows_locations.show_id = shows.id
+    left join categories
+    on categories.id = shows.category_id
+    left join organiser_list
+    on organiser_list.id = shows.organiser_id
+
 	left join locations
     on shows_locations.location_id = locations.id
     where shows.id = ($1)`, [targetShow])).rows[0]
-    let organiserDetails = await (await client.query(`select user_id , organiser_name from organiser_list where id = ($1)`, [showDetails['organiser_id']])).rows[0]
+    console.log("showDetails : ", showDetails)
+
+    let organiserDetails = await (await client.query(`select user_id , organiser_name from organiser_list where id = ($1)`,
+     [showDetails['organiser_id']])).rows[0]
     let pullCategories = (await client.query(`select id , category from categories`)).rows
+
+    // console.log("1 : ", pullCategories)
+    //  Mapping
     let allCategories = {}
     pullCategories.forEach((elem) => {
         allCategories[elem['id']] = elem['category']
     })
+    // console.log("2 : ", allCategories)
 
-    if (showDetails['published'] != true) {
+    if (!showDetails['published']) {
         if (req.session.user.id != organiserDetails['user_id']) {
             res.status(400).end('no access rights')
-        } else {
-            let respondingData = {}
-            delete organiserDetails['user_id']
-            respondingData['showDetails'] = showDetails
-            respondingData['allCategories'] = allCategories
-            respondingData['organiserDetails'] = organiserDetails
-            res.status(200).json(respondingData)
-        }
-    } else {
-        let respondingData = {}
-        delete organiserDetails['user_id']
-        respondingData['showDetails'] = showDetails
-        respondingData['allCategories'] = allCategories
-        respondingData['organiserDetails'] = organiserDetails['organiser_name']
-
-        res.status(200).json(respondingData)
-
-    }
+        } 
+    } 
+    let respondingData = {}
+    delete organiserDetails['user_id']
+    respondingData['showDetails'] = showDetails
+    respondingData['allCategories'] = allCategories
+    respondingData['organiserDetails'] = organiserDetails
+    res.status(200).json(respondingData)
 }
 
 async function likedShow(req: express.Request, res: express.Response) {
     try {
         const targetShow = req.params.show_id
         const askingUser = req.session.user.id
+        // checking
         await client.query(`INSERT into favourites (show_id,user_id) values ($1,$2)`, [
             targetShow,
             askingUser
@@ -392,64 +412,53 @@ async function likedShow(req: express.Request, res: express.Response) {
 }
 
 async function getAllShows(req: express.Request, res: express.Response) {
-    console.log('index page get all shows received ')
-    let dateFilter = req.body.range
-    let allShows;
+    try {
+        console.log('index page get all shows received ')
+        let dateFilter = req.body.range
+        // console.log("dateFilter: ", dateFilter)
 
-    let pullCategories = (await client.query(`select id , category from categories`)).rows
+        let pullCategories = (await client.query(`select id , category from categories`)).rows
+        let sql = `select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
+        shows_locations 
+        left join shows
+        on shows_locations.show_id = shows.id
+        left join locations
+        on shows_locations.location_id = locations.id
+        where shows.published = true and shows.id = 27`
+        let params: any[] = []
+        switch (dateFilter) {
+            case 'Previous':
+                params.push(new Date())
+                sql += ` and shows.end_date < ($1)`
+                break;
+            case 'Current':
+                params.push(new Date())
+                sql += ` and shows.end_date > ($1) and shows.launch_date < ($1)`
+                break;
+            case 'Upcoming':
+                params.push(new Date())
+                sql += ` and shows.launch_date > ($1)`
+                break;
+        }
 
-    switch (dateFilter) {
-        case '*':
-            allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
-            shows_locations 
-            left join shows
-            on shows_locations.show_id = shows.id
-            left join locations
-            on shows_locations.location_id = locations.id
-            where shows.published = true
-            order by shows.launch_date DESC`)).rows
-            break;
-        case 'Previous':
-            allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
-                shows_locations 
-                left join shows
-                on shows_locations.show_id = shows.id
-                left join locations
-                on shows_locations.location_id = locations.id
-                where shows.published = true and shows.end_date < ($1)
-                order by shows.launch_date DESC`, [new Date()])).rows
-            break;
-        case 'Current':
-            allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
-            shows_locations 
-            left join shows
-            on shows_locations.show_id = shows.id
-            left join locations
-            on shows_locations.location_id = locations.id
-            where shows.published = true and shows.end_date > ($1) and shows.launch_date < ($1)
-            order by shows.launch_date DESC`, [new Date()])).rows
+        sql += ` order by shows.launch_date DESC`
+        let allShows = (await client.query(sql, params)).rows
 
-            break;
-        case 'Upcoming':
-            allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
-            shows_locations 
-            left join shows
-            on shows_locations.show_id = shows.id
-            left join locations
-            on shows_locations.location_id = locations.id
-            where shows.published = true and shows.launch_date > ($1)
-            order by shows.launch_date DESC`, [new Date()])).rows
-            break;
+        // console.log("allShows: ", allShows)
+
+        let allCategories = {}
+        pullCategories.forEach((elem) => {
+            allCategories[elem['id']] = elem['category']
+        })
+        let respondingData = {}
+        respondingData['allShows'] = allShows
+        respondingData['allCategories'] = allCategories
+        res.status(200).json(respondingData)
+    } catch (e) {
+        console.log(e)
+        res.status(400).json(e)
+
     }
-
-    let allCategories = {}
-    pullCategories.forEach((elem) => {
-        allCategories[elem['id']] = elem['category']
-    })
-    let respondingData = {}
-    respondingData['allShows'] = allShows
-    respondingData['allCategories'] = allCategories
-    res.status(200).json(respondingData)
 }
 
 async function getSelectShows(req: express.Request, res: express.Response) {
@@ -511,15 +520,6 @@ async function getSelectShows(req: express.Request, res: express.Response) {
             order by shows.launch_date DESC`, [new Date(), reverseCat[showQuery]])).rows
             break;
     }
-
-    // allShows = (await client.query(`select shows.show_name , shows.category_id as category, shows.details, shows.launch_date , shows.end_date, shows.created_at , shows.updated_at ,  locations.venue , locations.address , shows_locations.show_id from
-    // shows_locations 
-    // left join shows
-    // on shows_locations.show_id = shows.id
-    // left join locations
-    // on shows_locations.location_id = locations.id
-    // where shows.published = true and shows.category_id = ($1)
-    // order by shows.launch_date DESC`, [reverseCat[showQuery]])).rows
 
     let respondingData = {}
     respondingData['allShows'] = allShows

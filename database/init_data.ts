@@ -8,20 +8,11 @@ export const client = new Client({
     database: process.env.DB_NAME,
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
+    port: 5433
 })
 
-async function main() {
+export async function main() {
     await client.connect()
     console.log("db is connect");
-
-    // Wait until the data xlsx is ready
-    // const wb = XLSX.readFile(path.join('database', 'data.xlsx'))
-    // let userSheet = wb.Sheets['user']
-
-    // let userData: User[] = XLSX.utils.sheet_to_json(userSheet)
-    // console.table(userData)
-
-    // await client.query('')
 }
-
 main()

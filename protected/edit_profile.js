@@ -39,14 +39,12 @@ function checkNewEmail(item) {
     if (!(editFormElm.newEmail.value == "") || !(editFormElm.confirmEmail.value == "")) {
         ValidateEmail(item)
         if (editFormElm.newEmail.value == editFormElm.confirmEmail.value) {
-            emailData = editFormElm.newEmail.value
             return true
         } else {
             Notiflix.Notify.failure("Please Enter Correct Email Address")
             return false
         }
     } else {
-        emailData = originalEmailElm.innerHTML
         return true
     }
 }
@@ -75,11 +73,17 @@ editFormElm.addEventListener('submit', async (e) => {
     e.preventDefault()
     // Validation
     if (checkIfEmpty()) {
+        const newEmail = editFormElm.newEmail.value
+        const confirmEmail = editFormElm.confirmEmail.value
+        const email = originalEmailElm.innerHTML
 
+        if (!newEmail && newEmail == confirmEmail) {
+            email = newEmail
+        }
         // prep
         let uploadData = {
             newEmail: editFormElm.newEmail.value,
-            email: emailData,
+            email,
             firstName: editFormElm.first_name.value,
             lastName: editFormElm.last_name.value,
             phoneNumber: editFormElm.phone_number.value

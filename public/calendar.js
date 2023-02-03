@@ -4,7 +4,7 @@ let calendar = document.querySelector('.calendar')
 let month_picker = calendar.querySelector('#month-picker')
 let month_list = calendar.querySelector('.month-list')
 
-
+let showDates
 // Amend to show launch_date in <shows>
 let currDate
 // get the Month value
@@ -27,7 +27,7 @@ function getFebDays(year) {
 }
 
 function generateCalendar(month, year, showDates) {
-    // console.log("showDates: ", showDates);
+    console.log("showDates: ", showDates);
     let calendar_days = calendar.querySelector('.calendar-days')
     let calendar_header_year = calendar.querySelector('#year')
 
@@ -47,6 +47,9 @@ function generateCalendar(month, year, showDates) {
     let first_day = new Date(year, month, 1)
 
     for (let i = 0; i <= days_of_month[month] + first_day.getDay() - 1; i++) {
+        console.log("currDate : ", currDate)
+        console.log("month : ", month)
+
         let day = document.createElement('div')
         if (i >= first_day.getDay()) {
             day.classList.add('calendar-day-hover')
@@ -55,22 +58,28 @@ function generateCalendar(month, year, showDates) {
                             <span></span>
                             <span></span>
                             <span></span>`
-            if (i - first_day.getDay() + 1 === currDate.getDate() && year === currDate.getFullYear() && month === currDate.getMonth()) {
-                // console.log("i - first_day.getDay() + 1", (i - first_day.getDay() + 1));
-                day.setAttribute('id', `day_${(i - first_day.getDay() + 1)}`)
-                day.classList.add('curr-date')
-                day.onclick = function (e) {
-                    document.querySelectorAll('.targetDate').forEach((elem) => {
-                        elem.removeAttribute('selected')
-                    })
-                    filterByCalendar(e)
-                }
-            }
+            // if (i - first_day.getDay() + 1 === currDate.getDate() && year === currDate.getFullYear() && month === currDate.getMonth()) {
+            //     // console.log("i - first_day.getDay() + 1", (i - first_day.getDay() + 1));
+            //     day.setAttribute('id', `day_${(i - first_day.getDay() + 1)}`)
+            //     day.classList.add('curr-date')
+            //     day.onclick = function (e) {
+            //         document.querySelectorAll('.targetDate').forEach((elem) => {
+            //             elem.removeAttribute('selected')
+            //         })
+            //         filterByCalendar(e)
+            //     }
+            // }
             for (let showDate of showDates) {
                 let showDateFormat = new Date(showDate.show_date)
                 let showDay = showDateFormat.getDate()
-                if (i - first_day.getDay() + 1 === showDay && i - first_day.getDay() + 1 !== currDate.getDate()) {
-                    // console.log("i in showDate Loop: ", (i - first_day.getDay() + 1));
+                let showMonth = showDateFormat.getMonth()
+                let showYear = showDateFormat.getFullYear()
+
+                // console.log("showDay: ", showDay)
+                // console.log("currDate.getDate(): ", currDate.getDate())
+                // console.log("year: ", currDate.getFullYear())
+                // console.log("showMonth: ", currDate.getMonth())
+                if (i - first_day.getDay() + 1 === showDay && year === showYear && month === showMonth) {                    // console.log("i in showDate Loop: ", (i - first_day.getDay() + 1));
                     day.setAttribute('id', `day_${(i - first_day.getDay() + 1)}`)
                     day.classList.add('curr-date')
                     day.onclick = function (e) {
@@ -92,33 +101,33 @@ month_names.forEach((e, index) => {
     month.querySelector('div').onclick = () => {
         month_list.classList.remove('show')
         curr_month = index
-        generateCalendar(index, curr_year)
+        generateCalendar(index, curr_year, showDates)
     }
     month_list.appendChild(month)
 })
 
 // Click the Month to show all month_names
-// month_picker.onclick = () => {
-//     month_list.classList.add('show')
-// }
+month_picker.onclick = () => {
+    month_list.classList.add('show')
+}
 
 // Change to previous year by clicking "<"
-// document.querySelector('#prev-year').onclick = () => {
-//     --curr_year
-//     generateCalendar(curr_month, curr_year)
-// }
+document.querySelector('#prev-year').onclick = () => {
+    --curr_year
+    generateCalendar(curr_month, curr_year, showDates)
+}
 
 // Change to next year by clicking ">"
-// document.querySelector('#next-year').onclick = () => {
-//     ++curr_year
-//     generateCalendar(curr_month, curr_year)
-// }
+document.querySelector('#next-year').onclick = () => {
+    ++curr_year
+    generateCalendar(curr_month, curr_year, showDates)
+}
 
 async function getTicketInfo() {
     let res = await fetch(`/get_info/${show_id}`)
     if (res.ok) {
         let data = await res.json()
-        let showDates = data.data
+        showDates = data.data
         // console.log("info: ", info);
         getFirstShowDate(showDates)
     }
